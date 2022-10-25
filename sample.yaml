@@ -1,0 +1,15 @@
+############| Samples |#############################################>
+## +Addon: Displays sample entities in a card template.
+## See README.md
+#############################################################/
+
+# Replace the entity_ids below with the ones you'd like to see in the samples then 
+# copy and paste or !include `examples.yml` in your lovelace dashboards and enjoy!
+
+sample:
+  variables:
+    _device_eid: switch.smart_plug_2
+    _plug_eid: switch.smart_plug_2
+    _light_eid: light.tall_desk_lamp
+    _light_motion_eid_light: light.hallway_harold
+    _light_motion_eid_sensor: binary_sensor.xiaomi_motion_05_occupancy

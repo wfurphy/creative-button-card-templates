@@ -1,0 +1,9 @@
+############| Light with Custom Icons |############################>
+light_icons:
+  template:
+    - light
+    - custom_icons
+  variables:
+    _icon: "mdi:lightbulb-variant-outline"
+    _icon_on: "mdi:lightbulb-variant"
+    _icon_unavailable: "mdi:wifi-cancel"

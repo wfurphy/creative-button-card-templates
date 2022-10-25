@@ -1,0 +1,21 @@
+############| Light |############################>
+light:
+  template: device
+  color: auto
+  label: >-
+    [[[
+      if (entity.attributes.effect && entity.attributes.effect !== "none")
+        return `<elt><ha-icon icon="mdi:creation" style="width:18px; padding-right: 5px; "></ha-icon><span class="cbc-label">${entity.attributes.effect}</span></elt>`
+
+      const bpct = Math.round(entity.attributes.brightness / 2.55)
+      let clr = (entity.attributes.color_mode == 'color_temp')
+                ? Math.round(1000000/entity.attributes.color_temp, 0) + '°K'
+                : entity.attributes.rgb_color
+
+      return `
+        <elt>
+          <ha-icon icon="mdi:brightness-6" style="width:15px; padding-right: 5px; "></ha-icon><span class="cbc-label">${bpct}%</span>
+          <ha-icon icon="mdi:palette" style="width:15px; padding-right: 5px; "></ha-icon><span class="cbc-label">${clr}</span>
+        </elt>
+      `
+    ]]]

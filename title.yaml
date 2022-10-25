@@ -1,0 +1,14 @@
+############| Title |############################>
+title:
+  styles:
+    card:
+      - height: 40px
+      - box-shadow: none
+      - opacity: 0.4
+      - text-align: center
+    name:
+      - text-transform: uppercase
+      - letter-spacing: 4px
+      - line-height: 18px
+      - font-size: 14px
+      - text-align: center

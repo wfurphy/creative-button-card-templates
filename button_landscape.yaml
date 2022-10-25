@@ -1,0 +1,19 @@
+############| Landscape Button Template |###########################>
+button_landscape:
+  size: 50px
+  layout: icon_name_state2nd
+  tap_action:
+    action: toggle
+    haptic: success
+  double_tap_action:
+    action: more-info
+    haptic: success
+  hold_action:
+    action: more-info
+    haptic: success
+  show_icon: true
+  show_name: true
+  styles:
+      card:
+        - height: 80px
+        - opacity: "[[[ return entity && entity.state == 'unavailable' ? '0.4' : '1' ]]]"

@@ -1,0 +1,49 @@
+############| Device |###########################>
+device:
+  template:
+    - button_landscape
+  variables:
+    _show_attributes: 0
+    _attr_id: ""
+    _attr_icon: ""
+    _attr_prefix: ""
+    _attr_suffix: ""
+    _attr2_id: ""
+    _attr2_icon: ""
+    _attr2_prefix: ""
+    _attr2_suffix: ""
+  show_state: false
+  show_label: true
+  label: >-
+    [[[
+      let lbl = `<elt>`
+      if (variables._show_attributes > 0 && variables._attr_id.length)
+        lbl += `<ha-icon icon="${variables._attr_icon}" style="width:18px; padding-right: 5px; "></ha-icon><span class="cbc-label">${variables._attr_prefix}${entity.attributes[variables._attr_id]}${variables._attr_suffix}</span>`
+
+      if (variables._show_attributes > 1 && variables._attr2_id.length)
+        lbl += `<ha-icon icon="${variables._attr2_icon}" style="width:18px; padding-right: 5px; margin-left: 10px"></ha-icon><span class="cbc-label">${variables._attr2_prefix}${entity.attributes[variables._attr2_id]}${variables._attr2_suffix}</span>`
+
+      return lbl += `</elt>`
+    ]]]
+  styles:
+    grid:
+      - grid-template-areas: '"i i n" "i i l"'
+      - grid-template-columns: 1fr 1fr 3fr
+      - grid-template-rows: 1fr 1fr
+      - justify-items: start
+    card:
+      - opacity: "[[[ return entity && entity.state == 'unavailable' ? '0.4' : '1' ]]]"
+    icon:
+      - justify-self: center
+    name:
+      - justify-self: start
+      - text-align: left
+    label:
+      - justify-self: start
+      - display: "[[[ return entity && entity.state == 'on' ? 'inline' : 'none' ]]]"
+      - opacity: 0.4
+      - font-size: 75%
+      - margin-top: 5px
+      - text-align: left
+    state:
+      - opacity: 0.6

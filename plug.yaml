@@ -1,0 +1,11 @@
+############| Plug |###########################>
+plug:
+  template: device
+  variables:
+    _show_attributes: 2
+    _attr_id: "current"
+    _attr_icon: "mdi:current-ac"
+    _attr_suffix: " mA"
+    _attr2_id: voltage
+    _attr2_icon: mdi:transmission-tower-import
+    _attr2_suffix: V

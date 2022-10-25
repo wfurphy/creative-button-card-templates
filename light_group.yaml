@@ -1,0 +1,66 @@
+############| Light Group |############################>
+light_group:
+  template: device
+  color: auto
+  variables:
+    _light1: ""
+    _light1_icon: mdi:lightbulb
+    _light1_symbol: mdi:arrow-left
+    _light2: ""
+    _light2_icon: mdi:lightbulb
+    _light2_symbol: mdi:arrow-up
+    _light3: ""
+    _light3_icon: mdi:lightbulb
+    _light3_symbol: mdi:arrow-right
+  layout: icon_name_state2nd
+  show_state: false
+  styles:
+    grid:
+      - grid-template-areas: '"i i n n n" "i i light1 light2 light3'
+      - grid-template-columns: 1fr 1fr 1fr 1fr 1fr
+      - grid-template-rows: 1fr 2fr
+      - justify-items: center
+    name:
+      - justify-self: center
+      - text-align: center
+    custom_fields:
+      light1:
+        - margin: auto
+        - align-self: middle
+        - justify-self: center
+      light2:
+        - margin: auto
+        - align-self: middle
+        - justify-self: center
+      light3:
+        - margin: auto
+        - align-self: middle
+        - justify-self: center
+      name:
+        - justify-self: center
+        - text-align: center
+  custom_fields:
+    light1:
+      card:
+        type: custom:button-card
+        template: button_mini_embeded
+        entity: "[[[ return variables._light1 ]]]"
+        icon: "[[[ return variables._light1_icon ]]]"
+        variables:
+          _symbol: "[[[ return variables._light1_symbol ]]]"
+    light2:
+      card:
+        type: custom:button-card
+        template: button_mini_embeded
+        entity: "[[[ return variables._light2 ]]]"
+        icon: "[[[ return variables._light2_icon ]]]"
+        variables:
+          _symbol: "[[[ return variables._light2_symbol ]]]"
+    light3:
+      card:
+        type: custom:button-card
+        template: button_mini_embeded
+        entity: "[[[ return variables._light3 ]]]"
+        icon: "[[[ return variables._light3_icon ]]]"
+        variables:
+          _symbol: "[[[ return variables._light3_symbol ]]]"

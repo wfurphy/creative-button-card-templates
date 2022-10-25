@@ -1,0 +1,100 @@
+############| Entity Detail - Detailed information panel for debugging |###########################>
+entity_detail:
+  show_name: true
+  show_state: false
+  tap_action:
+    action: none
+  double_tap_action:
+    action: none
+  hold_action:
+    action: none
+  # state_display: "[[[ return `${entity.entity_id}<br>${entity.state}` ]]]"
+  custom_fields:
+    atts: >-
+      [[[
+        let htmlList = 
+        `
+        <style>
+          div {
+            user-select: auto !important;
+          }
+          .cbc-table {
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+            table-layout: fixed;
+          }
+          .cbc-table th {
+            font-weight: normal;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            background: var(--background-color-2);
+            padding: 5px;
+          }
+          .cbc-table td {
+            font-size: 12px;
+            padding: 5px;
+            word-wrap: break-word;
+          }
+          .cbc-table td:nth-child(1) {
+            font-weight: bold;
+            text-align: right;
+          }
+          .cbc-table tr:nth-child(odd) {
+            background: var(--table-row-background-color);
+          }
+          .cbc-table tr:nth-child(even) {
+            background: var(--ha-card-background);
+          }
+        </style>
+        <elt>
+        <table class="cbc-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>`
+        
+        for (let i in entity) {
+          if (['attributes','context'].includes(i)) continue
+
+          htmlList += `<tr><td>${i}</td><td>${entity[i]}</td></tr>`
+        }
+        
+        htmlList += `<tr style="background: var(--background-color-2);">
+          <th>Attributes</th>
+        </tr>`
+
+        for (let a in entity.attributes) {
+          htmlList += `<tr><td>${a}</td><td>${entity.attributes[a]}</td></tr>`
+        }
+        
+        return htmlList += `</tbody></table></elt>`
+      ]]]
+  styles:
+    grid:
+      - grid-template-areas: '"i n" "atts atts"'
+      - grid-template-columns: 1fr 1fr
+      - justify-items: center
+    card:
+      - box-shadow: none
+      - background: none
+      - z-index: 990
+    icon:
+      - height: 80px
+      - justify-self: center
+      - margin-left: auto
+      - margin-right: auto
+      - padding: 10px
+    name:
+      - justify-self: start
+      - padding: 10px
+    custom_fields:
+      atts:
+        - justify-self: strech
+        - margin-top: 10px
+  #
