@@ -12,7 +12,7 @@ entity_detail:
   custom_fields:
     atts: >-
       [[[
-        let htmlList = 
+        let htmlList =
         `
         <style>
           div {
@@ -58,13 +58,13 @@ entity_detail:
           </tr>
         </thead>
         <tbody>`
-        
+
         for (let i in entity) {
           if (['attributes','context'].includes(i)) continue
 
           htmlList += `<tr><td>${i}</td><td>${entity[i]}</td></tr>`
         }
-        
+
         htmlList += `<tr style="background: var(--background-color-2);">
           <th>Attributes</th>
         </tr>`
@@ -72,7 +72,7 @@ entity_detail:
         for (let a in entity.attributes) {
           htmlList += `<tr><td>${a}</td><td>${entity.attributes[a]}</td></tr>`
         }
-        
+
         return htmlList += `</tbody></table></elt>`
       ]]]
   styles:
@@ -97,4 +97,3 @@ entity_detail:
       atts:
         - justify-self: strech
         - margin-top: 10px
-  #

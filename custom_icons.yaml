@@ -18,8 +18,3 @@ custom_icons:
 
       return i
     ]]]
-  # state:
-  #   - value: "on"
-  #     icon: "[[[ return variables._icon_on ]]]"
-  #   - value: "unavailable"
-  #     icon: "[[[ return variables._icon_unavailable ]]]"

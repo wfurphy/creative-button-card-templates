@@ -43,7 +43,7 @@ light_group:
     light1:
       card:
         type: custom:button-card
-        template: button_mini_embeded
+        template: button_mini_embed
         entity: "[[[ return variables._light1 ]]]"
         icon: "[[[ return variables._light1_icon ]]]"
         variables:
@@ -51,7 +51,7 @@ light_group:
     light2:
       card:
         type: custom:button-card
-        template: button_mini_embeded
+        template: button_mini_embed
         entity: "[[[ return variables._light2 ]]]"
         icon: "[[[ return variables._light2_icon ]]]"
         variables:
@@ -59,7 +59,7 @@ light_group:
     light3:
       card:
         type: custom:button-card
-        template: button_mini_embeded
+        template: button_mini_embed
         entity: "[[[ return variables._light3 ]]]"
         icon: "[[[ return variables._light3_icon ]]]"
         variables:

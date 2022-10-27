@@ -1,5 +1,5 @@
 ############| Button Mini - Embeded |###########################>
-button_mini_embeded:
+button_mini_embed:
   variables:
     _symbol: ''
   color: auto
