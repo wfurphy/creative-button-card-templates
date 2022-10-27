@@ -1,6 +1,8 @@
 ############| Light Group |############################>
 light_group:
-  template: device
+  template: 
+    - button_landscape
+    - device
   color: auto
   variables:
     _light1: ""

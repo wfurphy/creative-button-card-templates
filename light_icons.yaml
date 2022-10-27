@@ -1,6 +1,8 @@
 ############| Light with Custom Icons |############################>
 light_icons:
   template:
+    - button_landscape
+    - device
     - light
     - custom_icons
   variables:

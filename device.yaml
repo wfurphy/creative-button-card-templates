@@ -25,25 +25,3 @@ device:
 
       return lbl += `</elt>`
     ]]]
-  styles:
-    grid:
-      - grid-template-areas: '"i i n" "i i l"'
-      - grid-template-columns: 1fr 1fr 3fr
-      - grid-template-rows: 1fr 1fr
-      - justify-items: start
-    card:
-      - opacity: "[[[ return entity && entity.state == 'unavailable' ? '0.4' : '1' ]]]"
-    icon:
-      - justify-self: center
-    name:
-      - justify-self: start
-      - text-align: left
-    label:
-      - justify-self: start
-      - display: "[[[ return entity && entity.state == 'on' ? 'inline' : 'none' ]]]"
-      - opacity: 0.4
-      - font-size: 75%
-      - margin-top: 5px
-      - text-align: left
-    state:
-      - opacity: 0.6

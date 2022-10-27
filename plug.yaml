@@ -1,6 +1,8 @@
 ############| Plug |###########################>
 plug:
-  template: device
+  template:
+    - button_landscape
+    - device
   variables:
     _show_attributes: 2
     _attr_id: "current"

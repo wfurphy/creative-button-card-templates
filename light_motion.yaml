@@ -1,6 +1,8 @@
 ############| Light associated with a Motion Sensor |############################>
 light_motion:
-  template: light
+  template:
+    - device
+    - light
   # color: auto
   variables:
     _motion_entity: binary_sensor.occupancy
@@ -11,7 +13,7 @@ light_motion:
       styles:
         grid:
           - grid-template-areas: '"i i n" "i i l" "i i motion"'
-          - grid-template-columns: 1fr 1fr 3fr
+          - grid-template-columns: 1fr 1fr 4fr
           - grid-template-rows: 1fr 1fr 1fr
           - justify-items: start
         label:
@@ -19,7 +21,7 @@ light_motion:
   styles:
     grid:
       - grid-template-areas: '"i i n" "i i motion"'
-      - grid-template-columns: 1fr 1fr 3fr
+      - grid-template-columns: 1fr 1fr 4fr
       - grid-template-rows: 1fr 1fr
       - justify-items: start
     label:
