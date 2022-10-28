@@ -4,7 +4,7 @@ light_icons:
     - button_landscape
     - device
     - light
-    - custom_icons
+    - dynamic_icons
   variables:
     _icon: "mdi:lightbulb-variant-outline"
     _icon_on: "mdi:lightbulb-variant"

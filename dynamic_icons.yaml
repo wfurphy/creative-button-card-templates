@@ -1,5 +1,5 @@
 ############| +Custom Icons Addon |###########################>
-custom_icons:
+dynamic_icons:
   variables:
     _icon: "mdi:wifi"
     _icon_on: "mdi:wifi-star"
