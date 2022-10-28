@@ -4,7 +4,7 @@ A collection of [Button Card](https://github.com/custom-cards/button-card) templ
 
 ![Template Samples using Noctis theme](images/template-samples.png)
 
-_Examples in the image are using the [Noctis](https://github.com/aFFekopp/noctis) theme by @eFFekopp but should work with any theme you choose._
+_Examples in the image are using the [Noctis](https://github.com/aFFekopp/noctis) theme but should work with any theme you choose._
 
 <details><summary>See the code...</summary>
 <p>
@@ -117,7 +117,7 @@ _Examples in the image are using the [Noctis](https://github.com/aFFekopp/noctis
 
  > "What card are you using for that? I want to use that on mine!"
 
-I made this repo for my friends who were asking me the above question. If you don't know me and somehow managed to stumble across these then feel free to use them but please be aware that there's no guarantee that they will be maintained, that they are not going to break your dashboard or that they even work the way they are described! **Use them at your own risk.** If you like them then please send your kudos to @RomRider for creating [Button Card](https://github.com/custom-cards/button-card) which is the only reason these templates were possible.
+I made this repo for my friends who were asking me the above question. If you don't know me and somehow managed to stumble across these then feel free to use them but please be aware that there's no guarantee that they will be maintained, that they are not going to break your dashboard or that they even work the way they are described! **Use them at your own risk.** If you like them then please send your kudos to [@RomRider](https://github.com/RomRider) and everyone who contributed to [Button Card](https://github.com/custom-cards/button-card) which is the only reason these templates were possible.
 
 ## Prerequisites
 
