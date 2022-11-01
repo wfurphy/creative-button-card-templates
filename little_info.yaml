@@ -6,6 +6,4 @@ little_info:
   styles:
     card:
       - height: 40px
-      - box-shadow: none
-      - background: none
       - opacity: 0.4

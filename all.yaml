@@ -1,0 +1,563 @@
+############| Landscape Button Template |###########################>
+button_landscape:
+  size: 50px
+  tap_action:
+    action: toggle
+    haptic: success
+  double_tap_action:
+    action: more-info
+    haptic: success
+  hold_action:
+    action: more-info
+    haptic: success
+  show_icon: true
+  show_name: true
+  styles:
+    grid:
+      - grid-template-areas: '"i i n" "i i l"'
+      - grid-template-columns: 1fr 1fr 4fr
+      - grid-template-rows: 1fr 1fr
+      - justify-items: start
+      - align-items: center
+    card:
+      - height: 80px
+      - opacity: "[[[ return !entity || entity.state == 'unavailable' ? '0.4' : '1' ]]]"
+    icon:
+      - justify-self: center
+      - align-self: center
+    name:
+      - justify-self: start
+      - align-self: end
+      - text-align: left
+    label:
+      - justify-self: start
+      - align-self: start
+      - display: "[[[ return entity && entity.state == 'on' ? 'inline' : 'none' ]]]"
+      - opacity: 0.6
+      - font-size: 75%
+      - margin-top: 5px
+      - text-align: left
+      # - color: red
+    state:
+      - opacity: 0.6
+      - justify-self: start############| Button Mini - Embeded |###########################>
+button_mini_embed:
+  variables:
+    _symbol: ''
+  color: auto
+  tap_action:
+    action: toggle
+  hold_action:
+    action: more-info
+  show_name: false
+  size: 35px
+  custom_fields:
+    pos: |
+      [[[
+          return `<elt><ha-icon icon="${variables._symbol}" style="width: 50%"></ha-icon></elt>`
+      ]]]
+  styles:
+    grid:
+      - position: relative
+    card:
+      - background: none
+      - box-shadow: none
+    custom_fields:
+      pos:
+        - position: absolute
+        - justify-self: center
+        - margin-top: "-28%"
+        - color: var(--ha-card-background)
+button_mini:
+  tap_action:
+    action: toggle
+  hold_action:
+    action: more-info
+  show_name: false
+  show_state: false
+  size: 30px
+  styles:
+    card:
+      - height: 40px
+      # - width: 100px
+    icon:
+      - opacity: >-
+          [[[ return (entity.state === 'unavailable') ? '0.3'
+          : '1' ]]]
+############| +Debug Addon |###########################>
+debug:
+  tooltip: >-
+    [[[
+      return `::DEBUG:: ${entity.entity_id} :: ${entity.state} :: See console for more...`
+    ]]]
+  custom_fields:
+    debug_info: >-
+      [[[ 
+          console.log(entity, variables, this)
+      ]]]
+  styles:
+    tooltip:
+      - overflow: visible
+      - width: 300px
+############| Device |###########################>
+device:
+  template:
+    - button_landscape
+  variables:
+    _show_attributes: 0
+    _attr_id: ""
+    _attr_icon: ""
+    _attr_prefix: ""
+    _attr_suffix: ""
+    _attr2_id: ""
+    _attr2_icon: ""
+    _attr2_prefix: ""
+    _attr2_suffix: ""
+  show_state: false
+  show_label: true
+  label: >-
+    [[[
+      let lbl = `<elt>`
+      if (variables._show_attributes > 0 && variables._attr_id.length)
+        lbl += `<ha-icon icon="${variables._attr_icon}" style="width:18px; padding-right: 5px; "></ha-icon><span class="cbc-label">${variables._attr_prefix}${entity.attributes[variables._attr_id]}${variables._attr_suffix}</span>`
+
+      if (variables._show_attributes > 1 && variables._attr2_id.length)
+        lbl += `<ha-icon icon="${variables._attr2_icon}" style="width:18px; padding-right: 5px; margin-left: 10px"></ha-icon><span class="cbc-label">${variables._attr2_prefix}${entity.attributes[variables._attr2_id]}${variables._attr2_suffix}</span>`
+
+      return lbl += `</elt>`
+    ]]]############| +Custom Icons Addon |###########################>
+dynamic_icons:
+  variables:
+    _icon: "mdi:wifi"
+    _icon_on: "mdi:wifi-star"
+    _icon_unavailable: "mdi:wifi-cancel"
+  icon: >-
+    [[[
+      if (!entity) return "mdi:cancel"
+
+      let i = variables._icon
+      switch(entity.state) {
+        case "on":
+          i = variables._icon_on
+          break
+        case "unavailable":
+          i = variables._icon_unavailable
+          break
+      }
+
+      return i
+    ]]]
+############| Entity Detail - Detailed information panel for debugging |###########################>
+entity_detail:
+  show_name: true
+  show_state: false
+  tap_action:
+    action: none
+  double_tap_action:
+    action: none
+  hold_action:
+    action: none
+  # state_display: "[[[ return `${entity.entity_id}<br>${entity.state}` ]]]"
+  custom_fields:
+    atts: >-
+      [[[
+        let htmlList =
+        `
+        <style>
+          div {
+            user-select: auto !important;
+          }
+          .cbc-table {
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+            table-layout: fixed;
+          }
+          .cbc-table th {
+            font-weight: normal;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            background: var(--background-color-2);
+            padding: 5px;
+          }
+          .cbc-table td {
+            font-size: 12px;
+            padding: 5px;
+            word-wrap: break-word;
+          }
+          .cbc-table td:nth-child(1) {
+            font-weight: bold;
+            text-align: right;
+          }
+          .cbc-table tr:nth-child(odd) {
+            background: var(--table-row-background-color);
+          }
+          .cbc-table tr:nth-child(even) {
+            background: var(--ha-card-background);
+          }
+        </style>
+        <elt>
+        <table class="cbc-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>`
+
+        for (let i in entity) {
+          if (['attributes','context'].includes(i)) continue
+
+          htmlList += `<tr><td>${i}</td><td>${entity[i]}</td></tr>`
+        }
+
+        htmlList += `<tr style="background: var(--background-color-2);">
+          <th>Attributes</th>
+        </tr>`
+
+        for (let a in entity.attributes) {
+          htmlList += `<tr><td>${a}</td><td>${entity.attributes[a]}</td></tr>`
+        }
+
+        return htmlList += `</tbody></table></elt>`
+      ]]]
+  styles:
+    grid:
+      - grid-template-areas: '"i n" "atts atts"'
+      - grid-template-columns: 1fr 1fr
+      - justify-items: center
+    card:
+      - box-shadow: none
+      - background: none
+      - z-index: 990
+    icon:
+      - height: 80px
+      - justify-self: center
+      - margin-left: auto
+      - margin-right: auto
+      - padding: 10px
+    name:
+      - justify-self: start
+      - padding: 10px
+    custom_fields:
+      atts:
+        - justify-self: strech
+        - margin-top: 10px
+#### Info ######################################################>
+info:
+  variables:
+    _entities:
+      - entity_id: sensor.lola_daily_goal
+        name: Daily Goal
+      - sensor.lola_minutes_active
+      - sensor.lola_tracker_battery_level
+    _icon_color: 'var(--state-icon-color)'
+  type: custom:button-card
+  styles:
+    grid:
+      - grid-template-areas: '"dts1 dts2 dts3"'
+      - grid-template-columns: 1fr 1fr 1fr
+      - grid-template-rows: 1fr
+      - justify-items: center
+      - align-items: center
+    card:
+      - height: 60px
+    custom_fields:
+      dts1:
+        - margin-top: -17px
+      dts2:
+        - margin-top: -17px
+      dts3:
+        - margin-top: -17px
+  custom_fields:
+    dts1:
+      card:
+        type: custom:button-card
+        entity: "[[[ return variables._entity1 ]]]"
+        name: Daily Goal
+        show_state: true
+        styles:
+          grid:
+            - grid-template-areas: '"n n i" "s s i"'
+            - grid-template-columns: 1fr 1fr 1fr
+            - grid-template-rows: 1fr 1fr
+            - justify-items: start
+            - align-items: center
+          card:
+            - background: none
+            - box-shadow: none
+          icon:
+            - justify-self: center
+            - color: "[[[return variables._icon_color ]]]"
+            - width: 35px
+          name:
+            - color: var(--secondary-text-color)
+            
+        
+    dts2:
+      card:
+        type: custom:button-card
+        entity: "[[[ return variables._entity2 ]]]"
+        name: Active
+        show_state: true
+        styles:
+          grid:
+            - grid-template-areas: '"n n i" "s s i"'
+            - grid-template-columns: 1fr 1fr 1fr
+            - grid-template-rows: 1fr 1fr
+            - justify-items: start
+            - align-items: center
+          card:
+            - background: none
+            - box-shadow: none
+          icon:
+            - justify-self: center
+            - color: "[[[return variables._icon_color ]]]"
+            - width: 35px
+          name:
+            - color: var(--secondary-text-color)
+          measurement:
+            - color: var(--secondary-text-color)
+    dts3:
+      card:
+        type: custom:button-card
+        entity: "[[[ return variables._entity3 ]]]"
+        name: Battery
+        show_state: true
+        styles:
+          grid:
+            - grid-template-areas: '"n n i" "s s i"'
+            - grid-template-columns: 1fr 1fr 1fr
+            - grid-template-rows: 1fr 1fr
+            - justify-items: start
+            - align-items: center
+          card:
+            - background: none
+            - box-shadow: none
+          icon:
+            - justify-self: center
+            - color: "[[[ return variables._icon_color ]]]"
+            - width: 35px
+          name:
+            - color: var(--secondary-text-color)
+          measurement:
+            - color: var(--secondary-text-color)
+############| Light Group |############################>
+light_group:
+  template: 
+    - button_landscape
+    - device
+  color: auto
+  variables:
+    _light1: ""
+    _light1_icon: mdi:lightbulb
+    _light1_symbol: mdi:arrow-left
+    _light2: ""
+    _light2_icon: mdi:lightbulb
+    _light2_symbol: mdi:arrow-up
+    _light3: ""
+    _light3_icon: mdi:lightbulb
+    _light3_symbol: mdi:arrow-right
+  layout: icon_name_state2nd
+  show_state: false
+  styles:
+    grid:
+      - grid-template-areas: '"i i n n n" "i i light1 light2 light3'
+      - grid-template-columns: 1fr 1fr 1fr 1fr 1fr
+      - grid-template-rows: 1fr 2fr
+      - justify-items: center
+    name:
+      - justify-self: center
+      - text-align: center
+    custom_fields:
+      light1:
+        - margin: auto
+        - align-self: middle
+        - justify-self: center
+      light2:
+        - margin: auto
+        - align-self: middle
+        - justify-self: center
+      light3:
+        - margin: auto
+        - align-self: middle
+        - justify-self: center
+      name:
+        - justify-self: center
+        - text-align: center
+  custom_fields:
+    light1:
+      card:
+        type: custom:button-card
+        template: button_mini_embed
+        entity: "[[[ return variables._light1 ]]]"
+        icon: "[[[ return variables._light1_icon ]]]"
+        variables:
+          _symbol: "[[[ return variables._light1_symbol ]]]"
+    light2:
+      card:
+        type: custom:button-card
+        template: button_mini_embed
+        entity: "[[[ return variables._light2 ]]]"
+        icon: "[[[ return variables._light2_icon ]]]"
+        variables:
+          _symbol: "[[[ return variables._light2_symbol ]]]"
+    light3:
+      card:
+        type: custom:button-card
+        template: button_mini_embed
+        entity: "[[[ return variables._light3 ]]]"
+        icon: "[[[ return variables._light3_icon ]]]"
+        variables:
+          _symbol: "[[[ return variables._light3_symbol ]]]"
+############| Light associated with a Motion Sensor |############################>
+light_motion:
+  template:
+    - device
+    - light
+  # color: auto
+  variables:
+    _motion_entity: binary_sensor.occupancy
+  triggers_update:
+    - "[[[ return variables.__motion_entity ]]]"
+  state:
+    - value: "on"
+      styles:
+        grid:
+          - grid-template-areas: '"i i n" "i i l" "i i motion"'
+          - grid-template-columns: 1fr 1fr 4fr
+          - grid-template-rows: 1fr 1fr 1fr
+          - justify-items: start
+        label:
+          - display: inline-block
+  styles:
+    grid:
+      - grid-template-areas: '"i i n" "i i motion"'
+      - grid-template-columns: 1fr 1fr 4fr
+      - grid-template-rows: 1fr 1fr
+      - justify-items: start
+    label:
+      - display: none
+    custom_fields:
+      motion:
+        - justify-self: start
+  custom_fields:
+    motion:
+      card:
+        type: custom:button-card
+        entity: "[[[ return variables._motion_entity ]]]"
+        layout: icon_label
+        show_name: false
+        show_last_changed: true
+        size: 20px
+        state:
+          - value: "on"
+            icon: mdi:run-fast
+            styles:
+              card:
+                - opactiy: 0.8
+        icon: mdi:run
+        styles:
+          grid:
+            - grid-template-areas: i n
+            - grid-template-columns: 1fr 3fr
+          card:
+            - background: none
+            - box-shadow: none
+            - overflow: visible
+            - padding: 4px 0 2px 0
+            - opacity: 0.4
+            - margin-left: -2px
+          label:
+            - overflow: visible
+            - justify-self: start
+            - font-size: 75%
+            - margin: 3px 0 0 -2px
+            - text-align: left
+          icon:
+            - width: 18px
+            - padding-right: 5px
+############| Light |############################>
+light:
+  template: device
+  color: auto
+  label: >-
+    [[[
+      if (!entity) return `<elt><ha-icon icon="mdi:wifi-cancel" style="width:18px; padding-right: 5px; "></ha-icon><span class="cbc-label">Unavailable</span></elt>`
+
+      if (entity.attributes.effect && entity.attributes.effect !== "none")
+        return `<elt><ha-icon icon="mdi:creation" style="width:18px; padding-right: 5px; "></ha-icon><span class="cbc-label">${entity.attributes.effect}</span></elt>`
+
+      const bpct = Math.round(entity.attributes.brightness / 2.55)
+      let clr = (entity.attributes.color_mode == 'color_temp')
+                ? Math.round(1000000/entity.attributes.color_temp, 0) + '°K'
+                : entity.attributes.rgb_color
+
+      return `
+        <elt>
+          <ha-icon icon="mdi:brightness-6" style="width:15px; padding-right: 5px; "></ha-icon><span class="cbc-label">${bpct}%</span>
+          <ha-icon icon="mdi:palette" style="width:15px; padding-right: 5px; "></ha-icon><span class="cbc-label">${clr}</span>
+        </elt>
+      `
+    ]]]
+############| Little Info |############################>
+little_info:
+  layout: icon_state
+  show_state: true
+  show_name: false
+  styles:
+    card:
+      - height: 40px
+      - opacity: 0.4
+############| Plug |###########################>
+plug:
+  template:
+    - button_landscape
+    - device
+  variables:
+    _show_attributes: 2
+    _attr_id: "current"
+    _attr_icon: "mdi:current-ac"
+    _attr_suffix: " mA"
+    _attr2_id: voltage
+    _attr2_icon: mdi:transmission-tower-import
+    _attr2_suffix: V
+############| Title Grid |############################>
+title_grid:
+  styles:
+    card:
+      - height: 40px
+      - box-shadow: none
+      - opacity: 0.4
+      - text-align: center
+      - margin-top: 40px
+    name:
+      - text-transform: uppercase
+      - letter-spacing: 4px
+      - line-height: 18px
+      - font-size: 14px
+      - text-align: center
+############| Title |############################>
+title:
+  styles:
+    card:
+      - height: 40px
+      - box-shadow: none
+      - opacity: 0.4
+      - text-align: center
+    name:
+      - text-transform: uppercase
+      - letter-spacing: 4px
+      - line-height: 18px
+      - font-size: 14px
+      - text-align: center
+#### ADDON: Transparent Background ####>
+transparent:
+  styles:
+    card:
+      - background: none
+      - box-shadow: none
+      - border: none

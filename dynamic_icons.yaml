@@ -6,6 +6,8 @@ dynamic_icons:
     _icon_unavailable: "mdi:wifi-cancel"
   icon: >-
     [[[
+      if (!entity) return "mdi:cancel"
+
       let i = variables._icon
       switch(entity.state) {
         case "on":

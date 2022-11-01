@@ -4,6 +4,8 @@ light:
   color: auto
   label: >-
     [[[
+      if (!entity) return `<elt><ha-icon icon="mdi:wifi-cancel" style="width:18px; padding-right: 5px; "></ha-icon><span class="cbc-label">Unavailable</span></elt>`
+
       if (entity.attributes.effect && entity.attributes.effect !== "none")
         return `<elt><ha-icon icon="mdi:creation" style="width:18px; padding-right: 5px; "></ha-icon><span class="cbc-label">${entity.attributes.effect}</span></elt>`
 

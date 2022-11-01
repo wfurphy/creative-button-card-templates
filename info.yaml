@@ -1,0 +1,99 @@
+#### Info ######################################################>
+info:
+  variables:
+    _entities:
+      - entity_id: sensor.lola_daily_goal
+        name: Daily Goal
+      - sensor.lola_minutes_active
+      - sensor.lola_tracker_battery_level
+    _icon_color: 'var(--state-icon-color)'
+  type: custom:button-card
+  styles:
+    grid:
+      - grid-template-areas: '"dts1 dts2 dts3"'
+      - grid-template-columns: 1fr 1fr 1fr
+      - grid-template-rows: 1fr
+      - justify-items: center
+      - align-items: center
+    card:
+      - height: 60px
+    custom_fields:
+      dts1:
+        - margin-top: -17px
+      dts2:
+        - margin-top: -17px
+      dts3:
+        - margin-top: -17px
+  custom_fields:
+    dts1:
+      card:
+        type: custom:button-card
+        entity: "[[[ return variables._entity1 ]]]"
+        name: Daily Goal
+        show_state: true
+        styles:
+          grid:
+            - grid-template-areas: '"n n i" "s s i"'
+            - grid-template-columns: 1fr 1fr 1fr
+            - grid-template-rows: 1fr 1fr
+            - justify-items: start
+            - align-items: center
+          card:
+            - background: none
+            - box-shadow: none
+          icon:
+            - justify-self: center
+            - color: "[[[return variables._icon_color ]]]"
+            - width: 35px
+          name:
+            - color: var(--secondary-text-color)
+            
+        
+    dts2:
+      card:
+        type: custom:button-card
+        entity: "[[[ return variables._entity2 ]]]"
+        name: Active
+        show_state: true
+        styles:
+          grid:
+            - grid-template-areas: '"n n i" "s s i"'
+            - grid-template-columns: 1fr 1fr 1fr
+            - grid-template-rows: 1fr 1fr
+            - justify-items: start
+            - align-items: center
+          card:
+            - background: none
+            - box-shadow: none
+          icon:
+            - justify-self: center
+            - color: "[[[return variables._icon_color ]]]"
+            - width: 35px
+          name:
+            - color: var(--secondary-text-color)
+          measurement:
+            - color: var(--secondary-text-color)
+    dts3:
+      card:
+        type: custom:button-card
+        entity: "[[[ return variables._entity3 ]]]"
+        name: Battery
+        show_state: true
+        styles:
+          grid:
+            - grid-template-areas: '"n n i" "s s i"'
+            - grid-template-columns: 1fr 1fr 1fr
+            - grid-template-rows: 1fr 1fr
+            - justify-items: start
+            - align-items: center
+          card:
+            - background: none
+            - box-shadow: none
+          icon:
+            - justify-self: center
+            - color: "[[[ return variables._icon_color ]]]"
+            - width: 35px
+          name:
+            - color: var(--secondary-text-color)
+          measurement:
+            - color: var(--secondary-text-color)
