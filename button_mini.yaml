@@ -10,7 +10,6 @@ button_mini:
     haptic: success
   show_name: false
   show_state: false
-  color: auto
   size: 30px
   styles:
     card:

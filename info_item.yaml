@@ -1,0 +1,17 @@
+info_item:
+  variables:
+    _icon_color: "var(--state-icon-color)"
+  show_state: true
+  styles:
+    grid:
+      - grid-template-areas: '"n n i" "s s i"'
+      - grid-template-columns: 1fr 1fr 1fr
+      - grid-template-rows: 1fr 1fr
+      - justify-items: start
+      - align-items: center
+    icon:
+      - justify-self: center
+      - color: "[[[return variables._icon_color ]]]"
+      - width: 35px
+    name:
+      - color: var(--secondary-text-color)

@@ -37,7 +37,6 @@ button_landscape:
       - font-size: 75%
       - margin-top: 5px
       - text-align: left
-      # - color: red
     state:
       - opacity: 0.6
       - justify-self: start

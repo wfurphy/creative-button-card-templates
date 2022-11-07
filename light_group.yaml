@@ -8,61 +8,73 @@ light_group:
     _light1: ""
     _light1_icon: mdi:lightbulb
     _light1_symbol: mdi:arrow-left
-    _light2: ""
+    _l2: ""
     _light2_icon: mdi:lightbulb
     _light2_symbol: mdi:arrow-up
-    _light3: ""
+    _l3: ""
     _light3_icon: mdi:lightbulb
     _light3_symbol: mdi:arrow-right
   layout: icon_name_state2nd
   show_state: false
   styles:
     grid:
-      - grid-template-areas: '"i i n n n" "i i light1 light2 light3'
-      - grid-template-columns: 1fr 1fr 1fr 1fr 1fr
-      - grid-template-rows: 1fr 2fr
+      - grid-template-areas: '"i n n n n n n n n" "i l1 l1 l1 l2 l2 l3 l3 l3" "i l1 l1 l1 l2 l2 l3 l3 l3"'
+      - grid-template-columns: 4fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+      - grid-template-rows: 1fr 1fr 1fr
       - justify-items: center
     name:
       - justify-self: center
       - text-align: center
     custom_fields:
-      light1:
+      l1:
         - margin: auto
         - align-self: middle
         - justify-self: center
-      light2:
+      l2:
         - margin: auto
         - align-self: middle
         - justify-self: center
-      light3:
+      l3:
         - margin: auto
         - align-self: middle
         - justify-self: center
-      name:
-        - justify-self: center
-        - text-align: center
+      g:
+        - margin: auto
+        - align-self: middle
+        - justify-self: center 
   custom_fields:
-    light1:
+    g:
+      card:
+        type: custom:button-card
+        template: transparent
+        styles:
+          card:
+            - width: 10px
+            - height: 10px
+    l1:
       card:
         type: custom:button-card
         template: button_mini_embed
         entity: "[[[ return variables._light1 ]]]"
         icon: "[[[ return variables._light1_icon ]]]"
+        color: auto
         variables:
           _symbol: "[[[ return variables._light1_symbol ]]]"
-    light2:
+    l2:
       card:
         type: custom:button-card
         template: button_mini_embed
         entity: "[[[ return variables._light2 ]]]"
         icon: "[[[ return variables._light2_icon ]]]"
+        color: auto
         variables:
           _symbol: "[[[ return variables._light2_symbol ]]]"
-    light3:
+    l3:
       card:
         type: custom:button-card
         template: button_mini_embed
         entity: "[[[ return variables._light3 ]]]"
         icon: "[[[ return variables._light3_icon ]]]"
+        color: auto
         variables:
           _symbol: "[[[ return variables._light3_symbol ]]]"
