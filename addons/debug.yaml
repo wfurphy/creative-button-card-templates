@@ -1,0 +1,24 @@
+############| +Addon > Debug |###########################>
+debug:
+  variables:
+    _debug: true
+    __title: '::WF::BCTEMPLATES::DEBUG::>'
+  custom_fields:
+    debugger: >
+      [[[
+        if (variables._debug) {
+          console.debug(variables.__title, {
+            variables: variables, 
+            entity: entity ? entity : {},
+            bc: this
+          })
+        }
+      ]]]
+  styles:
+    custom_fields:
+      debugger:
+        - height: 0
+        - width: 0
+        - visibility: hidden
+
+#########################################################################/      

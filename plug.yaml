@@ -1,7 +1,6 @@
 ############| Plug |###########################>
 plug:
   template:
-    - button_landscape
     - device
   variables:
     _show_attributes: 2
@@ -11,3 +10,5 @@ plug:
     _attr2_id: voltage
     _attr2_icon: mdi:transmission-tower-import
     _attr2_suffix: V
+
+#########################################################################/

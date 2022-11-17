@@ -3,7 +3,7 @@ light_motion:
   template:
     - device
     - light
-  # color: auto
+  color: auto
   variables:
     _motion_entity: binary_sensor.occupancy
   triggers_update:
@@ -64,3 +64,5 @@ light_motion:
           icon:
             - width: 18px
             - padding-right: 5px
+
+#########################################################################/

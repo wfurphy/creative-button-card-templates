@@ -1,15 +1,9 @@
 ############| Landscape Button Template |###########################>
 button_landscape:
+  template:
+    - base_addons
+    - actions
   size: 50px
-  tap_action:
-    action: toggle
-    haptic: success
-  double_tap_action:
-    action: more-info
-    haptic: success
-  hold_action:
-    action: more-info
-    haptic: success
   show_icon: true
   show_name: true
   styles:
@@ -19,9 +13,11 @@ button_landscape:
       - grid-template-rows: 1fr 1fr
       - justify-items: start
       - align-items: center
+      - padding: 6px
     card:
       - height: 80px
       - opacity: "[[[ return !entity || entity.state == 'unavailable' ? '0.4' : '1' ]]]"
+      - border: none
     icon:
       - justify-self: center
       - align-self: center
@@ -33,10 +29,12 @@ button_landscape:
       - justify-self: start
       - align-self: start
       - display: "[[[ return entity && entity.state == 'on' ? 'inline' : 'none' ]]]"
-      - opacity: 0.6
+      - color: var(--secondary-text-color)
       - font-size: 75%
       - margin-top: 5px
       - text-align: left
     state:
       - opacity: 0.6
       - justify-self: start
+
+#########################################################################/

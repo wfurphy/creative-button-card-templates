@@ -1,13 +1,10 @@
 ############| Entity Detail - Detailed information panel for debugging |###########################>
 entity_detail:
+  template:
+    - base_addons
+    - no_actions
   show_name: true
   show_state: false
-  tap_action:
-    action: none
-  double_tap_action:
-    action: none
-  hold_action:
-    action: none
   # state_display: "[[[ return `${entity.entity_id}<br>${entity.state}` ]]]"
   custom_fields:
     atts: >-
@@ -97,3 +94,5 @@ entity_detail:
       atts:
         - justify-self: strech
         - margin-top: 10px
+
+#########################################################################/

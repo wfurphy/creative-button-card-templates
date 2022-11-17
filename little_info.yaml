@@ -1,9 +1,0 @@
-############| Little Info |############################>
-little_info:
-  layout: icon_state
-  show_state: true
-  show_name: false
-  styles:
-    card:
-      - height: 40px
-      - opacity: 0.4

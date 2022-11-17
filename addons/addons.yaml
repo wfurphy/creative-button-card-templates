@@ -1,0 +1,23 @@
+############| +Addons |############################>
+base_addons:
+  variables:
+    _opacity: 1
+  styles:
+    card:
+      - opacity: "[[[ return variables._opacity ]]]"
+
+show_only_icon:
+  show_name: false
+  show_icon: true
+  show_state: false
+  show_last_changed: false
+  show_label: false
+
+show_only_name:
+  show_name: true
+  show_icon: false
+  show_state: false
+  show_last_changed: false
+  show_label: false
+
+#########################################################################/

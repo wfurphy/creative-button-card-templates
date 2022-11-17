@@ -1,48 +1,140 @@
-#### Info ######################################################>
-info:
+############| Info Mini |############################>
+info_mini:
+  template:
+    - base_addons
+    - actions
+  layout: icon_state
+  show_state: true
+  show_name: false
+  styles:
+    card:
+      - height: 40px
+      - opacity: "[[[ return variables._opacity ]]]"
+
+#### Info Item ######################################################>
+info_item:
+  template:
+    - base_addons
+    - actions
+    - transparent
   variables:
-    _entities:
-      - entity_id: 
-        name:
-    _icons_color: "var(--state-icon-color)"
+    _icon_color: "var(--state-icon-color)"
+    _state: ""
+  show_state: true
+  card_sie: 1
+  styles:
+    grid:
+      - position: relative
+      - grid-template-areas: '"n n i" "s s i"'
+      - grid-template-columns: 1fr 1fr 1fr
+      - grid-template-rows: 1fr 1fr
+      - height: 50px
+      - width: 100px
+    card:
+      - height: 50px
+      - width: 100px
+      # - min-width: 115px
+      # - max-width: 130px
+      - justify-self: center
+      - align-self: center
+      - padding: 0
+      - margin: 0
+    icon:
+      - justify-self: start
+      - align-self: center
+      - color: "[[[return variables._icon_color ]]]"
+      - width: 35px
+      - overflow: visible
+      - opactiy: 0.6
+    name:
+      - color: var(--secondary-text-color)
+      - justify-self: end
+      - align-self: end
+      - overflow: visible
+      - font-size: 14px
+      # - font-weight: bold
+      # - text-transform: uppercase
+    state:
+      - justify-self: end
+      - align-self: start
+      - overflow: visible
+      - font-size: 14px
+
+#### Info Card ######################################################>
+info:
+  template:
+    - no_actions
+  show_icon: false
+  show_name: false
+  card_size: 1
+  variables:
+    _items: []
+    _icon_color: "var(--state-icon-color)"
   styles:
     grid:
       - grid-template-areas: >
           [[[
-            let areas = '\"dts1'
+            variables.__qty = variables._items.length
 
-            variables._entities.forEach(function(k, i) {
-              areas += (i > 0) ? ` dts${i+1}` : ''
+            let areas = '\"cgap dts1'
+            
+            variables._items.forEach(function(e, i) {
+              const dtid = `dts${i+1}`
+              areas += (i > 0 && i < 4) ? ` ${dtid}` : ''
             })
 
-            console.log(variables, areas)
-
-            return areas += '\"'
+            return areas += ' egap\"'
           ]]]
       - grid-template-columns: > 
           [[[
-            let cols = '1fr'
+            let cols = '1fr 8fr'
 
-            variables._entities.forEach(function(k, i) {
-              cols += (i > 0) ? ' 1fr' : ''
+            variables._items.forEach(function(k, i) {
+              cols += (i > 0 && i < 4) ? ' 8fr' : ''
             })
 
-            console.log(variables, cols)
-
-            return cols
+            return cols += ' 1fr'
           ]]]
       - grid-template-rows: 1fr
       - justify-items: center
       - align-items: center
+      - text-align: center
+      - margin: auto
+      - padding: 0
+      - height: 50px
     card:
-      - height: 60px
+      - height: 50px
+      - max-width: 100%
+      - justify-self: center
+      - align-self: start
+      - text-align: center
+      - padding: 0
+      - margin: 0
     custom_fields:
       dts1:
-        - margin-top: -17px
+        - justify-self: center
+        - align-self: center
+        - display: "[[[return variables.__qty >= 1 ? 'inline-block' : 'none' ]]]"
+        - overflow: visible
+        - margin: 0
       dts2:
-        - margin-top: -17px
+        - justify-self: center
+        - align-self: center
+        - display: "[[[return variables.__qty >= 2 ? 'inline-block' : 'none' ]]]"
+        - overflow: visible
+        - margin: 0
       dts3:
-        - margin-top: -17px
+        - justify-self: center
+        - align-self: center
+        - display: "[[[return variables.__qty >= 3 ? 'inline-block' : 'none' ]]]"
+        - overflow: visible
+        - margin: 0
+      dts4:
+        - justify-self: center
+        - align-self: center
+        - display: "[[[return variables.__qty >= 4 ? 'inline-block' : 'none' ]]]"
+        - overflow: visible
+        - margin: 0
   custom_fields:
     dts1:
       card:
@@ -51,9 +143,10 @@ info:
           - info_item
           - transparent
         variables:
-          _icon_color: "[[[return variables._icons_color ]]]"
-        entity: "[[[ return variables._entities[0].entity_id ]]]"
-        name: "[[[ return variables._entities[0].name ]]]"
+          _state: "[[[ return varianles._state ? "
+          _icon_color: "[[[return variables.__qty >= 1 ? variables._icon_color : null ]]]"
+        entity: "[[[ return variables.__qty >= 1 ? variables._items[0].entity_id : null ]]]"
+        name: "[[[ return variables.__qty >= 1 ? variables._items[0].name : null ]]]"
     dts2:
       card:
         type: custom:button-card
@@ -61,9 +154,10 @@ info:
           - info_item
           - transparent
         variables:
-          _icon_color: "[[[return variables._icons_color ]]]"
-        entity: "[[[ return variables._entities[1].entity_id ]]]"
-        name: "[[[ return variables._entities[1].name ]]]"
+          _state: "[[[ return varianles._state ? "
+          _icon_color: "[[[return variables.__qty >= 2 ? variables._icon_color : null ]]]"
+        entity: "[[[ return variables.__qty >= 2 ? variables._items[1].entity_id : null ]]]"
+        name: "[[[ return variables.__qty >= 2 ? variables._items[1].name : null ]]]"
     dts3:
       card:
         type: custom:button-card
@@ -71,6 +165,28 @@ info:
           - info_item
           - transparent
         variables:
-          _icon_color: "[[[return variables._icons_color ]]]"
-        entity: "[[[ return variables._entities[2].entity_id ]]]"
-        name: "[[[ return variables._entities[2].name ]]]"
+          _state: "[[[ return varianles._state ? "
+          _icon_color: "[[[return variables.__qty >= 3 ? variables._icon_color : null ]]]"
+        entity: "[[[ return variables.__qty >= 3 ? variables._items[2].entity_id : null ]]]"
+        name: "[[[ return variables.__qty >= 3 ? variables._items[2].name : null ]]]"
+    dts4:
+      card:
+        type: custom:button-card
+        template: 
+          - info_item
+          - transparent
+        variables:
+          _state: "[[[ return varianles._state ? "
+          _icon_color: "[[[return variables.__qty >= 4 ? variables._icon_color : null ]]]"
+        entity: "[[[ return variables.__qty >= 4 ? variables._items[3].entity_id : null ]]]"
+        name: "[[[ return variables.__qty >= 4 ? variables._items[3].name : null ]]]"
+    cgap: >
+      [[[
+        return `<div style="width: 20px;"></span>`
+      ]]]
+    egap: >
+      [[[
+        return `<div style="width: 20px;"></span>`
+      ]]]
+
+#########################################################################/

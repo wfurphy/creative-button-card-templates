@@ -1,7 +1,0 @@
-#### ADDON: Transparent Background ####>
-transparent:
-  styles:
-    card:
-      - background: none
-      - box-shadow: none
-      - border: none

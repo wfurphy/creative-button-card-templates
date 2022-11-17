@@ -54,7 +54,7 @@ _Examples in the image are using the [Noctis](https://github.com/aFFekopp/noctis
                     - font-size: 12px
                     - text-align: center
               - type: custom:button-card
-                template: little_info
+                template: info_mini
                 entity: input_number.circulation_frequency
           - type: horizontal-stack
             cards:
@@ -248,7 +248,7 @@ This template serves as the base template for most other templates and sets the 
 
 For buttons which are half the hight and only display an icon. Best used in a `horizontal-stack`.
 
-### Little Info Snippet (`little_info`)
+### Little Info Snippet (`info_mini`)
 
 Displays the `icon` and `state` of an entity with no card background and less opacity. Good for displaying information next to a mini button or title in a `horizontal-stack`.
 

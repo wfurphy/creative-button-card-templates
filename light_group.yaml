@@ -1,6 +1,7 @@
 ############| Light Group |############################>
 light_group:
-  template: 
+  template:
+    - base_addons
     - button_landscape
     - device
   color: auto
@@ -78,3 +79,5 @@ light_group:
         color: auto
         variables:
           _symbol: "[[[ return variables._light3_symbol ]]]"
+
+#########################################################################/
