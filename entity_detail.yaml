@@ -3,6 +3,7 @@ entity_detail:
   template:
     - base_addons
     - no_actions
+    - transparent
   show_name: true
   show_state: false
   # state_display: "[[[ return `${entity.entity_id}<br>${entity.state}` ]]]"
@@ -44,6 +45,12 @@ entity_detail:
           }
           .cbc-table tr:nth-child(even) {
             background: var(--ha-card-background);
+            /* background: var(--table-row-alternative-background-color) */
+          }
+          .cbc-table tr>td>ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
           }
         </style>
         <elt>
@@ -67,7 +74,23 @@ entity_detail:
         </tr>`
 
         for (let a in entity.attributes) {
-          htmlList += `<tr><td>${a}</td><td>${entity.attributes[a]}</td></tr>`
+          const value = String(entity.attributes[a])
+          htmlList += `<tr><td>${a}</td><td>`
+          
+          if (value.search(',') >= 0) {
+            htmlList += `<ul>`
+            const list = value.split(',')
+
+            list.forEach(v => {
+              htmlList += `<li>${v}</li>`
+            })
+
+            htmlList += `</ul>`
+          } else {
+            htmlList += `${value}`
+          }
+
+          htmlList += `</td></tr>`
         }
 
         return htmlList += `</tbody></table></elt>`
@@ -77,10 +100,10 @@ entity_detail:
       - grid-template-areas: '"i n" "atts atts"'
       - grid-template-columns: 1fr 1fr
       - justify-items: center
-    card:
-      - box-shadow: none
-      - background: none
-      - z-index: 990
+    # card:
+      # - box-shadow: none
+      # - background: none
+      # - z-index: 990
     icon:
       - height: 80px
       - justify-self: center

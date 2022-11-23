@@ -29,7 +29,8 @@ button_landscape:
       - justify-self: start
       - align-self: start
       - display: "[[[ return entity && entity.state == 'on' ? 'inline' : 'none' ]]]"
-      - color: var(--secondary-text-color)
+      # - color: var(--secondary-text-color)
+      - opacity: 0.6
       - font-size: 75%
       - margin-top: 5px
       - text-align: left

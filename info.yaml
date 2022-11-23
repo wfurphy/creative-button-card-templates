@@ -19,21 +19,24 @@ info_item:
     - transparent
   variables:
     _icon_color: "var(--state-icon-color)"
-    _state: ""
   show_state: true
-  card_sie: 1
+  size: 100%
+  state_display: >
+    [[[
+      return html`<span class="wfbc-item-value">${entity.state}</span><span class="wfbc-item-suffix">${entity.attributes.unit_of_measurement}</span>`
+    ]]]
   styles:
     grid:
-      - position: relative
+      # - position: relative
       - grid-template-areas: '"n n i" "s s i"'
       - grid-template-columns: 1fr 1fr 1fr
       - grid-template-rows: 1fr 1fr
       - height: 50px
-      - width: 100px
+      # - width: 100px
     card:
       - height: 50px
-      - width: 100px
-      # - min-width: 115px
+      # - width: 110px
+      - min-width: 90px
       # - max-width: 130px
       - justify-self: center
       - align-self: center
@@ -41,9 +44,10 @@ info_item:
       - margin: 0
     icon:
       - justify-self: start
-      - align-self: center
+      - align-self: start
+      - margin-top: none
       - color: "[[[return variables._icon_color ]]]"
-      - width: 35px
+      - width: 30px
       - overflow: visible
       - opactiy: 0.6
     name:
@@ -52,13 +56,23 @@ info_item:
       - align-self: end
       - overflow: visible
       - font-size: 14px
+      - text-justify: right
       # - font-weight: bold
       # - text-transform: uppercase
     state:
       - justify-self: end
       - align-self: start
       - overflow: visible
-      - font-size: 14px
+      - font-size: 18px
+      # - font-weight: bold
+      - text-justify: right
+  extra_styles: |
+    .wfbc-item-suffix {
+      opacity: 0.6;
+      font-size: 85%;
+      margin-top: 5%;
+      font-weight: normal;
+    }
 
 #### Info Card ######################################################>
 info:
@@ -70,18 +84,35 @@ info:
   variables:
     _items: []
     _icon_color: "var(--state-icon-color)"
+    __defaults:
+      - color: "var(--state-icon-color)"
+      - color: "var(--state-icon-color)"
+      - color: "var(--state-icon-color)"
+      - color: "var(--state-icon-color)"
   styles:
     grid:
       - grid-template-areas: >
           [[[
             variables.__qty = variables._items.length
-
+            
             let areas = '\"cgap dts1'
             
-            variables._items.forEach(function(e, i) {
-              const dtid = `dts${i+1}`
-              areas += (i > 0 && i < 4) ? ` ${dtid}` : ''
-            })
+            for (let x = 0; x < variables._items.length; x++) {
+              const obj = variables._items[x]
+              console.log('before', variables._items[x], obj)
+              variables._items[x] = Object.assign(variables.__defaults[x], obj)
+              console.log ('after', variables._items[x])
+              const dtid = `dts${x+1}`
+              areas += (x > 0 && x < 4) ? ` ${dtid}` : ''
+            }
+
+            console.log(variables._items)
+
+            //  variables._items.forEach(function(e, i) {
+            //    variables._items[i] = Object.assign(variables.__defaults, variables._items[i])
+            //    const dtid = `dts${i+1}`
+            //    areas += (i > 0 && i < 4) ? ` ${dtid}` : ''
+            //  })
 
             return areas += ' egap\"'
           ]]]
@@ -143,8 +174,7 @@ info:
           - info_item
           - transparent
         variables:
-          _state: "[[[ return varianles._state ? "
-          _icon_color: "[[[return variables.__qty >= 1 ? variables._icon_color : null ]]]"
+          _icon_color: "[[[return variables.__qty >= 1 ? variables._items[0].color : null ]]]"
         entity: "[[[ return variables.__qty >= 1 ? variables._items[0].entity_id : null ]]]"
         name: "[[[ return variables.__qty >= 1 ? variables._items[0].name : null ]]]"
     dts2:
@@ -154,8 +184,7 @@ info:
           - info_item
           - transparent
         variables:
-          _state: "[[[ return varianles._state ? "
-          _icon_color: "[[[return variables.__qty >= 2 ? variables._icon_color : null ]]]"
+          _icon_color: "[[[return variables.__qty >= 2 ? variables._items[1].color : null ]]]"
         entity: "[[[ return variables.__qty >= 2 ? variables._items[1].entity_id : null ]]]"
         name: "[[[ return variables.__qty >= 2 ? variables._items[1].name : null ]]]"
     dts3:
@@ -165,8 +194,7 @@ info:
           - info_item
           - transparent
         variables:
-          _state: "[[[ return varianles._state ? "
-          _icon_color: "[[[return variables.__qty >= 3 ? variables._icon_color : null ]]]"
+          _icon_color: "[[[return variables.__qty >= 3 ? variables._items[2].color: null ]]]"
         entity: "[[[ return variables.__qty >= 3 ? variables._items[2].entity_id : null ]]]"
         name: "[[[ return variables.__qty >= 3 ? variables._items[2].name : null ]]]"
     dts4:
@@ -176,8 +204,7 @@ info:
           - info_item
           - transparent
         variables:
-          _state: "[[[ return varianles._state ? "
-          _icon_color: "[[[return variables.__qty >= 4 ? variables._icon_color : null ]]]"
+          _icon_color: "[[[return variables.__qty >= 4 ? variables._items[3].color : null ]]]"
         entity: "[[[ return variables.__qty >= 4 ? variables._items[3].entity_id : null ]]]"
         name: "[[[ return variables.__qty >= 4 ? variables._items[3].name : null ]]]"
     cgap: >
