@@ -1,7 +1,7 @@
-############| Light associated with a Motion Sensor |############################>
+#### WF::BCT ############| Light associated with a Motion Sensor |############ github.com/wfurphy #####>
 light_motion:
   template:
-    - device
+    - button_landscape
     - light
   color: auto
   variables:

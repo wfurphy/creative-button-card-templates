@@ -1,9 +1,8 @@
-############| Light Group |############################>
+#### WF::BCT ############| Light Group |############ github.com/wfurphy #####>
 light_group:
   template:
-    - base_addons
+    - style_addons
     - button_landscape
-    - device
   color: auto
   variables:
     _light1: ""
@@ -17,6 +16,7 @@ light_group:
     _light3_symbol: mdi:arrow-right
   layout: icon_name_state2nd
   show_state: false
+  show_label: false
   styles:
     grid:
       - grid-template-areas: '"i n n n n n n n n" "i l1 l1 l1 l2 l2 l3 l3 l3" "i l1 l1 l1 l2 l2 l3 l3 l3"'

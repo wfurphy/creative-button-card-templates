@@ -1,44 +1,26 @@
 button_mini:
   template:
-    - base_addons
+    - style_addons
     - actions
-  show_name: false
-  show_state: false
-  size: 30px
-  styles:
-    card:
-      - height: 40px
-      - opacity: >-
-          [[[ return (entity.state === 'unavailable') ? '0.4'
-          : '1' ]]]
-
-############| Button Mini - Embeded |###########################>
-button_mini_embed:
-  template: 
-    - button_mini
-    - transparent
-    - actions
+    - show_only_icon
   variables:
     _symbol: ''
+  size: 30px
   custom_fields:
     pos: >
       [[[
           if (!variables._symbol.length) return ''
 
           if (variables._symbol.search('mdi:') >= 0) {
-            return `<elt><ha-icon icon="${variables._symbol}" style="width: 50%"></ha-icon></elt>`
+            return `<elt><ha-icon icon="${variables._symbol}" class="cbc-symbol" /></elt>`
           }
           
           const sym = variables._symbol.substring(0,1)
           return `<elt><span class=bc-symbol">${sym}</span></elt>`
       ]]]
   styles:
-    grid:
-      - position: relative
     card:
-      - width: 40px
-    icon: 
-      - width: 40px
+      - height: 40px
     custom_fields:
       pos:
         - width: 30px
@@ -48,5 +30,44 @@ button_mini_embed:
         - color: var(--ha-card-background)
         - font-size: 10pt
         - font-weight: bold
+  # style: |
+  #     .cbc-symbol {
+  #       width: 50%;
+  #     }
+
+############| Button Mini - Embeded |###########################>
+button_mini_embed:
+  template:
+    - button_mini
+    - transparent
+  styles:
+    grid:
+      - position: relative
+    card:
+      - width: 40px
+    # icon: 
+    #   - width: 40px
+
+############| Button Mini + State |###########################>
+button_mini_state:
+  template:
+    - button_mini
+  layout: icon_state
+  entity: input_boolean.air_circulation
+  show_state: true
+  # color_type: card
+  size: 25px
+  styles:
+    card:
+      - height: 40px
+      - width: 70px
+    state:
+      - justify-self: center
+      - text-align: left
+      # - margin-left: '-5px'
+      - font-size: 11pt
+    icon:
+      - justify-self: end
+      - margin-left: 5px
 
 #########################################################################/

@@ -1,29 +1,57 @@
-############| Device |###########################>
+#### WF::BCT ############| Device |############ github.com/wfurphy #####>
 device:
-  template:
+  template: 
     - button_landscape
   variables:
-    _show_attributes: 0
-    _attr_id: ""
-    _attr_icon: ""
-    _attr_prefix: ""
-    _attr_suffix: ""
-    _attr2_id: ""
-    _attr2_icon: ""
-    _attr2_prefix: ""
-    _attr2_suffix: ""
+    ## _attr @deprecated v0.2 replaced by _attributes
+    _attr: []
+    _attributes: []
   show_state: false
   show_label: true
-  label: >-
+  label: >
     [[[
-      let lbl = `<elt>`
-      if (variables._show_attributes > 0 && variables._attr_id.length)
-        lbl += `<ha-icon icon="${variables._attr_icon}" style="width:18px; padding-right: 5px; "></ha-icon><span class="cbc-label">${variables._attr_prefix}${entity.attributes[variables._attr_id]}${variables._attr_suffix}</span>`
+        variables._attributes = [...variables._attr, ...variables._attributes]
 
-      if (variables._show_attributes > 1 && variables._attr2_id.length)
-        lbl += `<ha-icon icon="${variables._attr2_icon}" style="width:18px; padding-right: 5px; margin-left: 10px"></ha-icon><span class="cbc-label">${variables._attr2_prefix}${entity.attributes[variables._attr2_id]}${variables._attr2_suffix}</span>`
+        if (!variables._attributes || !variables._attributes.length)) return ''
 
-      return lbl += `</elt>`
+        let lab = `
+          <style>
+            ha-icon.cbc-icon {
+              width:18px; 
+              padding-right: 5px; 
+            }
+            .cbc-suffix {
+              font-size: 70%
+              opacity: 0.4
+            }
+          </style>
+          <div 
+          `
+        
+        variables._attributes.forEach(function(a,i) {
+          const at = {...{id: '', icon: 'mdi:layers-plus', prefix: '', suffix: ''}, ...a}
+          
+          lab += `
+            <div id="cbc-attr${i}-${a.id}" class="cbc-attr">
+              <ha-icon icon="${at.icon}" class="cbc-icon"></ha-icon>
+              <span class="cbc-prefix">${at.prefix}</span>
+              <span class="cbc-value">${entity.attributes[at.id]}</span>
+              <span class="cbc-suffix">${at.suffix}</span>
+            </div>`
+        })
+        
+        return lab
     ]]]
-    
-#########################################################################/    
+  styles:
+    grid:
+      - grid-template-areas: '"i i n" "i i l"'
+      - grid-template-columns: 1fr 1fr 4fr
+      - grid-template-rows: >
+          [[[
+            if (!variables._attributes || !variables._attributes.length) return '1fr 1fr'
+
+            return entity.state == 'on' ? '1fr 2fr' : '1fr 1fr'
+          ]]]
+
+#########################################################################/
+

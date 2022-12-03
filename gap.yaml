@@ -1,0 +1,13 @@
+#### WF::BCT ############| Gap Card Template |############ github.com/wfurphy #####>
+gap:
+  template: transparent
+  variables:
+    _height:
+    _width:
+  color_type: blank_card
+  styles:
+    card:
+      - height: "[[[ return variables._height ]]]"
+      - width: "[[[ return variables._width ]]]"
+
+#########################################################################/

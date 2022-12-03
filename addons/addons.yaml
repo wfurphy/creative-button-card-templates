@@ -1,11 +1,48 @@
-############| +Addons |############################>
-base_addons:
+#### WF::BCT ############| +Addons |############ github.com/wfurphy #####>
+
+################| Style |################>
+style_addons:
   variables:
-    _opacity: 1
+    _style:
+      opacity:
+        card: 1
+        icon: var(--hover-opacity)
+        name: var(--hover-opacity)
+        attributes: 0.5
+        state: 0.6
+    ## @TODO ##> Add ability to customise show behavior for all elements
+    # always|hover|on|on_hover|off|off_hover|never
+    _show:
+      # Currently supported modes:
+      ####/ _show.attributes / string { on|hover|never } / default: stack /####>
+      attributes: 'on'
   styles:
     card:
-      - opacity: "[[[ return variables._opacity ]]]"
+      - opacity: >
+          [[[
+            return (!entity || entity.state == 'unavailable') ? '0.2' : variables._style.opacity.card
+          ]]]
+    icon:
+      - opacity: "[[[ return variables._style.opacity.icon ]]]"
+    name:
+      - opacity: "[[[ return variables._style.opacity.name ]]]"
+    label:
+      - opacity: "[[[ return variables._style.opacity.attributes ]]]"
+    state:
+      - opacity: "[[[ return variables._style.opacity.state ]]]"
+  extra_styles: >
+      [[[
+        
+      ]]]
+    # ha-card:hover {
+    #   --hover-opacity: 1
+    # }
 
+    # ha-card:hover #label {
+    #   opacity: 0.6
+    # }
+
+################| Show Only Icon |################>
 show_only_icon:
   show_name: false
   show_icon: true
@@ -13,11 +50,15 @@ show_only_icon:
   show_last_changed: false
   show_label: false
 
+################| Show only Name |################>
 show_only_name:
   show_name: true
   show_icon: false
   show_state: false
   show_last_changed: false
   show_label: false
+
+################| Empty |################>
+empty:
 
 #########################################################################/

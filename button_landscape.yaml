@@ -1,7 +1,7 @@
-############| Landscape Button Template |###########################>
+#### WF::BCT ############| Landscape Button Template |############ github.com/wfurphy #####>
 button_landscape:
   template:
-    - base_addons
+    - style_addons
     - actions
   size: 50px
   show_icon: true
@@ -15,9 +15,8 @@ button_landscape:
       - align-items: center
       - padding: 6px
     card:
-      - height: 80px
-      - opacity: "[[[ return !entity || entity.state == 'unavailable' ? '0.4' : '1' ]]]"
-      - border: none
+      - min-height: 80px
+      - padding: 0
     icon:
       - justify-self: center
       - align-self: center
@@ -28,14 +27,12 @@ button_landscape:
     label:
       - justify-self: start
       - align-self: start
-      - display: "[[[ return entity && entity.state == 'on' ? 'inline' : 'none' ]]]"
-      # - color: var(--secondary-text-color)
-      - opacity: 0.6
+      - display: >
+          [[[ return entity && entity.state == 'on' ? 'block' : 'none' ]]]
       - font-size: 75%
       - margin-top: 5px
       - text-align: left
     state:
-      - opacity: 0.6
       - justify-self: start
 
 #########################################################################/

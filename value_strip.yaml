@@ -1,20 +1,22 @@
 #### Value Strip Item ######################################################>
 value_strip_item:
   template:
-  - base_addons
+  - style_addons
   - transparent
   variables:
     _item:
+      active: false
       prefix: ''
       suffix: ''
       value: 100
       icon: mdi:bomb
       label: null
+      active_color: 'var(--paper-item-icon-active-color)'
+      color: 'var(--paper-item-icon-color)'
     _show:
       icon: true
       value: true
       fade: true
-      color: 'var(--paper-item-icon-active-color)'
   name: >
     [[[
       variables.__opc = (variables._item.value / 100) + 0.07
@@ -25,13 +27,9 @@ value_strip_item:
       return html`<span class="wfbc-item-prefix">${variables._item.prefix}</span><span class="wfbc-item-value">${variables._item.value}</span><span class="wfbc-item-suffix">${variables._item.suffix}</span>`
     ]]]
   custom_fields:
-    _color: >
+    active_logic: >
       [[[
-        variables.__color = (entity.state == variables._item.value)
-                      ? variables._show.color
-                      : variables.__color = 'var(--paper-item-icon-color)'
-
-        return ''
+        variables._item.active = entity.state == variables._item.value
       ]]]
   icon: "[[[ return variables._item.icon ]]]"
   lock:
@@ -51,26 +49,37 @@ value_strip_item:
       - display: "[[[ return variables.__both || variables._show.value ? 'inline-flex' : 'none' ]]]"
       - opacity: >
           [[[
-            if (variables._lock) return 0.1;
+            if (variables.__lock) return 0.1;
             return (!variables._show.fade || variables.__opc > 1) ? 1 : variables.__opc
           ]]]
-      - color: "[[[ return variables.__color ]]]"
+      - color: >
+          [[[
+            // console.log('::name-color::|' + variables._item.value + '|::>', variables._item.active, variables) 
+            return variables._item.active ? variables._item.active_color : variables._item.color 
+          ]]]
       - font-size: "[[[ return variables.__both ? '14px' : '16px' ]]]"
       - align-self: "[[[ return variables.__both ? 'start' : 'center' ]]]"
     card:
       - height: 40px
     lock:
-      - display: none
+      - opacity: 0
     custom_fields:
-      _color:
-        - display: none
+      active_logic:
+        - width: 0
+        - height: 0
+        # - display: none
+        - visibility: hidden
     icon:
       - width: "[[[ return variables.__both ? '30px' : '60%' ]]]"
       - display: "[[[ return variables.__both || variables._show.icon ? 'inline-flex' : 'none' ]]]"
-      - color: "[[[ return variables.__color ]]]"
+      - color: >
+          [[[
+            // console.log('::icon-color::|' + variables._item.value + '|::>', variables._item.active, variables) 
+            return variables._item.active ? variables._item.active_color : variables._item.color 
+          ]]]
       - opacity: >
           [[[
-            if (variables._lock) return 0.1; 
+            if (variables.__lock) return 0.1; 
             return (!variables._show.fade || variables.__opc > 1) ? 1 : variables.__opc
           ]]]
   extra_styles: |
@@ -88,22 +97,13 @@ brightness_strip_item:
     _al_area_id: main_area
     _item:
       value: 100
-    _show:
-      color: 'var(--paper-item-icon-active-color)'
   custom_fields: 
-    _color: >
+    active_logic: >
       [[[
         variables.__al = 'switch.adaptive_lighting_' + variables._al_area_id
         variables.__alb = 'switch.adaptive_lighting_adapt_brightness_' + variables._al_area_id
-        variables.__color = (variables._item.value == states['input_number.brightness_' + variables._al_area_id].state)
-            ? variables._show.color
-            : variables.__color = 'var(--paper-item-icon-color)'
-        
-        return ''
+        variables._item.active = variables._item.value == states['input_number.brightness_' + variables._al_area_id].state
       ]]]
-  triggers_update:
-    - "[[[ return variables.__al ]]]"
-    - "[[[ return variables.__alb ]]]"
   lock:
     enabled: >
       [[[
@@ -123,17 +123,11 @@ cover_strip_item:
   template: value_strip_item
   variables:
     _item:
-      prefix: ''
-      suffix: ''
       value: 100
-      icon: mdi:bomb
-      label: null
   custom_fields:
-    _color: >
+    active_logic: >
       [[[
-        variables.__color = entity.attributes.current_position == variables._item.value
-                    ? variables._show.color
-                    : variables.__color = 'var(--paper-item-icon-color)'
+        variables._item.active = entity.attributes.current_position == variables._item.value
       ]]]
   tap_action:
     action: call-service
@@ -152,32 +146,53 @@ value_strip:
   variables:
     _type: value
     _al_area_id: null
+    _triggers: []
+    _items: []
     _show:
       icon: false
       value: true
       fade: true
-    _items: []
     __defaults:
       - value: 10
-        prefix: ''
+        active: false
+        prefix: null
         suffix: '%'
         icon: mdi:brightness-3
+        label: null
+        active_color: 'var(--paper-item-icon-active-color)'
+        color: 'var(--paper-item-icon-color)'
       - value: 25
-        prefix: ''
+        active: false
+        prefix: null
         suffix: '%'
         icon: mdi:brightness-4
+        label: null
+        active_color: 'var(--paper-item-icon-active-color)'
+        color: 'var(--paper-item-icon-color)'
       - value: 50
-        prefix: ''
+        active: false
+        prefix: null
         suffix: '%'
         icon: mdi:brightness-5
+        label: null
+        active_color: 'var(--paper-item-icon-active-color)'
+        color: 'var(--paper-item-icon-color)'
       - value: 75
-        prefix: ''
+        active: false
+        prefix: null
         suffix: '%'
         icon: mdi:brightness-6
+        label: null
+        active_color: 'var(--paper-item-icon-active-color)'
+        color: 'var(--paper-item-icon-color)'
       - value: 100
-        prefix: ''
+        active: false
+        prefix: null
         suffix: '%'
         icon: mdi:brightness-7
+        label: null
+        active_color: 'var(--paper-item-icon-active-color)'
+        color: 'var(--paper-item-icon-color)'
   styles:
     card:
       - clear: >
@@ -185,6 +200,7 @@ value_strip:
             switch (variables._type) {
               case 'brightness':
                 variables.__entity_id = 'light.al_lights_' + variables._al_area_id
+                variables._triggers = ['switch.adaptive_lighting_' + variables._al_area_id, 'switch.adaptive_lighting_adapt_brightness_' + variables._al_area_id]
                 break
               case 'cover':
               case 'value':
@@ -203,6 +219,8 @@ value_strip:
       - justify-items: center
       - align-items: center
       - height: 40px
+      - padding: 5px
+      - margin-top: 5px
     custom_fields:
       c1:
         - width: 100%
@@ -220,6 +238,7 @@ value_strip:
         type: custom:button-card
         template: "[[[ return variables._type + '_strip_item' ]]]"
         entity: "[[[ return variables.__entity_id ]]]"
+        triggers_update: "[[[ return variables._triggers ]]]"
         variables: 
           _item: "[[[ return Object.assign(variables.__defaults[0], variables._items[0]) ]]]"
           _show: "[[[ return variables._show ]]]"
@@ -229,6 +248,7 @@ value_strip:
         type: custom:button-card
         template: "[[[ return variables._type + '_strip_item' ]]]"
         entity: "[[[ return variables.__entity_id ]]]"
+        triggers_update: "[[[ return variables._triggers ]]]"
         variables: 
           _item: "[[[ return Object.assign(variables.__defaults[1], variables._items[1]) ]]]"
           _show: "[[[ return variables._show ]]]"
@@ -238,6 +258,7 @@ value_strip:
         type: custom:button-card
         template: "[[[ return variables._type + '_strip_item' ]]]"
         entity: "[[[ return variables.__entity_id ]]]"
+        triggers_update: "[[[ return variables._triggers ]]]"
         variables: 
           _item: "[[[ return Object.assign(variables.__defaults[2], variables._items[2]) ]]]"
           _show: "[[[ return variables._show ]]]"
@@ -247,6 +268,7 @@ value_strip:
         type: custom:button-card
         template: "[[[ return variables._type + '_strip_item' ]]]"
         entity: "[[[ return variables.__entity_id ]]]"
+        triggers_update: "[[[ return variables._triggers ]]]"
         variables: 
           _item: "[[[ return Object.assign(variables.__defaults[3], variables._items[3]) ]]]"
           _show: "[[[ return variables._show ]]]"
@@ -256,6 +278,7 @@ value_strip:
         type: custom:button-card
         template: "[[[ return variables._type + '_strip_item' ]]]"
         entity: "[[[ return variables.__entity_id ]]]"
+        triggers_update: "[[[ return variables._triggers ]]]"
         variables:
           _item: "[[[ return Object.assign(variables.__defaults[4], variables._items[4]) ]]]"
           _show: "[[[ return variables._show ]]]"

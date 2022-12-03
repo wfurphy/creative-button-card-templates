@@ -1,7 +1,7 @@
-############| Action Button |###########################>
+#### WF::BCT ############| Action Button |############ github.com/wfurphy #####>
 button_action:
   template:
-    - base_addons
+    - style_addons
     - actions
     - dynamic_icons
   variables:
@@ -21,7 +21,7 @@ button_action:
           - color: var(--paper-item-icon-active-color)
         name:
           - color: var(--paper-item-icon-active-color)
-  state_display: |
+  state_display: >
     [[[ return entity.state == 'on' ? 'Cancel' : '-' ]]]
   styles:
     grid:
@@ -36,7 +36,6 @@ button_action:
       - height: 40px
       - border: none
       - padding: 0
-      - opacity: "[[[ return !entity || entity.state == 'unavailable' ? '0.4' : '1' ]]]"
       - align-items: center
     icon:
       - justify-self: center
@@ -50,7 +49,7 @@ button_action:
     label:
       - font-size: 12px
       - color: var(--secondary-text-color)
-      # - opacity: 0.4
+      - opacity: 1
       - justify-self: start
       - align-self: start
       - text-align: left
@@ -59,5 +58,6 @@ button_action:
       - align-self: end
       - font-size: 13px
       - color: var(--paper-item-icon-color)
+      - opacity: 1
 
 #########################################################################/

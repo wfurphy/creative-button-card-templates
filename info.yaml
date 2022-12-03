@@ -1,86 +1,136 @@
-############| Info Mini |############################>
+#### WF::BCT ############| Info Mini |############ github.com/wfurphy #####>
 info_mini:
   template:
-    - base_addons
-    - actions
-  layout: icon_state
+    - button_mini
+    - no_actions
+    - debug
+  variables:
+    ####/ _layout / string { stack|inline } / default: stack /####>
+    _layout: stack
+    _icon_color:
+    _attribute:
+    _units:
+  show_icon: true
   show_state: true
   show_name: false
-  styles:
-    card:
-      - height: 40px
-      - opacity: "[[[ return variables._opacity ]]]"
-
-#### Info Item ######################################################>
-info_item:
-  template:
-    - base_addons
-    - actions
-    - transparent
-  variables:
-    _icon_color: "var(--state-icon-color)"
-  show_state: true
-  size: 100%
   state_display: >
     [[[
-      return html`<span class="wfbc-item-value">${entity.state}</span><span class="wfbc-item-suffix">${entity.attributes.unit_of_measurement}</span>`
+      if (!entity) return ''
+      
+      if (!variables._icon_color) {
+        variables._icon_color = this.___config.template.includes('transparent') ? 'var(--state-icon-color)' : 'var(--ha-card-background)'
+      }
+      
+      const tag = variables._layout !== 'stack' ? 'span' : 'div'
+      const state = variables._attribute ? entity.attributes[variables._attribute] : entity.state
+      const units = variables._units ? variables._units : entity.attributes.unit_of_measurement
+
+      return `<${tag} class="cbc-state">${state}</${tag}><${tag} class="cbc-units">${units}</${tag}>`
     ]]]
   styles:
-    grid:
-      # - position: relative
-      - grid-template-areas: '"n n i" "s s i"'
-      - grid-template-columns: 1fr 1fr 1fr
-      - grid-template-rows: 1fr 1fr
-      - height: 50px
-      # - width: 100px
     card:
-      - height: 50px
-      # - width: 110px
-      - min-width: 90px
-      # - max-width: 130px
-      - justify-self: center
-      - align-self: center
+      - width: 50px
       - padding: 0
       - margin: 0
     icon:
       - justify-self: start
       - align-self: start
-      - margin-top: none
-      - color: "[[[return variables._icon_color ]]]"
-      - width: 30px
+      - color: 
+      # - color: var(--paper-item-icon-color)
+      - max-height: 200%
+      - max-width: 200%
+      - height: 48px
+      - width: 48px
+      - margin-top: -3px
+      # - opacity: 0.2
+      - padding: 0
+    state:
+      - position: fixed
+      - justify-self: end
+      - align-self: end
+      - font-size: 16px
+      - font-weight: bold
+      - margin-top: 0
+      - margin-bottom: 0
+      - opacity: 1
       - overflow: visible
-      - opactiy: 0.6
+  extra_styles: |
+    .cbc-units {
+      font-size: 70%;
+      opacity: 0.5;
+      margin-top: -4px;
+    }
+
+#### Info Item ######################################################>
+info_item:
+  template:
+    - no_actions
+    - transparent
+  variables:
+    _icon_color: "var(--state-icon-color)"
+  show_state: true
+  state_display: >
+    [[[
+      if(!entity) return null
+      return html`<span class="wfbc-item-value">${entity.state}</span><span class="wfbc-item-suffix">${entity.attributes.unit_of_measurement}</span>`
+    ]]]
+  styles:
+    grid:
+      - position: relative
+      - grid-template-areas: '"s s s i" "n n n i"'
+      # - grid-template-columns: 1fr 1fr 1fr 1fr
+      - grid-template-columns: max-content
+      - grid-template-rows: 1fr 1fr
+      - height: 50px
+      - width: 100%
+      - overflow: visible
+    card:
+      - height: 50px
+      - justify-self: center
+      - align-self: center
+      - padding: 2px
+      - width: 100%
+      - overflow: visible
+    icon:
+      - position: absolute
+      - margin-left: -15%
+      # - margin-top: -20%
+      - opacity: 0.4
+      - justify-self: start
+      - align-self: center
+      - color: "[[[return variables._icon_color ]]]"
+      - min-width: 36px
+      - width: 155%
+      - height: 155%
+      - overflow: visible
     name:
       - color: var(--secondary-text-color)
       - justify-self: end
-      - align-self: end
-      - overflow: visible
+      - align-self: start
       - font-size: 14px
       - text-justify: right
-      # - font-weight: bold
-      # - text-transform: uppercase
+      - overflow: visible
     state:
       - justify-self: end
-      - align-self: start
-      - overflow: visible
+      - align-self: end
       - font-size: 18px
-      # - font-weight: bold
       - text-justify: right
+      - overflow: visible
   extra_styles: |
     .wfbc-item-suffix {
-      opacity: 0.6;
-      font-size: 85%;
+      opacity: 0.7;
+      font-size: 75%;
       margin-top: 5%;
       font-weight: normal;
+    }
+    #img-cell {
+      overflow: visible !important;
     }
 
 #### Info Card ######################################################>
 info:
   template:
     - no_actions
-  show_icon: false
-  show_name: false
-  card_size: 1
   variables:
     _items: []
     _icon_color: "var(--state-icon-color)"
@@ -89,131 +139,128 @@ info:
       - color: "var(--state-icon-color)"
       - color: "var(--state-icon-color)"
       - color: "var(--state-icon-color)"
+  show_icon: false
+  show_name: false
+  card_size: 1
   styles:
     grid:
       - grid-template-areas: >
           [[[
             variables.__qty = variables._items.length
+            let areas = '\"dts1'
             
-            let areas = '\"cgap dts1'
-            
-            for (let x = 0; x < variables._items.length; x++) {
-              const obj = variables._items[x]
-              console.log('before', variables._items[x], obj)
-              variables._items[x] = Object.assign(variables.__defaults[x], obj)
-              console.log ('after', variables._items[x])
-              const dtid = `dts${x+1}`
-              areas += (x > 0 && x < 4) ? ` ${dtid}` : ''
-            }
+            variables._items.forEach(function(e, i) {
+              variables._items[i] = Object.assign(variables.__defaults[i], variables._items[i])
+              const dtid = `dts${i+1}`
+              areas += (i > 0 && i < 4) ? ` ${dtid}` : ''
+            })
 
-            console.log(variables._items)
-
-            //  variables._items.forEach(function(e, i) {
-            //    variables._items[i] = Object.assign(variables.__defaults, variables._items[i])
-            //    const dtid = `dts${i+1}`
-            //    areas += (i > 0 && i < 4) ? ` ${dtid}` : ''
-            //  })
-
-            return areas += ' egap\"'
+            return areas += '\"'
           ]]]
       - grid-template-columns: > 
           [[[
-            let cols = '1fr 8fr'
+            let cols = '1fr'
 
             variables._items.forEach(function(k, i) {
-              cols += (i > 0 && i < 4) ? ' 8fr' : ''
+              cols += (i > 0 && i < 4) ? ' 1fr' : ''
             })
 
-            return cols += ' 1fr'
+            return cols
           ]]]
       - grid-template-rows: 1fr
       - justify-items: center
       - align-items: center
       - text-align: center
-      - margin: auto
-      - padding: 0
+      - padding: 0 5px
       - height: 50px
     card:
       - height: 50px
-      - max-width: 100%
       - justify-self: center
-      - align-self: start
+      - align-self: center
       - text-align: center
       - padding: 0
-      - margin: 0
+      - overflow: hidden
     custom_fields:
       dts1:
         - justify-self: center
         - align-self: center
-        - display: "[[[return variables.__qty >= 1 ? 'inline-block' : 'none' ]]]"
+        - display: "[[[ return variables.__qty >= 1 ? 'block' : 'none' ]]]"
         - overflow: visible
-        - margin: 0
+        - margin: auto
+        - width: 100%
+        # - border-right: "[[[ return variables.__qty > 1 ? '2px groove rgba(255,255,255,0.1)' : 'none' ]]]"
       dts2:
         - justify-self: center
         - align-self: center
-        - display: "[[[return variables.__qty >= 2 ? 'inline-block' : 'none' ]]]"
+        - display: "[[[ return variables.__qty >= 2 ? 'block' : 'none' ]]]"
         - overflow: visible
-        - margin: 0
+        - margin: auto
+        - width: 100%
+        # - border-right: "[[[ return variables.__qty > 2 ? '2px groove rgba(255,255,255,0.1)' : 'none' ]]]"
       dts3:
         - justify-self: center
         - align-self: center
-        - display: "[[[return variables.__qty >= 3 ? 'inline-block' : 'none' ]]]"
+        - display: "[[[ return variables.__qty >= 3 ? 'block' : 'none' ]]]"
         - overflow: visible
-        - margin: 0
+        - margin: auto
+        - width: 100%
+        # - border-right: "[[[ return variables.__qty > 3 ? '2px groove rgba(255,255,255,0.1)' : 'none' ]]]"
       dts4:
         - justify-self: center
         - align-self: center
-        - display: "[[[return variables.__qty >= 4 ? 'inline-block' : 'none' ]]]"
+        - display: "[[[return variables.__qty >= 4 ? 'block' : 'none' ]]]"
         - overflow: visible
-        - margin: 0
+        - margin: auto
+        - width: 100%
+  extra_styles: |
+        button-card {
+          max-width: 100% !important;
+        }
   custom_fields:
     dts1:
       card:
         type: custom:button-card
         template: 
-          - info_item
+          - "[[[ return variables.__qty >= 1 && (variables._mini || variables._items[0].mini) ? 'info_mini' : 'info_item' ]]]"
           - transparent
         variables:
-          _icon_color: "[[[return variables.__qty >= 1 ? variables._items[0].color : null ]]]"
+          _icon_color: "[[[ return variables.__qty >= 1 ? variables._items[0].color : null ]]]"
         entity: "[[[ return variables.__qty >= 1 ? variables._items[0].entity_id : null ]]]"
         name: "[[[ return variables.__qty >= 1 ? variables._items[0].name : null ]]]"
+
     dts2:
       card:
         type: custom:button-card
         template: 
-          - info_item
+          - "[[[ return variables.__qty >= 2 && (variables._mini || variables._items[1].mini) ? 'info_mini' : 'info_item' ]]]"
           - transparent
         variables:
-          _icon_color: "[[[return variables.__qty >= 2 ? variables._items[1].color : null ]]]"
+          _icon_color: "[[[ return variables.__qty >= 2 ? variables._items[1].color : null ]]]"
         entity: "[[[ return variables.__qty >= 2 ? variables._items[1].entity_id : null ]]]"
         name: "[[[ return variables.__qty >= 2 ? variables._items[1].name : null ]]]"
+
     dts3:
       card:
         type: custom:button-card
         template: 
-          - info_item
+          - "[[[ return variables.__qty >= 3 && (variables._mini || variables._items[2].mini) ? 'info_mini' : 'info_item' ]]]"
           - transparent
         variables:
-          _icon_color: "[[[return variables.__qty >= 3 ? variables._items[2].color: null ]]]"
+          _icon_color: "[[[ return variables.__qty >= 3 ? variables._items[2].color: null ]]]"
         entity: "[[[ return variables.__qty >= 3 ? variables._items[2].entity_id : null ]]]"
         name: "[[[ return variables.__qty >= 3 ? variables._items[2].name : null ]]]"
+
     dts4:
       card:
         type: custom:button-card
         template: 
-          - info_item
+          - "[[[ return variables.__qty >= 4 && (variables._mini || variables._items[3].mini) ? 'info_mini' : 'info_item' ]]]"
           - transparent
         variables:
-          _icon_color: "[[[return variables.__qty >= 4 ? variables._items[3].color : null ]]]"
+          _icon_color: "[[[ return variables.__qty >= 4 ? variables._items[3].color : null ]]]"
         entity: "[[[ return variables.__qty >= 4 ? variables._items[3].entity_id : null ]]]"
         name: "[[[ return variables.__qty >= 4 ? variables._items[3].name : null ]]]"
-    cgap: >
-      [[[
-        return `<div style="width: 20px;"></span>`
-      ]]]
-    egap: >
-      [[[
-        return `<div style="width: 20px;"></span>`
-      ]]]
+
 
 #########################################################################/
+

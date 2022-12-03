@@ -6,13 +6,13 @@ debug:
   custom_fields:
     debugger: >
       [[[
-        if (variables._debug) {
-          console.debug(variables.__title, {
-            variables: variables, 
-            entity: entity ? entity : {},
-            bc: this
-          })
-        }
+        if (!variables._debug) return
+
+        console.debug(variables.__title, {
+          variables: variables, 
+          entity: entity ? entity : {},
+          bc: this
+        })
       ]]]
   styles:
     custom_fields:

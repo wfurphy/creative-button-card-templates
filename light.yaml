@@ -1,8 +1,11 @@
-############| Light |############################>
+#### WF::BCT ############| Light |############ github.com/wfurphy #####>
 light:
-  template: 
-    - device
+  template:
+    - button_landscape
+    - actions
+    - style_addons
   color: auto
+  show_label: true
   label: >-
     [[[
       if (!entity) return `<elt><ha-icon icon="mdi:wifi-cancel" style="width:18px; padding-right: 5px; "></ha-icon><span class="cbc-label">Unavailable</span></elt>`
@@ -14,14 +17,24 @@ light:
       let clr = (entity.attributes.color_mode == 'color_temp')
                 ? Math.round(1000000/entity.attributes.color_temp, 0) + '°K'
                 : entity.attributes.rgb_color
+      
+      let bi = 'mdi:brightness-2'
+      if (bpct >= 90) { bi = 'mdi:brightness-7' } else
+      if (bpct >= 75) { bi = 'mdi:brightness-6' } else
+      if (bpct >= 50) { bi = 'mdi:brightness-5' } else
+      if (bpct >= 25) { bi = 'mdi:brightness-4' } else
+      if (bpct >= 10) { bi = 'mdi:brightness-3' }
 
       return `
         <elt>
-          <ha-icon icon="mdi:brightness-6" style="width:15px; padding-right: 5px; "></ha-icon><span class="cbc-label">${bpct}%</span>
+          <ha-icon icon="${bi}" style="width:15px; padding-right: 5px; "></ha-icon><span class="cbc-label">${bpct}%</span>
           <ha-icon icon="mdi:palette" style="width:15px; padding-right: 5px; "></ha-icon><span class="cbc-label">${clr}</span>
         </elt>
       `
     ]]]
+  styles:
+    card:
+      - height: 80px
 
 
 #########################################################################/

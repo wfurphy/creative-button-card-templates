@@ -1,12 +1,11 @@
 ############| Entity Detail - Detailed information panel for debugging |###########################>
 entity_detail:
   template:
-    - base_addons
-    - no_actions
-    - transparent
+    - actions
+    # - transparent
   show_name: true
-  show_state: false
-  # state_display: "[[[ return `${entity.entity_id}<br>${entity.state}` ]]]"
+  show_state: true
+  color: auto
   custom_fields:
     atts: >-
       [[[
@@ -97,13 +96,11 @@ entity_detail:
       ]]]
   styles:
     grid:
-      - grid-template-areas: '"i n" "atts atts"'
+      - grid-template-areas: '"i n" "i s" "atts atts"'
       - grid-template-columns: 1fr 1fr
       - justify-items: center
-    # card:
-      # - box-shadow: none
-      # - background: none
-      # - z-index: 990
+    card:
+      - opacity: "[[[ return !entity || entity.state == 'unavailable' ? 0.6 : 1 ]]]"
     icon:
       - height: 80px
       - justify-self: center
@@ -112,7 +109,28 @@ entity_detail:
       - padding: 10px
     name:
       - justify-self: start
+      - align-self: end
       - padding: 10px
+    state:
+      - justify-self: start
+      - align-self: start
+      - padding: 10px
+      # - opacity: 0.6
+      - color: >
+          [[[
+            if (!entity) return '#797592'
+
+            switch (entity.state) {
+              case 'on':
+                return '#086038'
+              case 'off':
+                return '#9d3042'
+              case 'unavailable':
+                return '#797592'
+              default:
+                return 'var(--primary-text-color)'
+            }
+          ]]]
     custom_fields:
       atts:
         - justify-self: strech
