@@ -4,21 +4,16 @@ dynamic_icons:
     _icon: "mdi:wifi"
     _icon_on: "mdi:wifi-star"
     _icon_unavailable: "mdi:wifi-cancel"
-  icon: >-
-    [[[
-      if (!entity) return "mdi:cancel"
-
-      let i = variables._icon
-      switch(entity.state) {
-        case "on":
-          i = variables._icon_on
-          break
-        case "unavailable":
-          i = variables._icon_unavailable
-          break
-      }
-
-      return i
-    ]]]
+  state:
+    - id: _cbc_on
+      operator: '=='
+      value: 'on'
+      icon: "[[[ return variables._icon_on ]]]"
+    - id: _cbc_unavailable
+      operator: '=='
+      value: 'unavailable'
+      icon: "[[[ return variables._icon_unavailable ]]]"
+  icon: "[[[ return variables._icon ]]]"
 
 #########################################################################/
+

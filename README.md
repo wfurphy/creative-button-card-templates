@@ -1,4 +1,4 @@
-# Custom Button Card Templates
+# Creative Button Card Templates
 
 A collection of [Button Card](https://github.com/custom-cards/button-card) templates to improve the speed and quality of your Home Assistant dashboards.
 

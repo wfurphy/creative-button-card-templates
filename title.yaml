@@ -1,54 +1,66 @@
 #### WF::BCT ############| Title |############ github.com/wfurphy #####>
 title:
+  template:
+    - style_helper
   variables:
-    _color: 'var(--state-icon-color)'
+    _style:
+      interactive: false
+      opacity:
+        card: 0.5
+        icon: 1
+        name: 1
+    _mirror: false
+    _color: var(--primary-background-color)
+    _background_color: var(--state-icon-color)
     _show_tab: false
-    
-    _offset: 
+    _offset: 0
   styles:
     grid:
       - position: relative
-      - grid-template-areas: '"n i"'
+      - grid-template-areas: >
+          [[[ return variables._mirror ? '\"i n\"' : '\"n i\"' ]]]
       - grid-template-columns: 3fr 1fr
       - grid-template-rows: 1fr
-      - justify-items: center
+      - justify-items: start
       - align-items: center
       - padding: 6px
       - overflow: visible
     card:
+      - --mdc-ripple-press-opacity: 0
       - height: 40px
-      - margin-left: -5px
+      - margin-left: "[[[ return variables._offset ]]]"
+      - background-color: "[[[ return variables._background_color ]]]"
       - box-shadow: none
       - border: none
-      - opacity: 0.6
-      - border-top-left-radius: 0
-      - border-bottom-left-radius: 0
-      - border-left-style: "[[[ return variables._show_tab ? 'solid' : 'none' ]]]"
-      - border-left-width: 5px
-      - border-left-color: "[[[ return variables._color ]]]"
-      - text-align: left
+      - border-radius: "[[[ return variables._mirror ? '10px 0 0 10px' : '0 10px 10px 0' ]]]"
+      - border: >
+          [[[
+            if(variables._show_tab) {
+              return variables._mirror ? `0 5px 0 0 solid ${variables._color}` : `0 0 0 5px solid ${variables._color}`
+            }
+
+            return 'none'
+          ]]]
+      - text-align: "[[[ return variables._mirror ? 'right' : 'left' ]]]"
       - padding: 0
     name:
-      # - opacity: 0.6
-      - justify-self: start
+      - justify-self: "[[[ return variables._mirror ? 'end' : 'start' ]]]"
       - text-transform: uppercase
       - margin-left: 10px
       - letter-spacing: 2px
       - line-height: 18px
       - font-size: 14px
-      - text-align: left
+      - text-align: "[[[ return variables._mirror ? 'right' : 'left' ]]]"
       - overflow: visible
     icon:
       - position: absolute
       - color: "[[[ return variables._color ]]]"
-      - justify-self: flex-end
-      - text-align: right
+      - justify-self: "[[[ return variables._mirror ? 'start' : 'end' ]]]"
+      - text-align: "[[[ return variables._mirror ? 'left' : 'right' ]]]"
       - overflow: visible
       - height: 155%
       - width: 155%
       - max-height: 500%
-      - opacity: 0.5
-
 
 #### title_grid ####>
 # @deprecated v0.2 to be removed in v0.3

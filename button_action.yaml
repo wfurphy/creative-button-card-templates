@@ -1,13 +1,16 @@
 #### WF::BCT ############| Action Button |############ github.com/wfurphy #####>
 button_action:
   template:
-    - style_addons
+    - style_helper
     - actions
     - dynamic_icons
+    - interactive
   variables:
     _icon: mdi:play
     _icon_on: mdi:stop
     _name_on: Cancel
+    _style:
+      interactive: true
   show_state: false
   show_name: true
   name: Start
@@ -48,8 +51,6 @@ button_action:
       - text-align: left
     label:
       - font-size: 12px
-      - color: var(--secondary-text-color)
-      - opacity: 1
       - justify-self: start
       - align-self: start
       - text-align: left

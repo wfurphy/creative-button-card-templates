@@ -1,28 +1,33 @@
 button_mini:
   template:
-    - style_addons
+    - style_helper
     - actions
     - show_only_icon
+    - resizable
+    - interactive
   variables:
     _symbol: ''
+    _height: 40px
+    _style:
+      interactive: true
   size: 30px
   custom_fields:
-    pos: >
+    symbol: >
       [[[
           if (!variables._symbol.length) return ''
 
           if (variables._symbol.search('mdi:') >= 0) {
-            return `<elt><ha-icon icon="${variables._symbol}" class="cbc-symbol" /></elt>`
+            return `<ha-icon icon="${variables._symbol}" class="cbc-symbol" />`
           }
           
           const sym = variables._symbol.substring(0,1)
-          return `<elt><span class=bc-symbol">${sym}</span></elt>`
+          return `<span class="cbc-symbol">${sym}</span>`
       ]]]
   styles:
     card:
-      - height: 40px
+      - min-width: 50px
     custom_fields:
-      pos:
+      symbol:
         - width: 30px
         - position: absolute
         - justify-self: center
@@ -30,10 +35,6 @@ button_mini:
         - color: var(--ha-card-background)
         - font-size: 10pt
         - font-weight: bold
-  # style: |
-  #     .cbc-symbol {
-  #       width: 50%;
-  #     }
 
 ############| Button Mini - Embeded |###########################>
 button_mini_embed:
@@ -47,6 +48,10 @@ button_mini_embed:
       - width: 40px
     # icon: 
     #   - width: 40px
+  extra_styles: |
+      .cbc-symbol {
+        width: 50%;
+      }
 
 ############| Button Mini + State |###########################>
 button_mini_state:

@@ -2,17 +2,29 @@
 debug:
   variables:
     _debug: true
+    _debug_hass: false
+    _debug_extras:
     __title: '::WF::BCTEMPLATES::DEBUG::>'
   custom_fields:
     debugger: >
       [[[
         if (!variables._debug) return
 
-        console.debug(variables.__title, {
+        const o = {
           variables: variables, 
           entity: entity ? entity : {},
           bc: this
-        })
+        }
+
+        if (variables._debug_hass) {
+          o.hass = hass
+        }
+
+        if (variables._debug_extras) {
+          o.extras = variables._debug_extras
+        }
+
+        console.debug(variables.__title, o)
       ]]]
   styles:
     custom_fields:

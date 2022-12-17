@@ -1,6 +1,5 @@
 ############| +Addon > Transparent Card |###########################>
 transparent:
-
   styles:
     card:
       - background: none
@@ -8,3 +7,4 @@ transparent:
       - border: none
 
 #########################################################################/
+

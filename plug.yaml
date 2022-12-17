@@ -6,9 +6,9 @@ plug:
     _attributes:
       - id: "current"
         icon: "mdi:current-ac"
-        suffix: " mA"
+        units: " mA"
       - id: voltage
         icon: mdi:transmission-tower-import
-        suffix: V
+        units: V
 
 #########################################################################/

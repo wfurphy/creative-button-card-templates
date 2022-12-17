@@ -6,52 +6,66 @@ device:
     ## _attr @deprecated v0.2 replaced by _attributes
     _attr: []
     _attributes: []
+    _attribute_icon_color: var(--state-icon-color)
+    __defaults:
+      id: '' 
+      icon: 'mdi:layers-plus'
+      state:
+      units: ''
+      prefix_units: false
   show_state: false
   show_label: true
   label: >
     [[[
         variables._attributes = [...variables._attr, ...variables._attributes]
 
-        if (!variables._attributes || !variables._attributes.length)) return ''
+        if (!variables._attributes || !variables._attributes.length) return ''
 
         let lab = `
           <style>
             ha-icon.cbc-icon {
+              color: ${variables._attribute_icon_color};
               width:18px; 
               padding-right: 5px; 
             }
-            .cbc-suffix {
-              font-size: 70%
-              opacity: 0.4
+            .cbc-units {
+              font-size: 80%;
+              opacity: 0.6;
             }
           </style>
-          <div 
           `
         
         variables._attributes.forEach(function(a,i) {
-          const at = {...{id: '', icon: 'mdi:layers-plus', prefix: '', suffix: ''}, ...a}
+          const at = {...variables.__defaults, ...a}
+          const state = `<span class="cbc-value">${a.state || entity.attributes[at.id]}</span>` 
+          const units = `<span class="cbc-units">${at.units}</span>`
+
+          lab += `<div id="cbc-attr${i}-${a.id}" class="cbc-attr">
+                    <ha-icon icon="${at.icon}" class="cbc-icon"></ha-icon>`
           
-          lab += `
-            <div id="cbc-attr${i}-${a.id}" class="cbc-attr">
-              <ha-icon icon="${at.icon}" class="cbc-icon"></ha-icon>
-              <span class="cbc-prefix">${at.prefix}</span>
-              <span class="cbc-value">${entity.attributes[at.id]}</span>
-              <span class="cbc-suffix">${at.suffix}</span>
-            </div>`
+          if (a.prefix_units) {
+            lab += units + state
+          } else {
+            lab += state + units
+          }
+
+          lab += `</div>`
         })
         
         return lab
     ]]]
   styles:
     grid:
-      - grid-template-areas: '"i i n" "i i l"'
-      - grid-template-columns: 1fr 1fr 4fr
+      # - grid-template-areas: '"i i n" "i i l"'
+      # - grid-template-columns: 1fr 1fr 4fr
       - grid-template-rows: >
           [[[
-            if (!variables._attributes || !variables._attributes.length) return '1fr 1fr'
+            if (!variables._attributes || variables._attributes.length < 2) return '1fr 1fr'
 
             return entity.state == 'on' ? '1fr 2fr' : '1fr 1fr'
           ]]]
+    label:
+      - display: "[[[ return entity.state == 'on' ? 'block' : 'none' ]]]"
 
 #########################################################################/
 
