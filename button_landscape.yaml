@@ -1,4 +1,4 @@
-#### WF::BCT ############| Landscape Button Template |############ github.com/wfurphy #####>
+#### WF::CreativeBC ############| Landscape Button Template |############ github.com/wfurphy #####>
 button_landscape:
   template:
     - state_helper
@@ -7,7 +7,7 @@ button_landscape:
     - resizable
     - interactive
   variables:
-    _style:
+    style:
       interactive: true
   size: 50px
   show_icon: true

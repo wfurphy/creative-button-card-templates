@@ -31,10 +31,10 @@ _Examples in the image are using the [Noctis](https://github.com/aFFekopp/noctis
             entity: switch.smart_plug
             name: Device
             variables:
-              _show_attributes: 1
-              _attr_id: current
-              _attr_icon: mdi:one-up
-              _attr_prefix: "with an attribute "
+              show_attributes: 1
+              attr_id: current
+              attr_icon: mdi:one-up
+              attr_prefix: "with an attribute "
           - type: custom:button-card
             template: plug
             entity: switch.smart_plug_3
@@ -87,16 +87,16 @@ _Examples in the image are using the [Noctis](https://github.com/aFFekopp/noctis
             entity: light.light_name
             name: Light & Motion
             variables:
-              _motion_entity: binary_sensor.occupancy
+              motion_entity: binary_sensor.occupancy
           - type: custom:button-card
             template:
               - light_group
             entity: light.multiple_globe_light
             name: Light Group
             variables:
-              _light1: light.left
-              _light2: light.top
-              _light3: light.right
+              light1: light.left
+              light2: light.top
+              light3: light.right
           - type: custom:button-card
             template:
               - light
@@ -104,9 +104,9 @@ _Examples in the image are using the [Noctis](https://github.com/aFFekopp/noctis
             entity: light.light_name
             name: Light Custom Icons
             variables:
-              _icon: mdi:desk-lamp
-              _icon_on: mdi:desk-lamp-on
-              _icon_unavailable: mdi:desk-lamp-off
+              icon: mdi:desk-lamp
+              icon_on: mdi:desk-lamp-on
+              icon_unavailable: mdi:desk-lamp-off
             styles:
               name:
                 - font-size: 95%
@@ -157,7 +157,7 @@ If you are using your lovelace dashboards in [yaml mode](https://www.home-assist
  3. Include the following snippet at the top of your `ui-lovelace.yaml`. _If you've used a custom directory then obviously replace `ha-button-card-templates/` with a relative path to your installation directory._
 
 ```yaml
-#### WF::BCT ############| HA Button Card Templates |############ github.com/wfurphy #####>
+#### WF::CreativeBC ############| HA Button Card Templates |############ github.com/wfurphy #####>
 #### Some templates for the custom button cards I use in Home Assistant.
 #### Will Furphy | https://github.com/wfurphy/ha-button-card-templates
 #### Requires: https://github.com/custom-cards/button-card
@@ -204,9 +204,9 @@ template:
   - dynamic_icons
 entity: switch.entity_name
 variables:
-  _icon: "mdi:wifi"
-  _icon_on: "mdi:wifi-star"
-  _icon_unavailable: "mdi:wifi-cancel"
+  icon: "mdi:wifi"
+  icon_on: "mdi:wifi-star"
+  icon_unavailable: "mdi:wifi-cancel"
 # ...
 ```
 ## Addons

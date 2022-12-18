@@ -1,4 +1,4 @@
-#### WF::BCT ############| Light Grid Helper |############ github.com/wfurphy #####>
+#### WF::CreativeBC ############| Light Grid Helper |############ github.com/wfurphy #####>
 light_grid_helper:
   __items: []
   variables:
@@ -46,7 +46,7 @@ light_grid_helper:
       [[[        
         return function(vars) {
 
-          if (!vars._items || !Array.isArray(vars._items) || !vars._items.length) {
+          if (!vars.items || !Array.isArray(vars.items) || !vars.items.length) {
             
             if(!entity || !entity.attributes.entity_id) {
               throw new Error("Cannot find entity_ids. Ensure entity is a light group or provide a list of items")
@@ -56,7 +56,7 @@ light_grid_helper:
 
             for (let i = 0; i <= lights.length; i++) {
               const l = states[lights[i]]
-              vars._items.push({
+              vars.items.push({
                 entity_id: l.entity_id,
                 icon: l.attributes.icon || 'mdi:lightbulb',
                 symbol: `${i+1}`,
@@ -71,7 +71,7 @@ light_grid_helper:
           grid.items = []
           
           // Get quantity of supplied items
-          grid.qty = Number(vars._items.length)
+          grid.qty = Number(vars.items.length)
 
           // Build build the grid columns
           grid.columns_qty = Math.min(Math.max(vars.__qty, grid.columns_min), grid.columns_max)
@@ -105,7 +105,7 @@ light_grid_helper:
 
             if(i < grid.columns_qty) {
               // Insert any fields which weren't provided to avoid complications
-              grid.items.push({...vars.__defaults.merge, ...vars._items[i]})
+              grid.items.push({...vars.__defaults.merge, ...vars.items[i]})
             } else {
               grid.items.push(vars.__defaults.filler)
             }
@@ -144,7 +144,7 @@ light_grid_helper:
       - padding: 2px
 
 
-#### WF::BCT ############| Light Group |############ github.com/wfurphy #####>
+#### WF::CreativeBC ############| Light Group |############ github.com/wfurphy #####>
 light_group:
   template:
     - light_grid_helper
@@ -153,8 +153,8 @@ light_group:
   color: auto
   # color_type: card
   variables:
-    _items: []
-    _height: 100px
+    items: []
+    height: 100px
     __defaults:
       merge:
         entity_id:
@@ -240,7 +240,7 @@ light_group:
         icon: "[[[ return variables.__items[0].icon ]]]"
         color: auto
         variables:
-          _item: "[[[ return variables.__items[0] ]]]"
+          item: "[[[ return variables.__items[0] ]]]"
     li2:
       card:
         type: custom:button-card
@@ -249,7 +249,7 @@ light_group:
         icon: "[[[ return variables.__items[1].icon ]]]"
         color: auto
         variables:
-          _item: "[[[ return variables.__items[1] ]]]"
+          item: "[[[ return variables.__items[1] ]]]"
     li3:
       card:
         type: custom:button-card
@@ -258,7 +258,7 @@ light_group:
         icon: "[[[ return variables.__items[2].icon ]]]"
         color: auto
         variables:
-          _item: "[[[ return variables.__items[2] ]]]"
+          item: "[[[ return variables.__items[2] ]]]"
     li4:
       card:
         type: custom:button-card
@@ -267,7 +267,7 @@ light_group:
         icon: "[[[ return variables.__items[3].icon ]]]"
         color: auto
         variables:
-          _item: "[[[ return variables.__items[3] ]]]"
+          item: "[[[ return variables.__items[3] ]]]"
     li5:
       card:
         type: custom:button-card
@@ -276,7 +276,7 @@ light_group:
         icon: "[[[ return variables.__items[4].icon ]]]"
         color: auto
         variables:
-          _item: "[[[ return variables.__items[4] ]]]"
+          item: "[[[ return variables.__items[4] ]]]"
     li6:
       card:
         type: custom:button-card
@@ -285,7 +285,7 @@ light_group:
         icon: "[[[ return variables.__items[5].icon ]]]"
         color: auto
         variables:
-          _item: "[[[ return variables.__items[5] ]]]"
+          item: "[[[ return variables.__items[5] ]]]"
 
 
 #########################################################################/

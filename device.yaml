@@ -1,12 +1,12 @@
-#### WF::BCT ############| Device |############ github.com/wfurphy #####>
+#### WF::CreativeBC ############| Device |############ github.com/wfurphy #####>
 device:
   template: 
     - button_landscape
   variables:
-    ## _attr @deprecated v0.2 replaced by _attributes
-    _attr: []
-    _attributes: []
-    _attribute_icon_color: var(--state-icon-color)
+    ## attr @deprecated v0.2 replaced by attributes
+    attr: []
+    attributes: []
+    attribute_icon_color: var(--state-icon-color)
     __defaults:
       id: '' 
       icon: 'mdi:layers-plus'
@@ -17,14 +17,14 @@ device:
   show_label: true
   label: >
     [[[
-        variables._attributes = [...variables._attr, ...variables._attributes]
+        variables.attributes = [...variables.attr, ...variables.attributes]
 
-        if (!variables._attributes || !variables._attributes.length) return ''
+        if (!variables.attributes || !variables.attributes.length) return ''
 
         let lab = `
           <style>
             ha-icon.cbc-icon {
-              color: ${variables._attribute_icon_color};
+              color: ${variables.attribute_icon_color};
               width:18px; 
               padding-right: 5px; 
             }
@@ -35,12 +35,12 @@ device:
           </style>
           `
         
-        variables._attributes.forEach(function(a,i) {
+        variables.attributes.forEach(function(a,i) {
           const at = {...variables.__defaults, ...a}
           const state = `<span class="cbc-value">${a.state || entity.attributes[at.id]}</span>` 
           const units = `<span class="cbc-units">${at.units}</span>`
 
-          lab += `<div id="cbc-attr${i}-${a.id}" class="cbc-attr">
+          lab += `<div id="cbc-attr${i}-${a.id}" class="cbc-attr ellipsis">
                     <ha-icon icon="${at.icon}" class="cbc-icon"></ha-icon>`
           
           if (a.prefix_units) {
@@ -60,7 +60,7 @@ device:
       # - grid-template-columns: 1fr 1fr 4fr
       - grid-template-rows: >
           [[[
-            if (!variables._attributes || variables._attributes.length < 2) return '1fr 1fr'
+            if (!variables.attributes || variables.attributes.length < 2) return '1fr 1fr'
 
             return entity.state == 'on' ? '1fr 2fr' : '1fr 1fr'
           ]]]

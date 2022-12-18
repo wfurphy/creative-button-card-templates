@@ -4,9 +4,9 @@ value_strip_item:
   - transparent
   - interactive
   variables:
-    _style:
+    style:
       interactive: true
-    _item:
+    item:
       active: false
       prefix:
       units: ''
@@ -15,7 +15,7 @@ value_strip_item:
       label:
       active_color: 'var(--accent-color)'
       color: 'var(--paper-item-icon-color)'
-    _show:
+    show:
       icon: true
       value: true
       fade: true
@@ -32,26 +32,26 @@ value_strip_item:
       ]]]
   name: >
     [[[
-      variables.__opc = (variables._item.value / 100) + 0.07
-      variables.__both = variables._show.icon && variables._show.value
+      variables.__opc = (variables.item.value / 100) + 0.07
+      variables.__both = variables.show.icon && variables.show.value
       
-      if (variables._item.label) return `${variables.__css}<span class="cbc-units item-prefix">${variables._item.prefix}</span><span class="cbc-item-value label">${variables._item.label}</span>`
+      if (variables.item.label) return `${variables.__css}<span class="cbc-units item-prefix">${variables.item.prefix}</span><span class="cbc-item-value label">${variables.item.label}</span>`
 
-      return `${variables.__css}<span class="cbc-item-value">${variables._item.value}</span><span class="cbc-units item-units">${variables._item.units}</span>`
+      return `${variables.__css}<span class="cbc-item-value">${variables.item.value}</span><span class="cbc-units item-units">${variables.item.units}</span>`
     ]]]
   state:
-    - id: _cbc_active
+    - id: cbc_active
       operator: template
       value: >
         [[[
-          return Boolean(entity.state == variables._item.value)
+          return Boolean(entity.state == variables.item.value)
         ]]]
       styles:
         icon:
-          - color: "[[[ return variables._item.active_color ]]]"
+          - color: "[[[ return variables.item.active_color ]]]"
         name:
-          - color: "[[[ return variables._item.active_color ]]]"
-  icon: "[[[ return variables._item.icon ]]]"
+          - color: "[[[ return variables.item.active_color ]]]"
+  icon: "[[[ return variables.item.icon ]]]"
   lock:
     enabled: "[[[ return variables.__lock = !entity || entity.state == 'unavailable' ]]]"
   styles:
@@ -59,20 +59,20 @@ value_strip_item:
       - grid-template-areas: >
           [[[
             if (variables.__both) return '\"i\" \"n\"';
-            return variables._show.icon ? '\"i\"' : '\"n\"'
+            return variables.show.icon ? '\"i\"' : '\"n\"'
           ]]]
       - grid-template-columns: 1fr
       - grid-template-rows: "[[[ return variables.__both ? '1fr 1fr' : '1fr' ]]]"
       - justify-items: center
       - align-items: center
     name:
-      - display: "[[[ return variables.__both || variables._show.value ? 'inline-flex' : 'none' ]]]"
+      - display: "[[[ return variables.__both || variables.show.value ? 'inline-flex' : 'none' ]]]"
       - opacity: >
           [[[
             if (variables.__lock) return 0.2;
-            return (!variables._show.fade || variables.__opc > 1) ? 0.8 : variables.__opc
+            return (!variables.show.fade || variables.__opc > 1) ? 0.8 : variables.__opc
           ]]]
-      - color: "[[[ return variables._item.color ]]]"
+      - color: "[[[ return variables.item.color ]]]"
       - font-size: "[[[ return variables.__both ? '14px' : '16px' ]]]"
       - align-self: "[[[ return variables.__both ? 'start' : 'center' ]]]"
     card:
@@ -87,13 +87,13 @@ value_strip_item:
         # - display: none
         - visibility: hidden
     icon:
-      - width: "[[[ return variables.__both || variables._show.value ? '18px' : '30px' ]]]"
-      - display: "[[[ return variables.__both || variables._show.icon ? 'inline-flex' : 'none' ]]]"
-      - color: "[[[ return variables._item.color ]]]"
+      - width: "[[[ return variables.__both || variables.show.value ? '18px' : '30px' ]]]"
+      - display: "[[[ return variables.__both || variables.show.icon ? 'inline-flex' : 'none' ]]]"
+      - color: "[[[ return variables.item.color ]]]"
       - opacity: >
           [[[
             if (variables.__lock) return 0.1; 
-            return (!variables._show.fade || variables.__opc > 1) ? 0.9 : variables.__opc
+            return (!variables.show.fade || variables.__opc > 1) ? 0.9 : variables.__opc
           ]]]
 
 #### Adaptive Lighting Strip Item ######################################################>
@@ -101,14 +101,14 @@ adaptive_lighting_strip_item:
   template: 
     - value_strip_item
   variables:
-    _al_area_id: main_area
-    _item:
+    al_area_id: main_area
+    item:
       value: 100
   custom_fields:
     active_logic: >
       [[[
-        variables.__al = 'switch.adaptive_lighting_' + variables._al_area_id
-        variables.__alb = 'switch.adaptive_lighting_adapt_brightness_' + variables._al_area_id
+        variables.__al = 'switch.adaptive_lighting_' + variables.al_area_id
+        variables.__alb = 'switch.adaptive_lighting_adapt_brightness_' + variables.al_area_id
       ]]]
   lock:
     enabled: >
@@ -119,72 +119,72 @@ adaptive_lighting_strip_item:
     action: call-service
     service: script.al_set
     service_data:
-      area_id: "[[[ return variables._al_area_id ]]]"
-      brightness: "[[[ return variables._item.value ]]]"
+      area_id: "[[[ return variables.al_area_id ]]]"
+      brightness: "[[[ return variables.item.value ]]]"
     haptic: success
   state:
-    - id: _cbc_active
+    - id: cbc_active
       operator: template
       value: >
         [[[
-          return Boolean(variables._item.value == states['input_number.brightness_' + variables._al_area_id].state)
+          return Boolean(variables.item.value == states['input_number.brightness_' + variables.al_area_id].state)
         ]]]
       styles:
         icon:
-          - color: "[[[ return variables._item.active_color ]]]"
+          - color: "[[[ return variables.item.active_color ]]]"
         name:
-          - color: "[[[ return variables._item.active_color ]]]"
+          - color: "[[[ return variables.item.active_color ]]]"
 
 #### Brightness Strip Item ######################################################>
 brightness_strip_item:
   template: value_strip_item
   variables:
-    _item:
+    item:
       value: 100
   tap_action:
     action: call-service
     service: light.turn_on
     service_data:
       entity_id: "[[[ return entity.entity_id ]]]"
-      brightness_pct: "[[[ return variables._item.value ]]]"
+      brightness_pct: "[[[ return variables.item.value ]]]"
     haptic: success
   state:
-    - id: _cbc_active
+    - id: cbc_active
       operator: template
       value: >
         [[[
-          return Boolean(Math.round(entity.attributes.brightness / 2.55) == variables._item.value)
+          return Boolean(Math.round(entity.attributes.brightness / 2.55) == variables.item.value)
         ]]]
       styles:
         icon:
-          - color: "[[[ return variables._item.active_color ]]]"
+          - color: "[[[ return variables.item.active_color ]]]"
         name:
-          - color: "[[[ return variables._item.active_color ]]]"
+          - color: "[[[ return variables.item.active_color ]]]"
   
 #### Cover Strip Item ######################################################>
 cover_strip_item:
   template: value_strip_item
   variables:
-    _item:
+    item:
       value: 100
   state:
-    - id: _cbc_active
+    - id: cbc_active
       operator: template
       value: >
         [[[
-          return Boolean(entity.attributes.current_position == variables._item.value)
+          return Boolean(entity.attributes.current_position == variables.item.value)
         ]]]
       styles:
         icon:
-          - color: "[[[ return variables._item.active_color ]]]"
+          - color: "[[[ return variables.item.active_color ]]]"
         name:
-          - color: "[[[ return variables._item.active_color ]]]"
+          - color: "[[[ return variables.item.active_color ]]]"
   tap_action:
     action: call-service
     service: cover.set_cover_position
     service_data:
       entity_id: "[[[ return entity.entity_id ]]]"
-      position: "[[[ return variables._item.value ]]]"
+      position: "[[[ return variables.item.value ]]]"
     haptic: success
 
 
@@ -195,11 +195,11 @@ value_strip:
   show_state: false
   show_name: false
   variables:
-    _type: value
-    _al_area_id: null
-    _triggers: []
-    _items: []
-    _show:
+    type: value
+    al_area_id: null
+    triggers: []
+    items: []
+    show:
       icon: false
       value: true
       fade: true
@@ -252,10 +252,10 @@ value_strip:
     card:
       - clear: >
           [[[
-            switch (variables._type) {
+            switch (variables.type) {
               case 'adaptive_lighting':
-                variables.__entity_id = 'light.al_lights_' + variables._al_area_id
-                variables._triggers = ['switch.adaptive_lighting_' + variables._al_area_id, 'switch.adaptive_lighting_adapt_brightness_' + variables._al_area_id]
+                variables.__entity_id = 'light.al_lights_' + variables.al_area_id
+                variables.triggers = ['switch.adaptive_lighting_' + variables.al_area_id, 'switch.adaptive_lighting_adapt_brightness_' + variables.al_area_id]
                 break
               case 'cover':
                 variables.__defaults = variables.__defaults
@@ -295,53 +295,53 @@ value_strip:
     c1:
       card:
         type: custom:button-card
-        template: "[[[ return variables._type + '_strip_item' ]]]"
+        template: "[[[ return variables.type + '_strip_item' ]]]"
         entity: "[[[ return variables.__entity_id ]]]"
-        triggers_update: "[[[ return variables._triggers ]]]"
+        triggers_update: "[[[ return variables.triggers ]]]"
         variables: 
-          _item: "[[[ return {...variables.__merge, ...variables.__defaults[0], ...variables._items[0]} ]]]"
-          _show: "[[[ return variables._show ]]]"
-          _al_area_id: "[[[ return variables._al_area_id ]]]"
+          item: "[[[ return {...variables.__merge, ...variables.__defaults[0], ...variables.items[0]} ]]]"
+          show: "[[[ return variables.show ]]]"
+          al_area_id: "[[[ return variables.al_area_id ]]]"
     c2:
       card:
         type: custom:button-card
-        template: "[[[ return variables._type + '_strip_item' ]]]"
+        template: "[[[ return variables.type + '_strip_item' ]]]"
         entity: "[[[ return variables.__entity_id ]]]"
-        triggers_update: "[[[ return variables._triggers ]]]"
+        triggers_update: "[[[ return variables.triggers ]]]"
         variables: 
-          _item: "[[[ return {...variables.__merge, ...variables.__defaults[1], ...variables._items[1]} ]]]"
-          _show: "[[[ return variables._show ]]]"
-          _al_area_id: "[[[ return variables._al_area_id ]]]"
+          item: "[[[ return {...variables.__merge, ...variables.__defaults[1], ...variables.items[1]} ]]]"
+          show: "[[[ return variables.show ]]]"
+          al_area_id: "[[[ return variables.al_area_id ]]]"
     c3:
       card:
         type: custom:button-card
-        template: "[[[ return variables._type + '_strip_item' ]]]"
+        template: "[[[ return variables.type + '_strip_item' ]]]"
         entity: "[[[ return variables.__entity_id ]]]"
-        triggers_update: "[[[ return variables._triggers ]]]"
+        triggers_update: "[[[ return variables.triggers ]]]"
         variables: 
-          _item: "[[[ return {...variables.__merge, ...variables.__defaults[2], ...variables._items[2]} ]]]"
-          _show: "[[[ return variables._show ]]]"
-          _al_area_id: "[[[ return variables._al_area_id ]]]"
+          item: "[[[ return {...variables.__merge, ...variables.__defaults[2], ...variables.items[2]} ]]]"
+          show: "[[[ return variables.show ]]]"
+          al_area_id: "[[[ return variables.al_area_id ]]]"
     c4:
       card:
         type: custom:button-card
-        template: "[[[ return variables._type + '_strip_item' ]]]"
+        template: "[[[ return variables.type + '_strip_item' ]]]"
         entity: "[[[ return variables.__entity_id ]]]"
-        triggers_update: "[[[ return variables._triggers ]]]"
+        triggers_update: "[[[ return variables.triggers ]]]"
         variables: 
-          _item: "[[[ return {...variables.__merge, ...variables.__defaults[3], ...variables._items[3]} ]]]"
-          _show: "[[[ return variables._show ]]]"
-          _al_area_id: "[[[ return variables._al_area_id ]]]"
+          item: "[[[ return {...variables.__merge, ...variables.__defaults[3], ...variables.items[3]} ]]]"
+          show: "[[[ return variables.show ]]]"
+          al_area_id: "[[[ return variables.al_area_id ]]]"
     c5:
       card:
         type: custom:button-card
-        template: "[[[ return variables._type + '_strip_item' ]]]"
+        template: "[[[ return variables.type + '_strip_item' ]]]"
         entity: "[[[ return variables.__entity_id ]]]"
-        triggers_update: "[[[ return variables._triggers ]]]"
+        triggers_update: "[[[ return variables.triggers ]]]"
         variables:
-          _item: "[[[ return {...variables.__merge, ...variables.__defaults[4], ...variables._items[4]} ]]]"
-          _show: "[[[ return variables._show ]]]"
-          _al_area_id: "[[[ return variables._al_area_id ]]]"
+          item: "[[[ return {...variables.__merge, ...variables.__defaults[4], ...variables.items[4]} ]]]"
+          show: "[[[ return variables.show ]]]"
+          al_area_id: "[[[ return variables.al_area_id ]]]"
   
 
 #########################################################################/

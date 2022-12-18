@@ -1,9 +1,9 @@
-#### WF::BCT ############| Plug |############ github.com/wfurphy #####>
+#### WF::CreativeBC ############| Plug |############ github.com/wfurphy #####>
 plug:
   template:
     - device
   variables:
-    _attributes:
+    attributes:
       - id: "current"
         icon: "mdi:current-ac"
         units: " mA"

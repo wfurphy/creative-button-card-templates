@@ -1,26 +1,27 @@
 button_mini:
   template:
     - style_helper
+    - state_helper
     - actions
     - show_only_icon
     - resizable
     - interactive
   variables:
-    _symbol: ''
-    _height: 40px
-    _style:
+    symbol: ''
+    height: 40px
+    style:
       interactive: true
   size: 30px
   custom_fields:
     symbol: >
       [[[
-          if (!variables._symbol.length) return ''
+          if (!variables.symbol.length) return ''
 
-          if (variables._symbol.search('mdi:') >= 0) {
-            return `<ha-icon icon="${variables._symbol}" class="cbc-symbol" />`
+          if (variables.symbol.search('mdi:') >= 0) {
+            return `<ha-icon icon="${variables.symbol}" class="cbc-symbol" />`
           }
           
-          const sym = variables._symbol.substring(0,1)
+          const sym = variables.symbol.substring(0,1)
           return `<span class="cbc-symbol">${sym}</span>`
       ]]]
   styles:

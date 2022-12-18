@@ -1,14 +1,14 @@
 ############| +Addon > Debug |###########################>
 debug:
   variables:
-    _debug: true
-    _debug_hass: false
-    _debug_extras:
-    __title: '::WF::BCTEMPLATES::DEBUG::>'
+    debug: true
+    debug_hass: false
+    debug_extras:
+    __title: '::CreativeButtonCards::DEBUG::>'
   custom_fields:
     debugger: >
       [[[
-        if (!variables._debug) return
+        if (!variables.debug) return
 
         const o = {
           variables: variables, 
@@ -16,12 +16,12 @@ debug:
           bc: this
         }
 
-        if (variables._debug_hass) {
+        if (variables.debug_hass) {
           o.hass = hass
         }
 
-        if (variables._debug_extras) {
-          o.extras = variables._debug_extras
+        if (variables.debug_extras) {
+          o.extras = variables.debug_extras
         }
 
         console.debug(variables.__title, o)

@@ -1,10 +1,10 @@
-#### WF::BCT ############| Light |############ github.com/wfurphy #####>
+#### WF::CreativeBC ############| Light |############ github.com/wfurphy #####>
 light:
   template:
     - button_landscape
   variables:
-    _height: 80px
-    _attribute_icon_color: var(--state-icon-color)
+    height: 80px
+    attribute_icon_color: var(--state-icon-color)
   color: auto
   show_label: true
   styles:
@@ -14,7 +14,7 @@ light:
     [[[
       let styles = ` <style>
           .cbc-l-icon {
-            color: ${variables._attribute_icon_color};
+            color: ${variables.attribute_icon_color};
             width: 15px;
             margin-right: 1px;
           }
@@ -26,7 +26,8 @@ light:
             font-size: 85%;
           }
           .cbc-l-rgb {
-            font-size: 95%;
+            /* font-size: 90%; */
+            word-spacing: -2px;
           }
         </style>
         `
@@ -38,10 +39,16 @@ light:
 
       const bpct = Math.round(entity.attributes.brightness / 2.55)
       const rgb = String(entity.attributes.rgb_color).split(',')
-      let clr = `<span class="cbc-l-rgb" style="color: #ad0826;">${rgb[0]}</span>,<span class="cbc-l-rgb" style="color: #00b558;">${rgb[1]}</span>,<span class="cbc-l-rgb" style="color: #1a89f5;">${rgb[2]}</span>`
-      let ci = 'mdi:palette'
+      let clr = `
+      <span class="ellipsis">
+        <span class="cbc-l-rgb"><span style="color: #ad0826; font-weight: bold;">R</span>${rgb[0]}</span>
+        <span class="cbc-l-rgb"><span style="color: #00b558; font-weight: bold;">G</span>${rgb[1]}</span>
+        <span class="cbc-l-rgb"><span style="color: #1a89f5; font-weight: bold;">B</span>${rgb[2]}</span>
+      </span>`
+      let ci = ''
 
       if (entity.attributes.color_mode == 'color_temp') {
+        ci = `<ha-icon icon="mdi:palette" class="cbc-l-icon last"></ha-icon>`
         clr = `${entity.attributes.color_temp_kelvin} <span class="cbc-l-unit">K</span>`
       //  ci = 'mdi:thermometer'
       }
@@ -56,7 +63,7 @@ light:
       return styles + `
         <elt>
           <ha-icon icon="${bi}" class="cbc-l-icon"></ha-icon><span class="cbc-l-val">${bpct}</span><span class="cbc-l-unit">%</span>
-          <ha-icon icon="${ci}" class="cbc-l-icon last"></ha-icon>${clr}
+          ${ci}${clr}
         </elt>
       `
     ]]]

@@ -1,22 +1,23 @@
-#### WF::BCT ############| Light associated with a Motion Sensor |############ github.com/wfurphy #####>
+#### WF::CreativeBC ############| Light associated with a Motion Sensor |############ github.com/wfurphy #####>
 light_motion:
   template:
     - light
   color: auto
   variables:
-    _motion_entity:
-    _enabled_entity:
+    motion_entity:
+    enabled_entity:
   triggers_update:
     - "[[[ return variables.__motion_entity ]]]"
   state:
-    - id: _cbc_on
+    - id: cbc_on
       value: "on"
       styles:
         grid:
           - grid-template-areas: '"i i n" "i i l" "i i motion"'
           - grid-template-columns: 1fr 1fr 4fr
-          - grid-template-rows: 2fr 1fr 1fr
+          - grid-template-rows: 1fr 1fr 1fr
           - justify-items: start
+          - align-items: center
         label:
           - display: block
   styles:
@@ -25,6 +26,9 @@ light_motion:
       - grid-template-columns: 1fr 1fr 4fr
       - grid-template-rows: 1fr 1fr
       - justify-items: start
+      - padding: 6px
+    name:
+      - line-height: 18px
     label:
       - display: none
     custom_fields:
@@ -32,19 +36,18 @@ light_motion:
         - justify-self: start
         - align-self: start
         - text-align: left
-
   custom_fields:
     motion:
       card:
         type: custom:button-card
         template: transparent
-        entity: "[[[ return variables._motion_entity ]]]"
+        entity: "[[[ return variables.motion_entity ]]]"
         # layout: icon_label
         show_name: false
         show_last_changed: true
         triggers_update:
-          - "[[[ return variables._motion_entity ]]]"
-          - "[[[ return variables._enabled_entity ]]]"
+          - "[[[ return variables.motion_entity ]]]"
+          - "[[[ return variables.enabled_entity ]]]"
         # size: 20px
         state:
           - value: "on"
@@ -52,7 +55,7 @@ light_motion:
             styles:
               card:
                 - opactiy: 0.8
-          - template: "[[[ return variables._enabled_entity && states[variables._enabled_entity].state == 'off' ]]]"
+          - template: "[[[ return variables.enabled_entity && states[variables.enabled_entity].state == 'off' ]]]"
             icon: mdi:motion-pause-outline
             styles:
               card:

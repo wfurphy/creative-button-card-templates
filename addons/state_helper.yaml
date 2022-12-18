@@ -1,0 +1,25 @@
+################| State Helper |################>
+state_helper:
+  state:
+    - id: cbc_custom
+      operator: template
+      value: false
+    - id: cbc_on
+      operator: '=='
+      value: 'on'
+    - id: cbc_unavailable
+      operator: '=='
+      value: "unavailable"
+      label: Unavailable
+      styles:
+        card:
+          - min-height: 40px
+          - height: 40px
+          - opacity: 0.2
+          - box-shadow: none;
+        label:
+          - display: block
+          - margin-top: 0
+
+########################################################/
+

@@ -1,10 +1,10 @@
-#### WF::BCT ############| +Helpers |############ github.com/wfurphy #####>
+#### WF::CreativeBC ############| +Helpers |############ github.com/wfurphy #####>
 
 ################| Style |################>
 style_helper:
   variables:
-    ####/ _style.<property>.<element> / mixed /####> 
-    _style:
+    ####/ style.<property>.<element> / mixed /####> 
+    style:
       interactive: false
       ####/ opacity.<element> / float /####>
       opacity: 
@@ -15,15 +15,15 @@ style_helper:
         state: 0.8
   styles:
     card:
-      - opacity: "[[[ return variables._style.opacity.card ]]]"
+      - opacity: "[[[ return variables.style.opacity.card ]]]"
     icon:
-      - opacity: "[[[ return variables._style.opacity.icon ]]]"
+      - opacity: "[[[ return variables.style.opacity.icon ]]]"
     name:
-      - opacity: "[[[ return variables._style.opacity.name ]]]"
+      - opacity: "[[[ return variables.style.opacity.name ]]]"
     label:
-      - opacity: "[[[ return variables._style.opacity.label ]]]"
+      - opacity: "[[[ return variables.style.opacity.label ]]]"
     state:
-      - opacity: "[[[ return variables._style.opacity.state ]]]"
+      - opacity: "[[[ return variables.style.opacity.state ]]]"
 
 ################| Interactive (Hover) |################>
 interactive:
@@ -44,43 +44,17 @@ interactive:
       ha-card:hover #icon { opacity: 1 !important; }
 
 
-# not_interactive:
-  # extra_styles: |
-  #   ha-card::after {
-  #     display: none;
-  #   }
-  #   ha-card:hover::after {}
-  #   ha-card:hover #label {}
-  #   ha-card:hover #name {}
-  #   ha-card:hover #icon {}
-
-
-state_helper:
-  state:
-    - id: _cbc_unavailable
-      operator: '=='
-      value: "unavailable"
-      label: Unavailable
-      styles:
-        card:
-          - min-height: 40px
-          - height: 40px
-          - opacity: 0.2
-        label:
-          - display: block
-          - margin-top: 0
-
 ################| Resizable |################>
 resizable:
   variables:
-    _height:
-    _width:
+    height:
+    width:
   styles:
     card:
       - min-height: 40px
       - max-width: 100%
-      - height: "[[[ return variables._height ]]]"
-      - width: "[[[ return variables._width ]]]"
+      - height: "[[[ return variables.height ]]]"
+      - width: "[[[ return variables.width ]]]"
 
 
 ## @TODO ##> Add ability to customise show behavior for all elements
@@ -116,79 +90,3 @@ empty:
     __empty: true
 
 
-  # custom_fields:
-  #   css_hover: >
-  #         [[[
-  #           function displayCss(count, target) {
-  #             //target.insertAdjacentHTML("beforebegin", `<style>${css}</style>`)
-  #             console.log('::count::>', count,'::target::>', target)
-
-  #           }
-
-  #           const bc = this
-
-  #           let buildCss = new Promise(function(resolve, reject) {
-  #             let count = 0
-  #             const keys = Object.keys(variables._show)
-  #             const qty = keys.length
-              
-  #             keys.forEach(function(key,i) {
-  #               const val = variables._show[key]
-                
-  #               if (variables.__cssProps.card[val]) {
-  #                 bc.classList.add(`cbc-${key}-${val}`)
-  #                 count++
-  #                 //css += `\nbutton-card::shaddow ha-card:hover #${key} { display: block; }`
-  #               }
-
-  #               if ((i+1) === qty && count > 0) {
-  #                 resolve(count)
-  #               }
-  #             })
-  #           })
-
-  #           buildCss.then(
-  #             function(value) { displayCss(value, bc) }
-  #           )
-  #         ]]]
-
-################| Show Addons |################>
-# show_addons:
-#   # template: debug
-#   variables:
-#     ####/ _show.* / string { always|hover|on|on_hover|off|off_hover|never } / default: on /####> 
-#     _show:
-#       name: 'always'
-#       label: 'on'
-#       state: 'off_hover'
-
-#     __cssProps:
-#       display:
-#         'always': 'block'
-#         'hover': 'none'
-#         'on': "[[[ return (entity?.state == 'on') ? 'block' : 'none' ]]]"
-#         'on_hover': 'none'
-#         'off': "[[[ return (entity?.state == 'off') ? 'block' : 'none' ]]]"
-#         'off_hover': 'none'
-#         'never': 'none'
-#       visibility:
-#         'always': 'visible'
-#         'hover': 'hidden'
-#         'on': "[[[ return (entity?.state == 'on') ? 'visible' : 'hidden' ]]]"
-#         'on_hover': 'hidden'
-#         'off': "[[[ return (entity?.state == 'off') ? 'visible' : 'hidden' ]]]"
-#         'off_hover': 'hidden'
-#         'never': 'hidden'
-#       card:
-#         'always': false
-#         'hover': true
-#         'on': false
-#         'on_hover': "[[[ return entity?.state == 'on' ]]]"
-#         'off': false
-#         'off_hover': "[[[ return entity?.state == 'off' ]]]"
-#         'never': false
-#   styles:
-#     label:
-#       - display: "[[[ return variables.__cssProps.display[variables._show.label] ]]]"
-
-#########################################################################/

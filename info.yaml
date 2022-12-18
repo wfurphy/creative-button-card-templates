@@ -1,39 +1,25 @@
 info_helper:
   variables:
-    _item: {}
-    _decimals: 0
-    _attribute:
-    _state:
-    _name:
-    _units:
-    _icon_color:
-    _prefix_units: false
-    __make: >
+    __item: >
+      [[[
+        return function(v) {
+          return {...v, ...v.item}
+        }
+      ]]]
+    __makeHtml: >
       [[[
         return function(vars) {
-          vars.__output = function(out, vars) {
-            vars.__out = out
-            if(vars._name && String(vars._name).length > 0) {
-              vars.__name = vars._name
-            } else {
-              let att = String(vars._attribute)
-              vars.__name = att.length > 0 ? att.replace('_', ' ') : entity?.attributes.friendly_name
-            }
-
-            return vars
-          }
-
+          const item = {...vars, ...vars.item}
           const out = {
-            html: '',
-            units: String(vars._units || entity?.attributes.unit_of_measurement || ''),
-            tag: vars._layout == 'stack' ? 'div' : 'span',
-            prefix: !!vars._prefix_units
+            units: String(item.units || entity?.attributes.unit_of_measurement || ''),
+            tag: item.layout == 'stack' ? 'div' : 'span',
+            prefix: !!item.prefix_units
           }
-
-          if (vars._state) {
-            out.state = vars._state
-          } else if (vars._attribute && entity) {
-            out.state = entity.attributes[vars._attribute]
+          
+          if (item.state) {
+            out.state = item.state
+          } else if (item.attribute && entity) {
+            out.state = entity.attributes[item.attribute]
           } else {
             out.state = entity?.state
           }
@@ -43,59 +29,34 @@ info_helper:
             out.state = Number(out.state).toFixed(2)
             out.prefix = true
           } else if (!isNaN(out.state)) {
-            out.state = +Number(out.state).toFixed(vars._decimals)
+            out.state = +Number(out.state).toFixed(item.decimals)
           }
           
           if (out.prefix) {
-            vars.__html = `<${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}><${out.tag} class="cbc-state">${out.state}</${out.tag}>`
+            return `<${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}><${out.tag} class="cbc-state">${out.state}</${out.tag}>`
           } else {
-            vars.__html = `<${out.tag} class="cbc-state">${out.state}</${out.tag}><${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}>`
+            return `<${out.tag} class="cbc-state">${out.state}</${out.tag}><${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}>`
           }
-
-          return vars.__output(out, vars) // :::::::::::::::: __output ::::::::::::::::::::::::::>
-        }
-      ]]]
-    __getVars: >
-      [[[
-        return function(vars) {
-          if(!vars?.__html || Object.keys(vars.__item).length)
-
-          if(vars?._item && Object.keys(vars._item).length) {
-            const ik = Object.keys(vars._item)
-            const ikl = ik.length
-
-            if(ikl > 0) {
-              for (let i = 0; i <= ikl; i++) {
-                if(i === ikl) {
-                  return vars.__make(vars) // :::::::::::::::: __make :::::::::::::::::::::::::::>
-                }
-                let key = ik[i]
-                vars['_'+key] = vars._item[key]
-              }
-            }
-          }
-
-          return vars.__make(vars) // :::::::::::::::::::::: __make :::::::::::::::::::::::::::::>
         }
       ]]]
 
-#### WF::BCT ############| Info Mini |############ github.com/wfurphy #####>
+#### WF::CreativeBC ############| Info Mini |############ github.com/wfurphy #####>
 info_mini:
   template:
-    - info_helper
     - button_mini
-    # - style_helper
     - no_actions
+    - info_helper
   variables:
-    _item: {}
+    group: false
+    item: {}
     __type: mini
-    _spin: false
-    ####/ _layout / string { stack|inline } / default: stack /####>
-    _layout: stack
-    _icon_color:
-    _color:
-    _width: 60px
-    _style:
+    spin: false
+    ####/ layout / string { stack|inline } / default: stack /####>
+    layout: stack
+    icon_color:
+    color:
+    width: 60px
+    style:
       opacity:
         icon: 0.2
     __css: |
@@ -113,14 +74,14 @@ info_mini:
   show_state: true
   show_name: false
   state:
-    - id: _cbc_spin
+    - id: cbc_spin
       operator: template
-      value: "[[[ return variables._spin ]]]"
+      value: "[[[ return variables.__item(variables).spin ]]]"
       spin: true
   state_display: >
-        [[[
-          return variables.__css + (variables = variables.__getVars(variables)).__html
-        ]]]
+    [[[
+      return variables.__css + variables.__makeHtml(variables)
+    ]]]
   styles:
     grid:
       - padding: 6px
@@ -128,7 +89,7 @@ info_mini:
       - padding: 0
       - margin: 0
     icon:
-      - opacity: "[[[ return this.___config.template.includes('transparent') ? 1 : variables._style.opacity.icon ]]]"
+      - opacity: "[[[ return this.___config.template.includes('transparent') ? 1 : variables.style.opacity.icon ]]]"
       - justify-self: center
       - align-self: center
       - max-height: 200%
@@ -139,8 +100,8 @@ info_mini:
       - padding: 0
       - color: >
           [[[
-            if(variables._color) { return variables._color } else
-            if(variables._icon_color && variables._icon_color !== 'var(--state-icon-color)') { return variables._icon_color }
+            if(variables.__item(variables).color) { return variables.__item(variables).color } else
+            if(variables.icon_color && variables.icon_color !== 'var(--state-icon-color)') { return variables.icon_color }
             return this.___config.template.includes('transparent') ? 'var( --ha-card-background, var(--card-background-color, white) )' : 'var(--state-icon-color)'
           ]]]
     state:
@@ -148,34 +109,25 @@ info_mini:
       - justify-self: end
       - align-self: end
       - font-size: 18px
-      # - font-weight: bold
       - margin-top: 0
       - margin-bottom: 0
       - overflow: visible
-  # extra_styles: |
-  #   .cbc-units {
-  #     font-size: 75%;
-  #     color: var(--secondary-text-color)
-  #   }
-    # div.cbc-units {
-    #   font-size: 70% !important;
-    #   margin-top: -4px;
-    # }
 
 #### Info Item ######################################################>
 info_item:
   template:
-    - info_helper
     - style_helper
     - no_actions
     - transparent
+    - info_helper
   variables:
-    _item: {}
-    _icon_color: "var(--state-icon-color)"
-    # _name: ''
-    # _attribute: ''
-    _color:
-    _style:
+    group: false
+    item: {}
+    icon_color: "var(--state-icon-color)"
+    name: ''
+    attribute: ''
+    color:
+    style:
       opacity:
         icon: 0.4
     __css: |
@@ -188,10 +140,23 @@ info_item:
           overflow: visible !important;
         }
       </style>
-
   show_state: true
-  state_display: "[[[ return variables.__css + (variables = variables.__getVars(variables)).__html ]]]"
-  name: "[[[ return (variables = variables.__getVars(variables)).__name ]]]"
+  show_name: true
+  state_display: >
+    [[[
+      return variables.__css + variables.__makeHtml(variables)
+    ]]]
+  name: >
+    [[[
+      const item = variables.__item(variables)
+      if(item.name && String(item.name).length > 0) {
+        return item.name
+      }
+
+      let att = String(item.attribute)
+      return att.length > 0 ? att.replace('_', ' ') : entity?.attributes.friendly_name
+    ]]]
+  # styles:
   styles:
     grid:
       - position: relative
@@ -215,7 +180,7 @@ info_item:
       - min-width: 60px
       - min-height: 60px
       - overflow: visible
-      - color: "[[[ return variables._color || variables._icon_color ]]]"
+      - color: "[[[ return variables.__item(variables).color || variables.icon_color ]]]"
     name:
       - color: var(--secondary-text-color)
       - justify-self: end
@@ -233,16 +198,16 @@ info_item:
 
 #### Info Icon ######################################################>
 info_icon:
-  icon: "[[[ return variables._icon ]]]"
+  icon: "[[[ return variables.__item(variables).icon ]]]"
 
 #### Info Card ######################################################>
 info:
   template:
     - no_actions
   variables:
-    _items: []
-    _mini: false
-    _icon_color: "var(--state-icon-color)"
+    items: []
+    mini: false
+    icon_color: "var(--state-icon-color)"
   show_icon: false
   show_name: false
   card_size: 1
@@ -250,7 +215,7 @@ info:
     grid:
       - grid-template-areas: >
           [[[
-            variables.__qty = variables._items.length
+            variables.__qty = variables.items.length
             let areas = '\"dts1'
 
             for(let i = 1; i < variables.__qty; i++) {
@@ -311,53 +276,53 @@ info:
       card:
         type: custom:button-card
         template:
-          - "[[[ return variables.__qty >= 1 && (variables._mini || variables._items[0].mini) ? 'info_mini' : 'info_item' ]]]"
-          - "[[[ return variables.__qty >= 1 && variables._items[0].icon ? 'info_icon' : 'empty' ]]]"
+          - "[[[ return variables.__qty >= 1 && (variables.mini || variables.items[0].mini) ? 'info_mini' : 'info_item' ]]]"
+          - "[[[ return variables.__qty >= 1 && variables.items[0].icon ? 'info_icon' : 'empty' ]]]"
           - transparent
         variables:
-          _icon_color: "[[[ return variables.__qty >= 1 ? variables._icon_color : null ]]]"
-          _item: "[[[ return variables.__qty >= 1 ? variables._items[0] : null ]]]"
-        entity: "[[[ return variables.__qty >= 1 ? variables._items[0].entity_id : null ]]]"
-        # name: "[[[ return variables.__qty >= 1 ? variables._items[0].name : null ]]]"
+          group: true
+          icon_color: "[[[ return variables.__qty >= 1 ? variables.icon_color : null ]]]"
+          item: "[[[ return variables.__qty >= 1 ? variables.items[0] : null ]]]"
+        entity: "[[[ return variables.__qty >= 1 ? variables.items[0].entity_id : null ]]]"
 
     dts2:
       card:
         type: custom:button-card
         template:
-          - "[[[ return variables.__qty >= 2 && (variables._mini || variables._items[1].mini) ? 'info_mini' : 'info_item' ]]]"
-          - "[[[ return variables.__qty >= 2 && variables._items[1].icon ? 'info_icon' : 'empty' ]]]"
+          - "[[[ return variables.__qty >= 2 && (variables.mini || variables.items[1].mini) ? 'info_mini' : 'info_item' ]]]"
+          - "[[[ return variables.__qty >= 2 && variables.items[1].icon ? 'info_icon' : 'empty' ]]]"
           - transparent
         variables:
-          _icon_color: "[[[ return variables.__qty >= 2 ? variables._icon_color : null ]]]"
-          _item: "[[[ return variables.__qty >= 2 ? variables._items[1] : null ]]]"
-        entity: "[[[ return variables.__qty >= 2 ? variables._items[1].entity_id : null ]]]"
-        # name: "[[[ return variables.__qty >= 2 ? variables._items[1].name : null ]]]"
+          group: true
+          icon_color: "[[[ return variables.__qty >= 2 ? variables.icon_color : null ]]]"
+          item: "[[[ return variables.__qty >= 2 ? variables.items[1] : null ]]]"
+        entity: "[[[ return variables.__qty >= 2 ? variables.items[1].entity_id : null ]]]"
 
     dts3:
       card:
         type: custom:button-card
         template:
-          - "[[[ return variables.__qty >= 3 && (variables._mini || variables._items[2].mini) ? 'info_mini' : 'info_item' ]]]"
-          - "[[[ return variables.__qty >= 3 && variables._items[2].icon ? 'info_icon' : 'empty' ]]]"
+          - "[[[ return variables.__qty >= 3 && (variables.mini || variables.items[2].mini) ? 'info_mini' : 'info_item' ]]]"
+          - "[[[ return variables.__qty >= 3 && variables.items[2].icon ? 'info_icon' : 'empty' ]]]"
           - transparent
         variables:
-          _icon_color: "[[[ return variables.__qty >= 3 ? variables._icon_color : null ]]]"
-          _item: "[[[ return variables.__qty >= 3 ? variables._items[2] : null ]]]"
-        entity: "[[[ return variables.__qty >= 3 ? variables._items[2].entity_id : null ]]]"
-        # name: "[[[ return variables.__qty >= 3 ? variables._items[2].name : null ]]]"
+          group: true
+          icon_color: "[[[ return variables.__qty >= 3 ? variables.icon_color : null ]]]"
+          item: "[[[ return variables.__qty >= 3 ? variables.items[2] : null ]]]"
+        entity: "[[[ return variables.__qty >= 3 ? variables.items[2].entity_id : null ]]]"
 
     dts4:
       card:
         type: custom:button-card
         template:
-          - "[[[ return variables.__qty >= 4 && (variables._mini || variables._items[3].mini) ? 'info_mini' : 'info_item' ]]]"
-          - "[[[ return variables.__qty >= 4 && variables._items[3].icon ? 'info_icon' : 'empty' ]]]"
+          - "[[[ return variables.__qty >= 4 && (variables.mini || variables.items[3].mini) ? 'info_mini' : 'info_item' ]]]"
+          - "[[[ return variables.__qty >= 4 && variables.items[3].icon ? 'info_icon' : 'empty' ]]]"
           - transparent
         variables:
-          _icon_color: "[[[ return variables.__qty >= 4 ? variables._icon_color : null ]]]"
-          _item: "[[[ return variables.__qty >= 4 ? variables._items[3] : null ]]]"
-        entity: "[[[ return variables.__qty >= 4 ? variables._items[3].entity_id : null ]]]"
-        # name: "[[[ return variables.__qty >= 4 ? variables._items[3].name : null ]]]"
+          group: true
+          icon_color: "[[[ return variables.__qty >= 4 ? variables.icon_color : null ]]]"
+          item: "[[[ return variables.__qty >= 4 ? variables.items[3] : null ]]]"
+        entity: "[[[ return variables.__qty >= 4 ? variables.items[3].entity_id : null ]]]"
 
         
 #########################################################################/

@@ -1,4 +1,4 @@
-#### WF::BCT ############| Action Button |############ github.com/wfurphy #####>
+#### WF::CreativeBC ############| Action Button |############ github.com/wfurphy #####>
 button_action:
   template:
     - style_helper
@@ -6,10 +6,10 @@ button_action:
     - dynamic_icons
     - interactive
   variables:
-    _icon: mdi:play
-    _icon_on: mdi:stop
-    _name_on: Cancel
-    _style:
+    icon: mdi:play
+    icon_on: mdi:stop
+    name_on: Cancel
+    style:
       interactive: true
   show_state: false
   show_name: true
@@ -18,7 +18,7 @@ button_action:
   show_last_changed: true
   state:
     - value: 'on'
-      name: "[[[ return variables._name_on ]]]"
+      name: "[[[ return variables.name_on ]]]"
       styles:
         icon:
           - color: var(--paper-item-icon-active-color)

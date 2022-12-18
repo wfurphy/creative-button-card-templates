@@ -1,24 +1,24 @@
-#### WF::BCT ############| Title |############ github.com/wfurphy #####>
+#### WF::CreativeBC ############| Title |############ github.com/wfurphy #####>
 title:
   template:
     - style_helper
   variables:
-    _style:
+    style:
       interactive: false
       opacity:
         card: 0.5
         icon: 1
         name: 1
-    _mirror: false
-    _color: var(--primary-background-color)
-    _background_color: var(--state-icon-color)
-    _show_tab: false
-    _offset: 0
+    mirror: false
+    color: var(--primary-background-color)
+    background_color: var(--state-icon-color)
+    show_tab: false
+    offset: 0
   styles:
     grid:
       - position: relative
       - grid-template-areas: >
-          [[[ return variables._mirror ? '\"i n\"' : '\"n i\"' ]]]
+          [[[ return variables.mirror ? '\"i n\"' : '\"n i\"' ]]]
       - grid-template-columns: 3fr 1fr
       - grid-template-rows: 1fr
       - justify-items: start
@@ -28,35 +28,35 @@ title:
     card:
       - --mdc-ripple-press-opacity: 0
       - height: 40px
-      - margin-left: "[[[ return variables._offset ]]]"
-      - background-color: "[[[ return variables._background_color ]]]"
+      - margin-left: "[[[ return variables.offset ]]]"
+      - background-color: "[[[ return variables.background_color ]]]"
       - box-shadow: none
       - border: none
-      - border-radius: "[[[ return variables._mirror ? '10px 0 0 10px' : '0 10px 10px 0' ]]]"
+      - border-radius: "[[[ return variables.mirror ? '10px 0 0 10px' : '0 10px 10px 0' ]]]"
       - border: >
           [[[
-            if(variables._show_tab) {
-              return variables._mirror ? `0 5px 0 0 solid ${variables._color}` : `0 0 0 5px solid ${variables._color}`
+            if(variables.show_tab) {
+              return variables.mirror ? `0 5px 0 0 solid ${variables.color}` : `0 0 0 5px solid ${variables.color}`
             }
 
             return 'none'
           ]]]
-      - text-align: "[[[ return variables._mirror ? 'right' : 'left' ]]]"
+      - text-align: "[[[ return variables.mirror ? 'right' : 'left' ]]]"
       - padding: 0
     name:
-      - justify-self: "[[[ return variables._mirror ? 'end' : 'start' ]]]"
+      - justify-self: "[[[ return variables.mirror ? 'end' : 'start' ]]]"
       - text-transform: uppercase
       - margin-left: 10px
       - letter-spacing: 2px
       - line-height: 18px
       - font-size: 14px
-      - text-align: "[[[ return variables._mirror ? 'right' : 'left' ]]]"
+      - text-align: "[[[ return variables.mirror ? 'right' : 'left' ]]]"
       - overflow: visible
     icon:
       - position: absolute
-      - color: "[[[ return variables._color ]]]"
-      - justify-self: "[[[ return variables._mirror ? 'start' : 'end' ]]]"
-      - text-align: "[[[ return variables._mirror ? 'left' : 'right' ]]]"
+      - color: "[[[ return variables.color ]]]"
+      - justify-self: "[[[ return variables.mirror ? 'start' : 'end' ]]]"
+      - text-align: "[[[ return variables.mirror ? 'left' : 'right' ]]]"
       - overflow: visible
       - height: 155%
       - width: 155%
