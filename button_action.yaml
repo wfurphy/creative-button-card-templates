@@ -1,4 +1,4 @@
-#### WF::CreativeBC ############| Action Button |############ github.com/wfurphy #####>
+####{ CreativeBC }####| Action Button |####[ github.com/wfurphy/creative-button-card-templates ]####>
 button_action:
   template:
     - style_helper
@@ -9,15 +9,14 @@ button_action:
     icon: mdi:play
     icon_on: mdi:stop
     name_on: Cancel
-    style:
-      interactive: true
+    timer: 
   show_state: false
   show_name: true
   name: Start
   label: "[[[ return entity.last_changed ]]]"
   show_last_changed: true
   state:
-    - value: 'on'
+    - id: cbc_on
       name: "[[[ return variables.name_on ]]]"
       styles:
         icon:
@@ -62,3 +61,4 @@ button_action:
       - opacity: 1
 
 #########################################################################/
+  

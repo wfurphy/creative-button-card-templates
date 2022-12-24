@@ -10,7 +10,7 @@
 *.userosscache
 *.sln.docstates
 custom/*.yaml
-!custom/custom.yaml
+!custom/example.yaml
 js
 
 # User-specific files (MonoDevelop/Xamarin Studio)

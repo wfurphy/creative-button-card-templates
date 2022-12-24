@@ -1,12 +1,29 @@
-################| State Helper |################>
+####{ Creative BC }########| +State Helper |########[ github.com/wfurphy ]#####>
 state_helper:
   state:
-    - id: cbc_custom
+    - id: cbc_custom_1
+      operator: template
+      value: false
+    - id: cbc_custom_2
+      operator: template
+      value: false
+    - id: cbc_custom_3
+      operator: template
+      value: false
+    - id: cbc_custom_4
       operator: template
       value: false
     - id: cbc_on
       operator: '=='
       value: 'on'
+      styles:
+        icon:
+          - opacity: 0.95
+    - id: cbc_off
+      value: 'off'
+      styles:
+        icon:
+          - opacity: 0.6
     - id: cbc_unavailable
       operator: '=='
       value: "unavailable"
@@ -21,5 +38,5 @@ state_helper:
           - display: block
           - margin-top: 0
 
-########################################################/
+################################################################################/
 

@@ -1,4 +1,4 @@
-############| +Addon > Debug |###########################>
+####{ CreativeBC }####| +Debug |####[ github.com/wfurphy/creative-button-card-templates ]####>
 debug:
   variables:
     debug: true
@@ -33,4 +33,5 @@ debug:
         - width: 0
         - visibility: hidden
 
-#########################################################################/      
+#########################################################################/
+  

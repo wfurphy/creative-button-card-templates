@@ -1,7 +1,6 @@
-#### WF::CreativeBC ############| Plug |############ github.com/wfurphy #####>
+####{ CreativeBC }####| Plug |####[ github.com/wfurphy/creative-button-card-templates ]####>
 plug:
-  template:
-    - device
+  template: device
   variables:
     attributes:
       - id: "current"
@@ -12,3 +11,4 @@ plug:
         units: V
 
 #########################################################################/
+  

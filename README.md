@@ -157,7 +157,7 @@ If you are using your lovelace dashboards in [yaml mode](https://www.home-assist
  3. Include the following snippet at the top of your `ui-lovelace.yaml`. _If you've used a custom directory then obviously replace `ha-button-card-templates/` with a relative path to your installation directory._
 
 ```yaml
-#### WF::CreativeBC ############| HA Button Card Templates |############ github.com/wfurphy #####>
+####{ CreativeBC }####| HA Button Card Templates |####[ github.com/wfurphy/creative-button-card-templates ]####>
 #### Some templates for the custom button cards I use in Home Assistant.
 #### Will Furphy | https://github.com/wfurphy/ha-button-card-templates
 #### Requires: https://github.com/custom-cards/button-card

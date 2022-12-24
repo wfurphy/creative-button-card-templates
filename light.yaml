@@ -1,4 +1,4 @@
-#### WF::CreativeBC ############| Light |############ github.com/wfurphy #####>
+####{ CreativeBC }####| Light |####[ github.com/wfurphy/creative-button-card-templates ]####>
 light:
   template:
     - button_landscape
@@ -68,7 +68,7 @@ light:
       `
     ]]]
 
-#### From when we had to convert the color_temp, now kelvin is standard in HA ###
+# From when we had to convert the color_temp, now kelvin is standard in HA
 # Math.round(1000000/entity.attributes.color_temp, 0)
 # °K
 #########################################################################/

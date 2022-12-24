@@ -1,14 +1,8 @@
-#### WF::CreativeBC ############| Title |############ github.com/wfurphy #####>
+####{ CreativeBC }####| Title |####[ github.com/wfurphy/creative-button-card-templates ]####>
 title:
   template:
     - style_helper
   variables:
-    style:
-      interactive: false
-      opacity:
-        card: 0.5
-        icon: 1
-        name: 1
     mirror: false
     color: var(--primary-background-color)
     background_color: var(--state-icon-color)
@@ -27,6 +21,7 @@ title:
       - overflow: visible
     card:
       - --mdc-ripple-press-opacity: 0
+      - opacity: 0.5
       - height: 40px
       - margin-left: "[[[ return variables.offset ]]]"
       - background-color: "[[[ return variables.background_color ]]]"
@@ -44,6 +39,7 @@ title:
       - text-align: "[[[ return variables.mirror ? 'right' : 'left' ]]]"
       - padding: 0
     name:
+      - opactiy: 1
       - justify-self: "[[[ return variables.mirror ? 'end' : 'start' ]]]"
       - text-transform: uppercase
       - margin-left: 10px
@@ -53,6 +49,7 @@ title:
       - text-align: "[[[ return variables.mirror ? 'right' : 'left' ]]]"
       - overflow: visible
     icon:
+      - opacity: 1
       - position: absolute
       - color: "[[[ return variables.color ]]]"
       - justify-self: "[[[ return variables.mirror ? 'start' : 'end' ]]]"
@@ -74,3 +71,4 @@ title_grid:
       - align-self: end
 
 #########################################################################/
+  

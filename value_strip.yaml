@@ -1,4 +1,4 @@
-#### Value Strip Item ######################################################>
+#################( Value Strip Item )################################>
 value_strip_item:
   template:
   - transparent
@@ -35,7 +35,9 @@ value_strip_item:
       variables.__opc = (variables.item.value / 100) + 0.07
       variables.__both = variables.show.icon && variables.show.value
       
-      if (variables.item.label) return `${variables.__css}<span class="cbc-units item-prefix">${variables.item.prefix}</span><span class="cbc-item-value label">${variables.item.label}</span>`
+      if (variables.item.label) {
+        return `${variables.__css}<span class="cbc-units item-prefix">${variables.item.prefix}</span><span class="cbc-item-value label">${variables.item.label}</span>`
+      }
 
       return `${variables.__css}<span class="cbc-item-value">${variables.item.value}</span><span class="cbc-units item-units">${variables.item.units}</span>`
     ]]]
@@ -96,7 +98,7 @@ value_strip_item:
             return (!variables.show.fade || variables.__opc > 1) ? 0.9 : variables.__opc
           ]]]
 
-#### Adaptive Lighting Strip Item ######################################################>
+#################( Adaptive Lighting Strip Item )################################>
 adaptive_lighting_strip_item:
   template: 
     - value_strip_item
@@ -135,7 +137,7 @@ adaptive_lighting_strip_item:
         name:
           - color: "[[[ return variables.item.active_color ]]]"
 
-#### Brightness Strip Item ######################################################>
+#################( Brightness Strip Item )################################>
 brightness_strip_item:
   template: value_strip_item
   variables:
@@ -161,7 +163,7 @@ brightness_strip_item:
         name:
           - color: "[[[ return variables.item.active_color ]]]"
   
-#### Cover Strip Item ######################################################>
+#################( Cover Strip Item )################################>
 cover_strip_item:
   template: value_strip_item
   variables:
@@ -188,7 +190,7 @@ cover_strip_item:
     haptic: success
 
 
-#### Value Strip ######################################################>
+#################( Value Strip )################################>
 value_strip:
   show_icon: false
   show_value: false

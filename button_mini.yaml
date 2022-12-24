@@ -7,15 +7,13 @@ button_mini:
     - resizable
     - interactive
   variables:
-    symbol: ''
+    symbol:
     height: 40px
-    style:
-      interactive: true
   size: 30px
   custom_fields:
     symbol: >
       [[[
-          if (!variables.symbol.length) return ''
+          if (!variables.symbol) return ''
 
           if (variables.symbol.search('mdi:') >= 0) {
             return `<ha-icon icon="${variables.symbol}" class="cbc-symbol" />`
@@ -26,7 +24,8 @@ button_mini:
       ]]]
   styles:
     card:
-      - min-width: 50px
+      - min-width: 30px
+      - max-width: 70px
     custom_fields:
       symbol:
         - width: 30px
@@ -42,13 +41,15 @@ button_mini_embed:
   template:
     - button_mini
     - transparent
+  # variables:
+    # height: auto
   styles:
-    grid:
-      - position: relative
+    # grid:
+    #   - position: relative
     card:
-      - width: 40px
-    # icon: 
-    #   - width: 40px
+      - min-width: 30px
+      # - width: 30px
+      # - height: auto
   extra_styles: |
       .cbc-symbol {
         width: 50%;

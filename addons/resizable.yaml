@@ -1,0 +1,14 @@
+####{ CreativeBC }####| +Resizable |####[ github.com/wfurphy/creative-button-card-templates ]####>
+resizable:
+  variables:
+    height:
+    width:
+  styles:
+    card:
+      - min-height: 40px
+      - max-width: 100%
+      - height: "[[[ return variables.height ]]]"
+      - width: "[[[ return variables.width ]]]"
+
+############################################################################/
+  

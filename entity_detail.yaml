@@ -1,11 +1,14 @@
 ############| Entity Detail - Detailed information panel for debugging |###########################>
 entity_detail:
   template:
-    - actions
-    # - transparent
+    - no_actions
+  variables:
+    do_not_split: []
   show_name: true
   show_state: true
   color: auto
+  double_tap_action:
+    action: toggle
   custom_fields:
     atts: >-
       [[[
@@ -20,6 +23,7 @@ entity_detail:
             margin-right: auto;
             text-align: left;
             table-layout: fixed;
+            max-width: 100%;
           }
           .cbc-table th {
             font-weight: normal;
@@ -33,7 +37,8 @@ entity_detail:
           .cbc-table td {
             font-size: 12px;
             padding: 5px;
-            word-wrap: break-word;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word;
           }
           .cbc-table td:nth-child(1) {
             font-weight: bold;
@@ -75,10 +80,11 @@ entity_detail:
         for (let a in entity.attributes) {
           const value = String(entity.attributes[a])
           htmlList += `<tr><td>${a}</td><td>`
+          const no_split = Array.isArray(variables.do_not_split) ? variables.do_not_split.find(e => e == a) : variables.do_not_split == a
           
-          if (value.search(',') >= 0) {
+          if (!no_split && value.search(/[\|,]+/) >= 0) {
             htmlList += `<ul>`
-            const list = value.split(',')
+            const list = value.split(/[\|,]+/)
 
             list.forEach(v => {
               htmlList += `<li>${v}</li>`
@@ -97,8 +103,9 @@ entity_detail:
   styles:
     grid:
       - grid-template-areas: '"i n" "i s" "atts atts"'
-      - grid-template-columns: 1fr 1fr
+      - grid-template-columns: 1fr 3fr
       - justify-items: center
+      - padding: 6px
     card:
       - opacity: "[[[ return !entity || entity.state == 'unavailable' ? 0.6 : 1 ]]]"
     icon:
@@ -122,6 +129,7 @@ entity_detail:
 
             switch (entity.state) {
               case 'on':
+              case 'active':
                 return '#086038'
               case 'off':
                 return '#9d3042'
@@ -135,5 +143,9 @@ entity_detail:
       atts:
         - justify-self: strech
         - margin-top: 10px
+        - max-width: 100%
+        - white-space: nomral
+        - word-wrap: break-word
+
 
 #########################################################################/

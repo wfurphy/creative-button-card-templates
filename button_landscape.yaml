@@ -1,4 +1,4 @@
-#### WF::CreativeBC ############| Landscape Button Template |############ github.com/wfurphy #####>
+####{ CreativeBC }####| Landscape Button Template |####[ github.com/wfurphy/creative-button-card-templates ]####>
 button_landscape:
   template:
     - state_helper
@@ -6,9 +6,6 @@ button_landscape:
     - actions
     - resizable
     - interactive
-  variables:
-    style:
-      interactive: true
   size: 50px
   show_icon: true
   show_name: true
@@ -40,4 +37,4 @@ button_landscape:
       - justify-self: start
 
 #########################################################################/
-
+  

@@ -1,291 +1,168 @@
-#### WF::CreativeBC ############| Light Grid Helper |############ github.com/wfurphy #####>
-light_grid_helper:
-  __items: []
+####{ CreativeBC }####| Light Group |####[ github.com/wfurphy/creative-button-card-templates ]####>
+light_group:
+  template:
+    - light
+    # - debug
+  color: auto
   variables:
+    items: []
+    # height: 100px
     __defaults:
-      merge:
-        entity_id:
-        icon: mdi:lightbulb
-        symbol:
-        display: "block"
-      filler:
-        entity_id: "[[[ return entity.entity_id ]]]"
-        icon: mdi:lightbulb
-        symbol: mdi:cancel
-        display: "none"
-    __grid:
-      areas: ""
-      columns: ""
-      rows: ""
-      columns_min: 2
-      columns_max: 6
-      column_unit: '1fr'
-      pattern:
-        - seq: false
-          start: 2
-          limit: false
-          area_id: 'n'
-          area_pre: 'i i'
-          area_post: ''
-          row_unit: 1fr
-        - seq: true
-          start: 0
-          limit: false
-          area_id: li
-          area_pre: ''
-          area_post: ''
-          row_unit: 2fr
-        - area_id: 'l'
-          start: 2
-          limit: false
-          area_pre: ''
-          area_post: ''
-          seq: false
-          row_unit: 1fr
-    __buildGrid: >
-      [[[        
-        return function(vars) {
-
-          if (!vars.items || !Array.isArray(vars.items) || !vars.items.length) {
-            
-            if(!entity || !entity.attributes.entity_id) {
-              throw new Error("Cannot find entity_ids. Ensure entity is a light group or provide a list of items")
-            }
-
-            const lights = String(entity.attributes.entity_id).split(',')
-
-            for (let i = 0; i <= lights.length; i++) {
-              const l = states[lights[i]]
-              vars.items.push({
-                entity_id: l.entity_id,
-                icon: l.attributes.icon || 'mdi:lightbulb',
-                symbol: `${i+1}`,
-                tooltip: l.attributes.friendly_name,
-                display: 'block'
-              })
-            }
-          }
-          
-          // Get the grid config
-          let grid = vars.__grid
-          grid.items = []
-          
-          // Get quantity of supplied items
-          grid.qty = Number(vars.items.length)
-
-          // Build build the grid columns
-          grid.columns_qty = Math.min(Math.max(vars.__qty, grid.columns_min), grid.columns_max)
-          grid.columns = `repeat(${grid.columns_qty}, ${vars.colummn_unit})`
-          
-          for (let p = 0; p < grid.pattern.length; p++) {
-            const row = grid.pattern[p]
-            let rsp = p ? ' ' : ''
-            
-            grid.rows += `${rsp}${row.row_unit}`
-            grid.areas += `${rsp}\"${row.area_pre}`
-
-            // Build the areas dynamically
-            for (let i = 0; i <= grid.columns_qty; i++) {
-              if (i === grid.columns_qty) {
-                grid.areas += `${row.area_post}\"`
-              } else {
-                const csp = i ? ' ' : ''
-                const aid = row.seq ? i+1 : ''
-
-                if (i >= row.start && i <= row.limit) {
-                  grid.areas += `${csp}${row.area_id}${aid}`
-                }
-              }
-            }
-          }
-
-          // Dynamically assign `custom_field` defaults and create objects up to `colums_max`
-          for (let i = 0; i < grid.columns_max; i++) {
-            let gid = i+1
-
-            if(i < grid.columns_qty) {
-              // Insert any fields which weren't provided to avoid complications
-              grid.items.push({...vars.__defaults.merge, ...vars.items[i]})
-            } else {
-              grid.items.push(vars.__defaults.filler)
-            }
-          }
-        }
-      ]]]
-  # custom_fields:
-  #   grid_helper: >
-  #     [[[
-  #       const out = variables.__buildGrid(variables)
-  #       variables.__items = out.items
-  #       variables.__grid = out.grid
-  #     ]]]
-  # styles:
-  #   custom_fields:
-  #     grid_helper:
-  #       - visability: hidden
-  #       - height: 0
-  #       - width: 0
+      entity_id: "[[[ return entity?.entity_id ]]]"
+      icon: mdi:lightbulb
+      symbol:
+      display: "none"
   styles:
     grid:
       - grid-template-areas: >
           [[[
-            const out = variables.__buildGrid(variables)
-            variables.__items = out.items
-            variables.__grid = out.grid
+            if (!Array.isArray(variables.items) || !variables.items.length) {
+              if(!entity || !entity.attributes?.entity_id || !Array.isArray(entity.attributes.entity_id)) {
+                throw new Error("You must provide a light group entity or a list of items")
+                return ''
+              }
 
-            console.log(':::: Areas ::::>', variables); 
+              entity.attributes.entity_id.forEach(function(e,i) { 
+                variables.items.push({
+              ...variables.__defaults, 
+              ...{ 
+                entity_id: e, 
+                symbol: String(i+1) 
+                }})
+              })
+            }
+
+
+            variables._qty = variables.items.length > 6 ? 6 : variables.items.length
+            let pre = '\"i'
+            let cf = '\"'
+            let post = '\"'
+
+            for(let i = 0; i < variables._qty; i++) {
+              const sp = i ? ' ' : ''
+              pre += i ? ` n` : ''
+              cf += `${sp}li${i+1}`
+              post += `${sp}l`
+              variables.items[i].display = 'block'
+              variables.items[i] = {...variables.__defaults, ...variables.items[i]}
+            }
             
-            return variables.__grid.areas
+            return pre + '\" ' + cf + '\" ' + post + '\" '
           ]]]
-      - grid-template-columns: "[[[ return variables.__grid.columns ]]]"
-      - grid-template-rows: "[[[ return variables.__grid.rows ]]]"
+      - grid-template-columns: "[[[ return `repeat(${variables._qty}, 1fr)` ]]]"
+      - grid-template-rows: 1fr 1fr 1fr
       - justify-items: center
       - align-items: center
-      - padding: 2px
-
-
-#### WF::CreativeBC ############| Light Group |############ github.com/wfurphy #####>
-light_group:
-  template:
-    - light_grid_helper
-    - light
-    # - debug
-  color: auto
-  # color_type: card
-  variables:
-    items: []
-    height: 100px
-    __defaults:
-      merge:
-        entity_id:
-        icon: mdi:lightbulb
-        symbol:
-        display: "block"
-      filler:
-        entity_id: "[[[ return entity.entity_id ]]]"
-        icon: mdi:lightbulb
-        symbol: mdi:cancel
-        display: "none"
-    __grid:
-      areas: ""
-      columns: ""
-      rows: ""
-      columns_min: 2
-      columns_max: 6
-      column_unit: '1fr'
-      pattern:
-        - seq: false
-          start: 2
-          limit: false
-          area_id: 'n'
-          area_pre: 'i i'
-          area_post: ''
-          row_unit: 1fr
-        - seq: true
-          start: 0
-          limit: false
-          area_id: li
-          area_pre: ''
-          area_post: ''
-          row_unit: 2fr
-        - area_id: 'l'
-          start: 2
-          limit: false
-          area_pre: ''
-          area_post: ''
-          seq: false
-          row_unit: 1fr
-  # styles:
-  #   grid:
-  #     - grid-template-areas: >
-  #         [[[
-  #           console.log(':::: Areas ::::>', variables); 
-            
-  #           return variables.__grid.areas
-  #         ]]]
-  #     - grid-template-columns: "[[[ return variables.__grid.columns ]]]"
-  #     - grid-template-rows: "[[[ return variables.__grid.rows ]]]"
-      # - grid-template-areas: '"i i n n n n n n" ". l1 l2 l3 l4 l5 l6 ." "l l l l l l l l"'
-      # - grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
-      # - justify-items: center
-      # - align-items: center
-      # - padding: 2px
+      - padding: 4px
+      - position: relative
+      - max-width: 100%
     label:
       - justify-self: center
       - align-self: start
       - text-align: center
+      - margin-top: -3px
     name:
-      - justify-self: start
+      - justify-self: center
       - align-self: center
       - text-align: left
     custom_fields:
       li1:
-        - display: "[[[ return variables.__items[0].display ]]]"
+        - display: "[[[ return variables.items[0]?.display || 'none' ]]]"
+        - z-index: 5
+        - justify-self: center
+        - align-self: center
       li2:
-        - display: "[[[ return variables.__items[1].display ]]]"
+        - display: "[[[ return variables.items[1]?.display || 'none' ]]]"
+        - z-index: 5
+        - justify-self: center
+        - align-self: center
       li3:
-        - display: "[[[ return variables.__items[2].display ]]]"
+        - display: "[[[ return variables.items[2]?.display || 'none' ]]]"
+        - z-index: 5
+        - justify-self: center
+        - align-self: center
       li4:
-        - display: "[[[ return variables.__items[3].display ]]]"
+        - display: "[[[ return variables.items[3]?.display || 'none' ]]]"
+        - z-index: 5
+        - justify-self: center
+        - align-self: center
       li5:
-        - display: "[[[ return variables.__items[4].display ]]]"
+        - display: "[[[ return variables.items[4]?.display || 'none' ]]]"
+        - z-index: 5
+        - justify-self: center
+        - align-self: center
       li6:
-        - display: "[[[ return variables.__items[5].display ]]]"
+        - display: "[[[ return variables.items[5]?.display || 'none' ]]]"
+        - z-index: 5
+        - justify-self: center
+        - align-self: center
   custom_fields:
     li1:
       card:
         type: custom:button-card
-        template: button_mini_embed
-        entity: "[[[ return variables.__items[0].entity_id ]]]"
-        icon: "[[[ return variables.__items[0].icon ]]]"
+        template: 
+          - button_mini_embed
+          - actions
+        entity: "[[[ return variables.items[0]?.entity_id ]]]"
+        icon: "[[[ return variables.items[0]?.icon ]]]"
         color: auto
         variables:
-          item: "[[[ return variables.__items[0] ]]]"
+          symbol: "[[[ return variables.items[0]?.symbol ]]]"
     li2:
       card:
         type: custom:button-card
-        template: button_mini_embed
-        entity: "[[[ return variables.__items[1].entity_id ]]]"
-        icon: "[[[ return variables.__items[1].icon ]]]"
+        template: 
+          - button_mini_embed
+          - actions
+        entity: "[[[ return variables.items[1]?.entity_id ]]]"
+        icon: "[[[ return variables.items[1]?.icon ]]]"
         color: auto
         variables:
-          item: "[[[ return variables.__items[1] ]]]"
+          symbol: "[[[ return variables.items[1]?.symbol ]]]"
     li3:
       card:
         type: custom:button-card
-        template: button_mini_embed
-        entity: "[[[ return variables.__items[2].entity_id ]]]"
-        icon: "[[[ return variables.__items[2].icon ]]]"
+        template: 
+          - button_mini_embed
+          - actions
+        entity: "[[[ return variables.items[2]?.entity_id ]]]"
+        icon: "[[[ return variables.items[2]?.icon ]]]"
         color: auto
         variables:
-          item: "[[[ return variables.__items[2] ]]]"
+          symbol: "[[[ return variables.items[2]?.symbol ]]]"
     li4:
       card:
         type: custom:button-card
-        template: button_mini_embed
-        entity: "[[[ return variables.__items[3].entity_id ]]]"
-        icon: "[[[ return variables.__items[3].icon ]]]"
+        template: 
+          - button_mini_embed
+          - actions
+        entity: "[[[ return variables.items[3]?.entity_id ]]]"
+        icon: "[[[ return variables.items[3]?.icon ]]]"
         color: auto
         variables:
-          item: "[[[ return variables.__items[3] ]]]"
+          symbol: "[[[ return variables.items[3]?.symbol ]]]"
     li5:
       card:
         type: custom:button-card
-        template: button_mini_embed
-        entity: "[[[ return variables.__items[4].entity_id ]]]"
-        icon: "[[[ return variables.__items[4].icon ]]]"
+        template: 
+          - button_mini_embed
+          - actions
+        entity: "[[[ return variables.items[4]?.entity_id ]]]"
+        icon: "[[[ return variables.items[4]?.icon ]]]"
         color: auto
         variables:
-          item: "[[[ return variables.__items[4] ]]]"
+          symbol: "[[[ return variables.items[4]?.symbol ]]]"
     li6:
       card:
         type: custom:button-card
-        template: button_mini_embed
-        entity: "[[[ return variables.__items[5].entity_id ]]]"
-        icon: "[[[ return variables.__items[5].icon ]]]"
+        template: 
+          - button_mini_embed
+          - actions
+        entity: "[[[ return variables.items[5]?.entity_id ]]]"
+        icon: "[[[ return variables.items[5]?.icon ]]]"
         color: auto
         variables:
-          item: "[[[ return variables.__items[5] ]]]"
+          symbol: "[[[ return variables.items[5]?.symbol ]]]"
 
 
 #########################################################################/

@@ -1,3 +1,4 @@
+####{ CreativeBC }####| Info |####[ github.com/wfurphy/creative-button-card-templates ]####>
 info_helper:
   variables:
     __item: >
@@ -40,7 +41,7 @@ info_helper:
         }
       ]]]
 
-#### WF::CreativeBC ############| Info Mini |############ github.com/wfurphy #####>
+#################( Info Mini )################################>
 info_mini:
   template:
     - button_mini
@@ -58,7 +59,7 @@ info_mini:
     width: 60px
     style:
       opacity:
-        icon: 0.2
+        icon: 0.4
     __css: |
         <style>
           .cbc-units {
@@ -113,7 +114,7 @@ info_mini:
       - margin-bottom: 0
       - overflow: visible
 
-#### Info Item ######################################################>
+#################( Info Item )################################>
 info_item:
   template:
     - style_helper
@@ -127,9 +128,6 @@ info_item:
     name: ''
     attribute: ''
     color:
-    style:
-      opacity:
-        icon: 0.4
     __css: |
       <style>
         .cbc-units {
@@ -196,11 +194,11 @@ info_item:
       - text-justify: right
       - overflow: visible
 
-#### Info Icon ######################################################>
+#################( Info Icon )################################>
 info_icon:
   icon: "[[[ return variables.__item(variables).icon ]]]"
 
-#### Info Card ######################################################>
+#################( Info Card )################################>
 info:
   template:
     - no_actions
@@ -326,4 +324,4 @@ info:
 
         
 #########################################################################/
-
+  

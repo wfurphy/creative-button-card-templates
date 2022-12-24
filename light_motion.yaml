@@ -1,4 +1,4 @@
-#### WF::CreativeBC ############| Light associated with a Motion Sensor |############ github.com/wfurphy #####>
+####{ CreativeBC }####| Light associated with a Motion Sensor |####[ github.com/wfurphy/creative-button-card-templates ]####>
 light_motion:
   template:
     - light
@@ -6,60 +6,79 @@ light_motion:
   variables:
     motion_entity:
     enabled_entity:
-  triggers_update:
-    - "[[[ return variables.__motion_entity ]]]"
-  state:
-    - id: cbc_on
-      value: "on"
-      styles:
-        grid:
-          - grid-template-areas: '"i i n" "i i l" "i i motion"'
-          - grid-template-columns: 1fr 1fr 4fr
-          - grid-template-rows: 1fr 1fr 1fr
-          - justify-items: start
-          - align-items: center
-        label:
-          - display: block
+    timer_entity:
+    __pauseState: >
+      [[[
+        return function(timer_entity, entity) {
+          const ps = {
+            custom_field: 'motion',
+            timer_state: states[timer_entity]?.state,
+            display: {
+              label: 'none',
+              motion: 'block',
+              timer: 'none'
+            }
+          }
+
+          if (timer_entity && states[timer_entity].state == 'active') {
+            ps.custom_field = 'timer'
+            ps.display.motion = 'none'
+            ps.display.timer = 'block'
+          }
+
+          if (entity.state == 'on') {
+            ps.areas = `\"i i n\" \"i i l\" \"i i ${ps.custom_field}\"`
+            ps.rows = '1fr 1fr 1fr'
+            ps.display.label = 'block'
+          } else {
+            ps.areas =  `\"i i n\" \"i i ${ps.custom_field}\"`
+            ps.rows = '1fr 1fr'
+          }
+
+          return ps
+        }
+      ]]]
   styles:
     grid:
-      - grid-template-areas: '"i i n" "i i motion"'
+      - grid-template-areas: "[[[ return variables.__pauseState(variables.timer_entity, entity).areas ]]]"
       - grid-template-columns: 1fr 1fr 4fr
-      - grid-template-rows: 1fr 1fr
+      - grid-template-rows: "[[[ return variables.__pauseState(variables.timer_entity, entity).rows ]]]"
       - justify-items: start
       - padding: 6px
     name:
       - line-height: 18px
     label:
-      - display: none
+      - display: "[[[ return variables.__pauseState(variables.timer_entity, entity).display.label ]]]"
     custom_fields:
       motion:
         - justify-self: start
         - align-self: start
         - text-align: left
+        - display: "[[[ return variables.__pauseState(variables.timer_entity, entity).display.motion ]]]"
+      timer:
+        - justify-self: start
+        - align-self: start
+        - text-align: left
+        - display: "[[[ return variables.__pauseState(variables.timer_entity, entity).display.timer ]]]"
   custom_fields:
     motion:
       card:
         type: custom:button-card
         template: transparent
         entity: "[[[ return variables.motion_entity ]]]"
-        # layout: icon_label
         show_name: false
         show_last_changed: true
         triggers_update:
           - "[[[ return variables.motion_entity ]]]"
+          - "[[[ return variables.timer_entity ]]]"
           - "[[[ return variables.enabled_entity ]]]"
-        # size: 20px
         state:
-          - value: "on"
+          - id: cbc_on
+            value: "on"
             icon: mdi:run-fast
             styles:
               card:
                 - opactiy: 0.8
-          - template: "[[[ return variables.enabled_entity && states[variables.enabled_entity].state == 'off' ]]]"
-            icon: mdi:motion-pause-outline
-            styles:
-              card:
-                - opactiy: 0.4
         icon: mdi:run
         styles:
           card:
@@ -81,5 +100,47 @@ light_motion:
           icon:
             - width: 18px
             - padding-right: 5px
+    timer:
+      card:
+        type: custom:button-card
+        template: transparent
+        entity: "[[[ return variables.timer_entity ]]]"
+        triggers_update:
+          - "[[[ return variables.motion_entity ]]]"
+          - "[[[ return variables.timer_entity ]]]"
+          - "[[[ return variables.enabled_entity ]]]"
+        show_state: true
+        show_name: false
+        show_icon: true
+        show_label: true
+        label: " mins remaining"
+        styles:
+          card:
+            - overflow: visible
+            - opacity: 0.6
+            # - padding: 0
+          grid:
+            - grid-template-areas: '"i s l"'
+            - grid-template-rows: 1fr
+          label:
+            - overflow: visible
+            - justify-self: start
+            - align-self: center
+            - font-size: 75%
+            - margin: 2px 0 0 5px
+            - text-align: left
+          state:
+            - overflow: visible
+            - justify-self: start
+            - align-self: center
+            - font-size: 75%
+            - margin: 2px 0 0 -2px
+            - text-align: left
+            - width: min-content
+          icon:
+            - width: 18px
+            - padding-right: 5px
+            - color: rgba(254, 190, 110, 1)
 
 #########################################################################/
+  

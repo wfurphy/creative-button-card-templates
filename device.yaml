@@ -1,4 +1,4 @@
-#### WF::CreativeBC ############| Device |############ github.com/wfurphy #####>
+####{ CreativeBC }####| Device |####[ github.com/wfurphy/creative-button-card-templates ]####>
 device:
   template: 
     - button_landscape
@@ -56,8 +56,6 @@ device:
     ]]]
   styles:
     grid:
-      # - grid-template-areas: '"i i n" "i i l"'
-      # - grid-template-columns: 1fr 1fr 4fr
       - grid-template-rows: >
           [[[
             if (!variables.attributes || variables.attributes.length < 2) return '1fr 1fr'
@@ -68,4 +66,4 @@ device:
       - display: "[[[ return entity.state == 'on' ? 'block' : 'none' ]]]"
 
 #########################################################################/
-
+  

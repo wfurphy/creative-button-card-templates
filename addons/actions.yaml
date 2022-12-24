@@ -1,3 +1,5 @@
+####{ CreativeBC }####| +Actions |####[ github.com/wfurphy/creative-button-card-templates ]####>
+
 ############| +Addon Default Actions |############################>
 actions:
   tap_action:
@@ -23,3 +25,4 @@ no_actions:
     haptic: failure
 
 #########################################################################/
+  
