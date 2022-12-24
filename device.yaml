@@ -54,6 +54,11 @@ device:
         
         return lab
     ]]]
+  state:
+    - id: cbc_on
+      styles:
+        icon:
+          - color: var(--accent-color)
   styles:
     grid:
       - grid-template-rows: >

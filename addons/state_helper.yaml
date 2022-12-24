@@ -23,7 +23,7 @@ state_helper:
       value: 'off'
       styles:
         icon:
-          - opacity: 0.6
+          - opacity: 0.8
     - id: cbc_unavailable
       operator: '=='
       value: "unavailable"
