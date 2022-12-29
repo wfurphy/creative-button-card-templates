@@ -6,9 +6,16 @@ button_landscape:
     - actions
     - resizable
     - interactive
+  variables:
+    off_hide_info: true
   size: 50px
   show_icon: true
   show_name: true
+  state:
+    - id: cbc_off
+      styles:
+        label:
+          - display: "[[[ return variables.off_hide_info ? 'none' : 'block' ]]]"
   styles:
     grid:
       - grid-template-areas: '"i i n" "i i l"'

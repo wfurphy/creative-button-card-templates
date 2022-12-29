@@ -7,53 +7,49 @@ button_mini:
     - resizable
     - interactive
   variables:
-    symbol:
     height: 40px
+    symbol:
+    symbol_width: 50%
+    symbol_font_size: 10pt
+    symbol_color: var( --ha-card-background, var(--card-background-color, white) )
   size: 30px
   custom_fields:
     symbol: >
       [[[
           if (!variables.symbol) return ''
+          
+          let sym = String(variables.symbol)
 
-          if (variables.symbol.search('mdi:') >= 0) {
-            return `<ha-icon icon="${variables.symbol}" class="cbc-symbol" />`
+          if (sym.search('mdi:') !== -1) {
+            return `<ha-icon icon="${sym}" class="cbc-symbol" />`
           }
           
-          const sym = variables.symbol.substring(0,1)
+          sym = sym.substring(0,1)
           return `<span class="cbc-symbol">${sym}</span>`
       ]]]
   styles:
     card:
       - min-width: 30px
-      - max-width: 70px
     custom_fields:
       symbol:
-        - width: 30px
+        - width: "[[[ return variables.symbol_width ]]]"
         - position: absolute
         - justify-self: center
         - margin-top: "-25%"
-        - color: var(--ha-card-background)
-        - font-size: 10pt
+        - color: "[[[ return variables.symbol_color ]]]"
+        - font-size: "[[[ return variables.symbol_font_size ]]]"
         - font-weight: bold
 
 ############| Button Mini - Embeded |###########################>
 button_mini_embed:
+  variables:
+    width: 30px
   template:
     - button_mini
     - transparent
-  # variables:
-    # height: auto
   styles:
-    # grid:
-    #   - position: relative
     card:
-      - min-width: 30px
-      # - width: 30px
-      # - height: auto
-  extra_styles: |
-      .cbc-symbol {
-        width: 50%;
-      }
+      - min-width: 10px
 
 ############| Button Mini + State |###########################>
 button_mini_state:

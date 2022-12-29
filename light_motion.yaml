@@ -49,6 +49,7 @@ light_motion:
       - line-height: 18px
     label:
       - display: "[[[ return variables.__pauseState(variables.timer_entity, entity).display.label ]]]"
+      - align-self: center
     custom_fields:
       motion:
         - justify-self: start
@@ -90,6 +91,7 @@ light_motion:
             - grid-template-areas: '"i l"'
             - grid-template-columns: 1fr 3fr
             - grid-template-rows: 1fr
+            - padding: 0
           label:
             - overflow: visible
             - justify-self: start
@@ -99,6 +101,7 @@ light_motion:
             - text-align: left
           icon:
             - width: 18px
+            - height: 18px
             - padding-right: 5px
     timer:
       card:
@@ -113,7 +116,7 @@ light_motion:
         show_name: false
         show_icon: true
         show_label: true
-        label: " mins remaining"
+        label: " remaining"
         styles:
           card:
             - overflow: visible

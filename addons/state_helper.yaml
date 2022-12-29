@@ -14,18 +14,20 @@ state_helper:
       operator: template
       value: false
     - id: cbc_on
-      operator: '=='
       value: 'on'
       styles:
         icon:
           - opacity: 0.95
+        name:
+          - opactiy: 0.9
     - id: cbc_off
       value: 'off'
       styles:
         icon:
           - opacity: 0.8
+        name:
+          - opactiy: 0.8
     - id: cbc_unavailable
-      operator: '=='
       value: "unavailable"
       label: Unavailable
       styles:

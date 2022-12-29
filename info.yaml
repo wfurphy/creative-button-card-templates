@@ -54,7 +54,7 @@ info_mini:
     spin: false
     ####/ layout / string { stack|inline } / default: stack /####>
     layout: stack
-    icon_color:
+    icon_color: var(--state-icon-color, var(--paper-item-icon-color))
     color:
     width: 60px
     style:
@@ -102,7 +102,7 @@ info_mini:
       - color: >
           [[[
             if(variables.__item(variables).color) { return variables.__item(variables).color } else
-            if(variables.icon_color && variables.icon_color !== 'var(--state-icon-color)') { return variables.icon_color }
+            if(variables.icon_color && variables.icon_color !== 'var(--state-icon-color, var(--paper-item-icon-color))') { return variables.icon_color }
             return this.___config.template.includes('transparent') ? 'var( --ha-card-background, var(--card-background-color, white) )' : 'var(--state-icon-color)'
           ]]]
     state:
@@ -124,7 +124,7 @@ info_item:
   variables:
     group: false
     item: {}
-    icon_color: "var(--state-icon-color)"
+    icon_color: "var(--state-icon-color, var(--paper-item-icon-color))"
     name: ''
     attribute: ''
     color:
@@ -205,7 +205,7 @@ info:
   variables:
     items: []
     mini: false
-    icon_color: "var(--state-icon-color)"
+    icon_color: "var(--state-icon-color, var(--paper-item-icon-color))"
   show_icon: false
   show_name: false
   card_size: 1

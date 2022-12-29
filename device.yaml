@@ -3,6 +3,7 @@ device:
   template: 
     - button_landscape
   variables:
+    off_hide_info: true
     ## attr @deprecated v0.2 replaced by attributes
     attr: []
     attributes: []
@@ -59,6 +60,10 @@ device:
       styles:
         icon:
           - color: var(--accent-color)
+    - id: cbc_off
+      styles:
+        label:
+          - 
   styles:
     grid:
       - grid-template-rows: >
@@ -67,8 +72,6 @@ device:
 
             return entity.state == 'on' ? '1fr 2fr' : '1fr 1fr'
           ]]]
-    label:
-      - display: "[[[ return entity.state == 'on' ? 'block' : 'none' ]]]"
 
 #########################################################################/
   

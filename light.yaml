@@ -3,35 +3,22 @@ light:
   template:
     - button_landscape
   variables:
+    off_hide_info: true
     height: 80px
     attribute_icon_color: var(--state-icon-color)
+    _rgb_symbols: 
+      - R
+      - G
+      - B
   color: auto
   show_label: true
   styles:
     label:
       - display: "[[[ return entity.state == 'on' ? 'block' : 'none' ]]]"
+      - overflow: visible
+      - text-overflow: visible
   label: >
     [[[
-      let styles = ` <style>
-          .cbc-l-icon {
-            color: ${variables.attribute_icon_color};
-            width: 15px;
-            margin-right: 1px;
-          }
-          .cbc-l-icon.last {
-            margin-right: 2px;
-          }
-          .cbc-l-unit {
-            color: var(--secondary-text-color);
-            font-size: 85%;
-          }
-          .cbc-l-rgb {
-            /* font-size: 90%; */
-            word-spacing: -2px;
-          }
-        </style>
-        `
-
       if (!entity) return styles + `<elt><ha-icon icon="mdi:wifi-cancel" class="cbc-l-icon"></ha-icon><span class="cbc-l-value">Unavailable</span></elt>`
 
       if (entity.attributes.effect && entity.attributes.effect !== "none")
@@ -41,9 +28,9 @@ light:
       const rgb = String(entity.attributes.rgb_color).split(',')
       let clr = `
       <span class="ellipsis">
-        <span class="cbc-l-rgb"><span style="color: #ad0826; font-weight: bold;">R</span>${rgb[0]}</span>
-        <span class="cbc-l-rgb"><span style="color: #00b558; font-weight: bold;">G</span>${rgb[1]}</span>
-        <span class="cbc-l-rgb"><span style="color: #1a89f5; font-weight: bold;">B</span>${rgb[2]}</span>
+        <span class="cbc-l-rgb cbc-i" style="color: #ad0826;">${variables._rgb_symbols[0]}</span><span class="cbc-l-rgb">${rgb[0]}</span>
+        <span class="cbc-l-rgb cbc-i" style="color: #00b558;">${variables._rgb_symbols[1]}</span><span class="cbc-l-rgb">${rgb[1]}</span>
+        <span class="cbc-l-rgb cbc-i" style="color: #1a89f5;">${variables._rgb_symbols[2]}</span><span class="cbc-l-rgb">${rgb[2]}</span>
       </span>`
       let ci = ''
 
@@ -60,7 +47,30 @@ light:
       if (bpct >= 25) { bi = 'mdi:brightness-4' } else
       if (bpct >= 10) { bi = 'mdi:brightness-3' }
 
-      return styles + `
+      return `
+      <style>
+          .cbc-l-icon {
+            color: ${variables.attribute_icon_color};
+            width: 15px;
+            margin-right: 1px;
+          }
+          .cbc-l-icon.last {
+            margin-right: 2px;
+          }
+          .cbc-l-unit {
+            color: var(--secondary-text-color);
+            font-size: 85%;
+          }
+          .cbc-l-rgb {
+            font-size: 12px;
+            word-spacing: -4px;
+            letter-spacing: -1px
+          }
+          .cbc-l-rgb.cbc-i {
+            font-weight: bold;
+            margin-left: -1px;
+          }
+        </style>
         <elt>
           <ha-icon icon="${bi}" class="cbc-l-icon"></ha-icon><span class="cbc-l-val">${bpct}</span><span class="cbc-l-unit">%</span>
           ${ci}${clr}

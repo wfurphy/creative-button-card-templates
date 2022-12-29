@@ -13,7 +13,7 @@ value_strip_item:
       value: 100
       icon: mdi:bomb
       label:
-      active_color: 'var(--accent-color)'
+      active_color: var(--button-card-light-color, var(--accent-color))
       color: 'var(--paper-item-icon-color)'
     show:
       icon: true
@@ -106,6 +106,7 @@ adaptive_lighting_strip_item:
     al_area_id: main_area
     item:
       value: 100
+  color: auto
   custom_fields:
     active_logic: >
       [[[
@@ -131,11 +132,6 @@ adaptive_lighting_strip_item:
         [[[
           return Boolean(variables.item.value == states['input_number.brightness_' + variables.al_area_id].state)
         ]]]
-      styles:
-        icon:
-          - color: "[[[ return variables.item.active_color ]]]"
-        name:
-          - color: "[[[ return variables.item.active_color ]]]"
 
 #################( Brightness Strip Item )################################>
 brightness_strip_item:
@@ -143,6 +139,7 @@ brightness_strip_item:
   variables:
     item:
       value: 100
+  color: auto
   tap_action:
     action: call-service
     service: light.turn_on
@@ -157,11 +154,6 @@ brightness_strip_item:
         [[[
           return Boolean(Math.round(entity.attributes.brightness / 2.55) == variables.item.value)
         ]]]
-      styles:
-        icon:
-          - color: "[[[ return variables.item.active_color ]]]"
-        name:
-          - color: "[[[ return variables.item.active_color ]]]"
   
 #################( Cover Strip Item )################################>
 cover_strip_item:
@@ -176,11 +168,6 @@ cover_strip_item:
         [[[
           return Boolean(entity.attributes.current_position == variables.item.value)
         ]]]
-      styles:
-        icon:
-          - color: "[[[ return variables.item.active_color ]]]"
-        name:
-          - color: "[[[ return variables.item.active_color ]]]"
   tap_action:
     action: call-service
     service: cover.set_cover_position

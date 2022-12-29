@@ -2,15 +2,16 @@
 light_group:
   template:
     - light
-    # - debug
   color: auto
   variables:
     items: []
-    # height: 100px
     __defaults:
-      entity_id: "[[[ return entity?.entity_id ]]]"
+      entity: "[[[ return entity?.entity_id ]]]"
       icon: mdi:lightbulb
       symbol:
+      symbol_width: 50%
+      symbol_font_size: 10pt
+      symbol_color: var( --ha-card-background, var(--card-background-color, white) )
       display: "none"
   styles:
     grid:
@@ -26,12 +27,11 @@ light_group:
                 variables.items.push({
               ...variables.__defaults, 
               ...{ 
-                entity_id: e, 
+                entity: e, 
                 symbol: String(i+1) 
                 }})
               })
             }
-
 
             variables._qty = variables.items.length > 6 ? 6 : variables.items.length
             let pre = '\"i'
@@ -46,7 +46,7 @@ light_group:
               variables.items[i].display = 'block'
               variables.items[i] = {...variables.__defaults, ...variables.items[i]}
             }
-            
+                        
             return pre + '\" ' + cf + '\" ' + post + '\" '
           ]]]
       - grid-template-columns: "[[[ return `repeat(${variables._qty}, 1fr)` ]]]"
@@ -103,66 +103,84 @@ light_group:
         template: 
           - button_mini_embed
           - actions
-        entity: "[[[ return variables.items[0]?.entity_id ]]]"
+        entity: "[[[ return variables.items[0]?.entity ]]]"
         icon: "[[[ return variables.items[0]?.icon ]]]"
         color: auto
         variables:
           symbol: "[[[ return variables.items[0]?.symbol ]]]"
+          symbol_width: "[[[ return variables.items[0]?.symbol_width ]]]"
+          symbol_font_size: "[[[ return variables.items[0]?.symbol_font_size ]]]"
+          symbol_color: "[[[ return variables.items[0]?.symbol_color ]]]"
     li2:
       card:
         type: custom:button-card
         template: 
           - button_mini_embed
           - actions
-        entity: "[[[ return variables.items[1]?.entity_id ]]]"
+        entity: "[[[ return variables.items[1]?.entity ]]]"
         icon: "[[[ return variables.items[1]?.icon ]]]"
         color: auto
         variables:
           symbol: "[[[ return variables.items[1]?.symbol ]]]"
+          symbol_width: "[[[ return variables.items[1]?.symbol_width ]]]"
+          symbol_font_size: "[[[ return variables.items[1]?.symbol_font_size ]]]"
+          symbol_color: "[[[ return variables.items[1]?.symbol_color ]]]"
     li3:
       card:
         type: custom:button-card
         template: 
           - button_mini_embed
           - actions
-        entity: "[[[ return variables.items[2]?.entity_id ]]]"
+        entity: "[[[ return variables.items[2]?.entity ]]]"
         icon: "[[[ return variables.items[2]?.icon ]]]"
         color: auto
         variables:
           symbol: "[[[ return variables.items[2]?.symbol ]]]"
+          symbol_width: "[[[ return variables.items[2]?.symbol_width ]]]"
+          symbol_font_size: "[[[ return variables.items[2]?.symbol_font_size ]]]"
+          symbol_color: "[[[ return variables.items[2]?.symbol_color ]]]"
     li4:
       card:
         type: custom:button-card
         template: 
           - button_mini_embed
           - actions
-        entity: "[[[ return variables.items[3]?.entity_id ]]]"
+        entity: "[[[ return variables.items[3]?.entity ]]]"
         icon: "[[[ return variables.items[3]?.icon ]]]"
         color: auto
         variables:
           symbol: "[[[ return variables.items[3]?.symbol ]]]"
+          symbol_width: "[[[ return variables.items[3]?.symbol_width ]]]"
+          symbol_font_size: "[[[ return variables.items[3]?.symbol_font_size ]]]"
+          symbol_color: "[[[ return variables.items[3]?.symbol_color ]]]"
     li5:
       card:
         type: custom:button-card
         template: 
           - button_mini_embed
           - actions
-        entity: "[[[ return variables.items[4]?.entity_id ]]]"
+        entity: "[[[ return variables.items[4]?.entity ]]]"
         icon: "[[[ return variables.items[4]?.icon ]]]"
         color: auto
         variables:
           symbol: "[[[ return variables.items[4]?.symbol ]]]"
+          symbol_width: "[[[ return variables.items[4]?.symbol_width ]]]"
+          symbol_font_size: "[[[ return variables.items[4]?.symbol_font_size ]]]"
+          symbol_color: "[[[ return variables.items[4]?.symbol_color ]]]"
     li6:
       card:
         type: custom:button-card
         template: 
           - button_mini_embed
           - actions
-        entity: "[[[ return variables.items[5]?.entity_id ]]]"
+        entity: "[[[ return variables.items[5]?.entity ]]]"
         icon: "[[[ return variables.items[5]?.icon ]]]"
         color: auto
         variables:
           symbol: "[[[ return variables.items[5]?.symbol ]]]"
+          symbol_width: "[[[ return variables.items[5]?.symbol_width ]]]"
+          symbol_font_size: "[[[ return variables.items[5]?.symbol_font_size ]]]"
+          symbol_color: "[[[ return variables.items[5]?.symbol_color ]]]"
 
 
 #########################################################################/
