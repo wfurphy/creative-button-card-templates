@@ -1,16 +1,76 @@
 button_mini:
-  tap_action:
-    action: toggle
-  hold_action:
-    action: more-info
-  show_name: false
-  show_state: false
+  template:
+    - style_helper
+    - state_helper
+    - actions
+    - show_only_icon
+    - resizable
+    - interactive
+  variables:
+    height: 40px
+    symbol:
+    symbol_width: 50%
+    symbol_font_size: 10pt
+    symbol_color: var( --ha-card-background, var(--card-background-color, white) )
   size: 30px
+  custom_fields:
+    symbol: >
+      [[[
+          if (!variables.symbol) return ''
+          
+          let sym = String(variables.symbol)
+
+          if (sym.search('mdi:') !== -1) {
+            return `<ha-icon icon="${sym}" class="cbc-symbol" />`
+          }
+          
+          sym = sym.substring(0,1)
+          return `<span class="cbc-symbol">${sym}</span>`
+      ]]]
+  styles:
+    card:
+      - min-width: 30px
+    custom_fields:
+      symbol:
+        - width: "[[[ return variables.symbol_width ]]]"
+        - position: absolute
+        - justify-self: center
+        - margin-top: "-25%"
+        - color: "[[[ return variables.symbol_color ]]]"
+        - font-size: "[[[ return variables.symbol_font_size ]]]"
+        - font-weight: bold
+
+############| Button Mini - Embeded |###########################>
+button_mini_embed:
+  variables:
+    width: 30px
+  template:
+    - button_mini
+    - transparent
+  styles:
+    card:
+      - min-width: 10px
+
+############| Button Mini + State |###########################>
+button_mini_state:
+  template:
+    - button_mini
+  layout: icon_state
+  entity: input_boolean.air_circulation
+  show_state: true
+  # color_type: card
+  size: 25px
   styles:
     card:
       - height: 40px
-      # - width: 100px
+      - width: 70px
+    state:
+      - justify-self: center
+      - text-align: left
+      # - margin-left: '-5px'
+      - font-size: 11pt
     icon:
-      - opacity: >-
-          [[[ return (entity.state === 'unavailable') ? '0.3'
-          : '1' ]]]
+      - justify-self: end
+      - margin-left: 5px
+
+#########################################################################/

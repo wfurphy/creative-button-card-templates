@@ -1,0 +1,16 @@
+####{ CreativeBC }####| +Style Helper |####[ github.com/wfurphy/creative-button-card-templates ]####>
+style_helper:
+  styles:
+    card:
+      - opacity: 1
+    icon:
+      - opacity: 0.95
+    name:
+      - opacity: 0.9
+    label:
+      - opacity: 0.6
+    state:
+      - opacity: 1
+
+############################################################################/
+

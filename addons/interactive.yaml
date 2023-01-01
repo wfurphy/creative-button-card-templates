@@ -1,0 +1,21 @@
+####{ CreativeBC }####| +Interactive |####[ github.com/wfurphy/creative-button-card-templates ]####>
+interactive:
+  card_mod:
+    style: |
+      ha-card:hover::after {
+        display: block;
+        position:absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.02);
+        content: '';
+        z-index: 1
+      }
+      ha-card:hover #label { opacity: 0.8 !important; }
+      ha-card:hover #name { opacity: 1 !important; }
+      ha-card:hover #icon { opacity: 1 !important; }
+
+############################################################################/
+  

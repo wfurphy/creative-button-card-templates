@@ -1,14 +1,14 @@
 ############| Entity Detail - Detailed information panel for debugging |###########################>
 entity_detail:
+  template:
+    - no_actions
+  variables:
+    do_not_split: []
   show_name: true
-  show_state: false
-  tap_action:
-    action: none
+  show_state: true
+  color: auto
   double_tap_action:
-    action: none
-  hold_action:
-    action: none
-  # state_display: "[[[ return `${entity.entity_id}<br>${entity.state}` ]]]"
+    action: toggle
   custom_fields:
     atts: >-
       [[[
@@ -23,6 +23,7 @@ entity_detail:
             margin-right: auto;
             text-align: left;
             table-layout: fixed;
+            max-width: 100%;
           }
           .cbc-table th {
             font-weight: normal;
@@ -36,7 +37,8 @@ entity_detail:
           .cbc-table td {
             font-size: 12px;
             padding: 5px;
-            word-wrap: break-word;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word;
           }
           .cbc-table td:nth-child(1) {
             font-weight: bold;
@@ -47,6 +49,12 @@ entity_detail:
           }
           .cbc-table tr:nth-child(even) {
             background: var(--ha-card-background);
+            /* background: var(--table-row-alternative-background-color) */
+          }
+          .cbc-table tr>td>ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
           }
         </style>
         <elt>
@@ -70,20 +78,36 @@ entity_detail:
         </tr>`
 
         for (let a in entity.attributes) {
-          htmlList += `<tr><td>${a}</td><td>${entity.attributes[a]}</td></tr>`
+          const value = String(entity.attributes[a])
+          htmlList += `<tr><td>${a}</td><td>`
+          const no_split = Array.isArray(variables.do_not_split) ? variables.do_not_split.find(e => e == a) : variables.do_not_split == a
+          
+          if (!no_split && value.search(/[\|,]+/) >= 0) {
+            htmlList += `<ul>`
+            const list = value.split(/[\|,]+/)
+
+            list.forEach(v => {
+              htmlList += `<li>${v}</li>`
+            })
+
+            htmlList += `</ul>`
+          } else {
+            htmlList += `${value}`
+          }
+
+          htmlList += `</td></tr>`
         }
 
         return htmlList += `</tbody></table></elt>`
       ]]]
   styles:
     grid:
-      - grid-template-areas: '"i n" "atts atts"'
-      - grid-template-columns: 1fr 1fr
+      - grid-template-areas: '"i n" "i s" "atts atts"'
+      - grid-template-columns: 1fr 3fr
       - justify-items: center
+      - padding: 6px
     card:
-      - box-shadow: none
-      - background: none
-      - z-index: 990
+      - opacity: "[[[ return !entity || entity.state == 'unavailable' ? 0.6 : 1 ]]]"
     icon:
       - height: 80px
       - justify-self: center
@@ -92,8 +116,36 @@ entity_detail:
       - padding: 10px
     name:
       - justify-self: start
+      - align-self: end
       - padding: 10px
+    state:
+      - justify-self: start
+      - align-self: start
+      - padding: 10px
+      # - opacity: 0.6
+      - color: >
+          [[[
+            if (!entity) return '#797592'
+
+            switch (entity.state) {
+              case 'on':
+              case 'active':
+                return '#086038'
+              case 'off':
+                return '#9d3042'
+              case 'unavailable':
+                return '#797592'
+              default:
+                return 'var(--primary-text-color)'
+            }
+          ]]]
     custom_fields:
       atts:
         - justify-self: strech
         - margin-top: 10px
+        - max-width: 100%
+        - white-space: nomral
+        - word-wrap: break-word
+
+
+#########################################################################/

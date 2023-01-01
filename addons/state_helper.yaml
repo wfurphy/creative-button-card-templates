@@ -1,0 +1,44 @@
+####{ Creative BC }########| +State Helper |########[ github.com/wfurphy ]#####>
+state_helper:
+  state:
+    - id: cbc_custom_1
+      operator: template
+      value: false
+    - id: cbc_custom_2
+      operator: template
+      value: false
+    - id: cbc_custom_3
+      operator: template
+      value: false
+    - id: cbc_custom_4
+      operator: template
+      value: false
+    - id: cbc_on
+      value: 'on'
+      styles:
+        icon:
+          - opacity: 0.95
+        name:
+          - opactiy: 0.9
+    - id: cbc_off
+      value: 'off'
+      styles:
+        icon:
+          - opacity: 0.8
+        name:
+          - opactiy: 0.8
+    - id: cbc_unavailable
+      value: "unavailable"
+      label: Unavailable
+      styles:
+        card:
+          - min-height: 40px
+          - height: 40px
+          - opacity: 0.2
+          - box-shadow: none;
+        label:
+          - display: block
+          - margin-top: 0
+
+################################################################################/
+

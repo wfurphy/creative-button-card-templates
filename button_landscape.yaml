@@ -1,38 +1,47 @@
-############| Landscape Button Template |###########################>
+####{ CreativeBC }####| Landscape Button Template |####[ github.com/wfurphy/creative-button-card-templates ]####>
 button_landscape:
+  template:
+    - state_helper
+    - style_helper
+    - actions
+    - resizable
+    - interactive
+  variables:
+    off_hide_info: true
   size: 50px
-  layout: icon_name_state2nd
-  tap_action:
-    action: toggle
-    haptic: success
-  double_tap_action:
-    action: more-info
-    haptic: success
-  hold_action:
-    action: more-info
-    haptic: success
   show_icon: true
   show_name: true
+  state:
+    - id: cbc_off
+      styles:
+        label:
+          - display: "[[[ return variables.off_hide_info ? 'none' : 'block' ]]]"
   styles:
     grid:
       - grid-template-areas: '"i i n" "i i l"'
       - grid-template-columns: 1fr 1fr 4fr
       - grid-template-rows: 1fr 1fr
       - justify-items: start
+      - align-items: center
+      - padding: 4px
     card:
-      - height: 80px
-      - opacity: "[[[ return entity && entity.state == 'unavailable' ? '0.4' : '1' ]]]"
+      - min-height: 80px
+      - padding: 0
     icon:
       - justify-self: center
+      - align-self: center
     name:
       - justify-self: start
+      - align-self: end
       - text-align: left
     label:
       - justify-self: start
-      - display: "[[[ return entity && entity.state == 'on' ? 'inline' : 'none' ]]]"
-      - opacity: 0.4
-      - font-size: 75%
+      - align-self: start
+      - font-size: 80%
       - margin-top: 5px
       - text-align: left
     state:
-      - opacity: 0.6
+      - justify-self: start
+
+#########################################################################/
+  

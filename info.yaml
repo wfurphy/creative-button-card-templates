@@ -1,0 +1,327 @@
+####{ CreativeBC }####| Info |####[ github.com/wfurphy/creative-button-card-templates ]####>
+info_helper:
+  variables:
+    __item: >
+      [[[
+        return function(v) {
+          return {...v, ...v.item}
+        }
+      ]]]
+    __makeHtml: >
+      [[[
+        return function(vars) {
+          const item = {...vars, ...vars.item}
+          const out = {
+            units: String(item.units || entity?.attributes.unit_of_measurement || ''),
+            tag: item.layout == 'stack' ? 'div' : 'span',
+            prefix: !!item.prefix_units
+          }
+          
+          if (item.state) {
+            out.state = item.state
+          } else if (item.attribute && entity) {
+            out.state = entity.attributes[item.attribute]
+          } else {
+            out.state = entity?.state
+          }
+
+          if (out.units && ['$', '€'].includes(out.units)) {
+            out.tag = 'span'
+            out.state = Number(out.state).toFixed(2)
+            out.prefix = true
+          } else if (!isNaN(out.state)) {
+            out.state = +Number(out.state).toFixed(item.decimals)
+          }
+          
+          if (out.prefix) {
+            return `<${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}><${out.tag} class="cbc-state">${out.state}</${out.tag}>`
+          } else {
+            return `<${out.tag} class="cbc-state">${out.state}</${out.tag}><${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}>`
+          }
+        }
+      ]]]
+
+#################( Info Mini )################################>
+info_mini:
+  template:
+    - button_mini
+    - no_actions
+    - info_helper
+  variables:
+    group: false
+    item: {}
+    __type: mini
+    spin: false
+    ####/ layout / string { stack|inline } / default: stack /####>
+    layout: stack
+    icon_color: var(--state-icon-color, var(--paper-item-icon-color))
+    color:
+    width: 60px
+    style:
+      opacity:
+        icon: 0.4
+    __css: |
+        <style>
+          .cbc-units {
+            font-size: 70%;
+            color: var(--secondary-text-color);
+          }
+          div.cbc-units {
+            font-size: 70% !important;
+            margin-top: -4px;
+          }
+        </style>
+  show_icon: true
+  show_state: true
+  show_name: false
+  state:
+    - id: cbc_spin
+      operator: template
+      value: "[[[ return variables.__item(variables).spin ]]]"
+      spin: true
+  state_display: >
+    [[[
+      return variables.__css + variables.__makeHtml(variables)
+    ]]]
+  styles:
+    grid:
+      - padding: 6px
+    card:
+      - padding: 0
+      - margin: 0
+    icon:
+      - opacity: "[[[ return this.___config.template.includes('transparent') ? 1 : variables.style.opacity.icon ]]]"
+      - justify-self: center
+      - align-self: center
+      - max-height: 200%
+      - max-width: 200%
+      - height: 48px
+      - width: 48px
+      - margin-top: -3px
+      - padding: 0
+      - color: >
+          [[[
+            if(variables.__item(variables).color) { return variables.__item(variables).color } else
+            if(variables.icon_color && variables.icon_color !== 'var(--state-icon-color, var(--paper-item-icon-color))') { return variables.icon_color }
+            return this.___config.template.includes('transparent') ? 'var( --ha-card-background, var(--card-background-color, white) )' : 'var(--state-icon-color)'
+          ]]]
+    state:
+      - position: fixed
+      - justify-self: end
+      - align-self: end
+      - font-size: 18px
+      - margin-top: 0
+      - margin-bottom: 0
+      - overflow: visible
+
+#################( Info Item )################################>
+info_item:
+  template:
+    - style_helper
+    - no_actions
+    - transparent
+    - info_helper
+  variables:
+    group: false
+    item: {}
+    icon_color: "var(--state-icon-color, var(--paper-item-icon-color))"
+    name: ''
+    attribute: ''
+    color:
+    __css: |
+      <style>
+        .cbc-units {
+          font-size: 70%;
+          color: var(--secondary-text-color);
+        }
+        #img-cell {
+          overflow: visible !important;
+        }
+      </style>
+  show_state: true
+  show_name: true
+  state_display: >
+    [[[
+      return variables.__css + variables.__makeHtml(variables)
+    ]]]
+  name: >
+    [[[
+      const item = variables.__item(variables)
+      if(item.name && String(item.name).length > 0) {
+        return item.name
+      }
+
+      let att = String(item.attribute)
+      return att.length > 0 ? att.replace('_', ' ') : entity?.attributes.friendly_name
+    ]]]
+  # styles:
+  styles:
+    grid:
+      - position: relative
+      - grid-template-areas: '"s s s i" "s s s i" "n n n i"'
+      - grid-template-columns: max-content
+      - grid-template-rows: 1fr 1fr 1fr
+      - overflow: visible
+      - padding: 6px
+    card:
+      - height: 50px
+      - justify-self: center
+      - align-self: center
+      - padding: 2px 2px 6px 2px
+      - overflow: visible
+    icon:
+      - position: absolute
+      # - margin-left: -10%
+      - opacity: 0.3
+      - justify-self: center 
+      - align-self: center
+      - min-width: 60px
+      - min-height: 60px
+      - overflow: visible
+      - color: "[[[ return variables.__item(variables).color || variables.icon_color ]]]"
+    name:
+      - color: var(--secondary-text-color)
+      - justify-self: end
+      - align-self: start
+      - font-size: 12px
+      - text-justify: right
+      - overflow: visible
+      - text-transform: uppercase
+    state:
+      - justify-self: end
+      - align-self: end
+      - font-size: 20px
+      - text-justify: right
+      - overflow: visible
+
+#################( Info Icon )################################>
+info_icon:
+  icon: "[[[ return variables.__item(variables).icon ]]]"
+
+#################( Info Card )################################>
+info:
+  template:
+    - no_actions
+  variables:
+    items: []
+    mini: false
+    icon_color: "var(--state-icon-color, var(--paper-item-icon-color))"
+  show_icon: false
+  show_name: false
+  card_size: 1
+  styles:
+    grid:
+      - grid-template-areas: >
+          [[[
+            variables.__qty = variables.items.length
+            let areas = '\"dts1'
+
+            for(let i = 1; i < variables.__qty; i++) {
+              areas += ` dts${i+1}`
+            }
+
+            return areas += '\"'
+          ]]]
+      - grid-template-columns: "[[[ return `repeat(${variables.__qty}, 1fr)` ]]]"
+      - grid-template-rows: 1fr
+      - justify-items: center
+      - align-items: center
+      - text-align: center
+      - padding: 5px 15px 5px 10px
+      - height: 50px
+    card:
+      - height: 50px
+      - justify-self: center
+      - align-self: center
+      - text-align: center
+      - padding: 0
+      - overflow: hidden
+    custom_fields:
+      dts1:
+        - justify-self: center
+        - align-self: center
+        - display: "[[[ return variables.__qty >= 1 ? 'block' : 'none' ]]]"
+        - overflow: visible
+        - margin: auto
+        - width: 100%
+      dts2:
+        - justify-self: center
+        - align-self: center
+        - display: "[[[ return variables.__qty >= 2 ? 'block' : 'none' ]]]"
+        - overflow: visible
+        - margin: auto
+        - width: 100%
+      dts3:
+        - justify-self: center
+        - align-self: center
+        - display: "[[[ return variables.__qty >= 3 ? 'block' : 'none' ]]]"
+        - overflow: visible
+        - margin: auto
+        - width: 100%
+      dts4:
+        - justify-self: center
+        - align-self: center
+        - display: "[[[return variables.__qty >= 4 ? 'block' : 'none' ]]]"
+        - overflow: visible
+        - margin: auto
+        - width: 100%
+  extra_styles: |
+    button-card {
+      max-width: 100% !important;
+    }
+  custom_fields:
+    dts1:
+      card:
+        type: custom:button-card
+        template:
+          - "[[[ return variables.__qty >= 1 && (variables.mini || variables.items[0].mini) ? 'info_mini' : 'info_item' ]]]"
+          - "[[[ return variables.__qty >= 1 && variables.items[0].icon ? 'info_icon' : 'empty' ]]]"
+          - transparent
+        variables:
+          group: true
+          icon_color: "[[[ return variables.__qty >= 1 ? variables.icon_color : null ]]]"
+          item: "[[[ return variables.__qty >= 1 ? variables.items[0] : null ]]]"
+        entity: "[[[ return variables.__qty >= 1 ? variables.items[0].entity_id : null ]]]"
+
+    dts2:
+      card:
+        type: custom:button-card
+        template:
+          - "[[[ return variables.__qty >= 2 && (variables.mini || variables.items[1].mini) ? 'info_mini' : 'info_item' ]]]"
+          - "[[[ return variables.__qty >= 2 && variables.items[1].icon ? 'info_icon' : 'empty' ]]]"
+          - transparent
+        variables:
+          group: true
+          icon_color: "[[[ return variables.__qty >= 2 ? variables.icon_color : null ]]]"
+          item: "[[[ return variables.__qty >= 2 ? variables.items[1] : null ]]]"
+        entity: "[[[ return variables.__qty >= 2 ? variables.items[1].entity_id : null ]]]"
+
+    dts3:
+      card:
+        type: custom:button-card
+        template:
+          - "[[[ return variables.__qty >= 3 && (variables.mini || variables.items[2].mini) ? 'info_mini' : 'info_item' ]]]"
+          - "[[[ return variables.__qty >= 3 && variables.items[2].icon ? 'info_icon' : 'empty' ]]]"
+          - transparent
+        variables:
+          group: true
+          icon_color: "[[[ return variables.__qty >= 3 ? variables.icon_color : null ]]]"
+          item: "[[[ return variables.__qty >= 3 ? variables.items[2] : null ]]]"
+        entity: "[[[ return variables.__qty >= 3 ? variables.items[2].entity_id : null ]]]"
+
+    dts4:
+      card:
+        type: custom:button-card
+        template:
+          - "[[[ return variables.__qty >= 4 && (variables.mini || variables.items[3].mini) ? 'info_mini' : 'info_item' ]]]"
+          - "[[[ return variables.__qty >= 4 && variables.items[3].icon ? 'info_icon' : 'empty' ]]]"
+          - transparent
+        variables:
+          group: true
+          icon_color: "[[[ return variables.__qty >= 4 ? variables.icon_color : null ]]]"
+          item: "[[[ return variables.__qty >= 4 ? variables.items[3] : null ]]]"
+        entity: "[[[ return variables.__qty >= 4 ? variables.items[3].entity_id : null ]]]"
+
+        
+#########################################################################/
+  

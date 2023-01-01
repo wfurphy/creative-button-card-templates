@@ -1,14 +1,74 @@
-############| Title |############################>
+####{ CreativeBC }####| Title |####[ github.com/wfurphy/creative-button-card-templates ]####>
 title:
+  template:
+    - style_helper
+  variables:
+    mirror: false
+    color: var(--primary-background-color)
+    background_color: var(--state-icon-color)
+    show_tab: false
+    offset: 0
   styles:
+    grid:
+      - position: relative
+      - grid-template-areas: >
+          [[[ return variables.mirror ? '\"i n\"' : '\"n i\"' ]]]
+      - grid-template-columns: 3fr 1fr
+      - grid-template-rows: 1fr
+      - justify-items: start
+      - align-items: center
+      - padding: 6px
+      - overflow: visible
     card:
+      - --mdc-ripple-press-opacity: 0
+      - opacity: 0.5
       - height: 40px
+      - margin-left: "[[[ return variables.offset ]]]"
+      - background-color: "[[[ return variables.background_color ]]]"
       - box-shadow: none
-      - opacity: 0.4
-      - text-align: center
+      - border: none
+      - border-radius: "[[[ return variables.mirror ? '10px 0 0 10px' : '0 10px 10px 0' ]]]"
+      - border: >
+          [[[
+            if(variables.show_tab) {
+              return variables.mirror ? `0 5px 0 0 solid ${variables.color}` : `0 0 0 5px solid ${variables.color}`
+            }
+
+            return 'none'
+          ]]]
+      - text-align: "[[[ return variables.mirror ? 'right' : 'left' ]]]"
+      - padding: 0
     name:
+      - opactiy: 1
+      - justify-self: "[[[ return variables.mirror ? 'end' : 'start' ]]]"
       - text-transform: uppercase
-      - letter-spacing: 4px
+      - margin-left: 10px
+      - letter-spacing: 2px
       - line-height: 18px
       - font-size: 14px
-      - text-align: center
+      - text-align: "[[[ return variables.mirror ? 'right' : 'left' ]]]"
+      - overflow: visible
+    icon:
+      - opacity: 1
+      - position: absolute
+      - color: "[[[ return variables.color ]]]"
+      - justify-self: "[[[ return variables.mirror ? 'start' : 'end' ]]]"
+      - text-align: "[[[ return variables.mirror ? 'left' : 'right' ]]]"
+      - overflow: visible
+      - height: 155%
+      - width: 155%
+      - max-height: 500%
+
+#### title_grid ####>
+# @deprecated v0.2 to be removed in v0.3
+##/
+title_grid:
+  template: title
+  styles:
+    card:
+      - margin-top: 40px
+      - justify-self: center
+      - align-self: end
+
+#########################################################################/
+  

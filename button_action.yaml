@@ -1,0 +1,180 @@
+####{ CreativeBC }####| Action Button |####[ github.com/wfurphy/creative-button-card-templates ]####>
+button_action:
+  template:
+    - state_helper
+    - style_helper
+    - dynamic_icons
+    - resizable
+    - interactive
+  variables:
+    off_hide_info: false
+    icon: mdi:play
+    icon_on: mdi:stop
+    name_on: "Cancel"
+    timer:
+  show_state: true
+  show_name: true
+  show_label: true
+  show_last_changed: true
+  name: Start
+  tap_action:
+    action: >
+      [[[ return entity?.entity_id.search('timer.') !== -1 ? 'call-service' : 'toggle' ]]]
+    service: >
+      [[[ return entity?.state == 'active' ? 'timer.cancel' : 'timer.start' ]]]
+    service_data:
+      entity_id: >
+        [[[ return entity?.entity_id ]]]
+    haptic: success
+  double_tap_action:
+    action: call-service
+    haptic: success
+    service: timer.cancel
+    service_data:
+      entity_id: "[[[ return variables.timer ]]]"
+  hold_action:
+    action: more-info
+    haptic: success
+  state:
+    - id: cbc_custom_1
+      operator: template
+      value: >
+        [[[ 
+          return entity?.entity_id.search('timer.') !== -1 && entity.state == 'active'
+        ]]]
+      icon: "[[[ return variables.icon_on ]]]"
+      name: "[[[ return variables.name_on ]]]"
+      styles:
+        grid:
+          - grid-template-areas: '"i s" "i n"'
+        name:
+          - font-size: 12px
+          - justify-self: start
+          - align-self: start
+          - text-align: left
+          - color: var(--accent-color)
+        state:
+          - font-size: 16.8px
+          - justify-self: start
+          - align-self: end
+          - opacity: 1
+          - display: block
+        icon:
+          - color: var(--accent-color)
+        label:
+          - display: none
+        custom_fields:
+          loadicon:
+            - display: block
+    - id: cbc_on
+      name: "[[[ return variables.name_on ]]]"
+      label: Something
+      styles:
+        icon:
+          - color: var(--accent-color)
+        name:
+          - color: var(--accent-color)
+        label:
+          - display: "[[[ return variables.timer && states[variables.timer].state == 'active' ? 'none' : 'block' ]]]"
+        custom_fields:
+          loadicon:
+            - display: block
+  styles:
+    grid:
+      - grid-template-areas: >
+          [[[ return variables.timer && states[variables.timer].state == 'active' ? '"i n" "i timer"' : '"i n" "i l"' ]]]
+      # - grid-template-areas: '"i n" "i l"'
+      - grid-template-columns: 60px auto
+      - grid-template-rows: 1fr 1fr
+      - justify-items: start
+      - align-items: center
+    card:
+      - min-height: 40px
+      - border: none
+      - padding: 2px
+      - align-items: center
+    icon:
+      - justify-self: center
+      - align-self: center
+      - overflow: visible
+      - width: 30px
+      - color: var(--paper-item-icon-color)
+    name:
+      - justify-self: start
+      - align-self: end
+      - text-align: left
+    label:
+      - font-size: 12px
+      - justify-self: start
+      - align-self: start
+      - text-align: left
+      - display: >
+          [[[ return variables.timer && states[variables.timer].state == 'active' ? 'none' : 'block' ]]]
+    state:
+      - font-size: 12px
+      - justify-self: start
+      - align-self: start
+      - text-align: left
+      - display: none
+    custom_fields:
+      loadicon:
+        - position: absolute
+        - align-self: center
+        - justify-self: start
+        - width: 35px
+        - margin-left: 12.5px
+        - opacity: 0.6
+        - display: none
+      timer:
+        - justify-self: start
+        - justify-text: left
+        - display: none
+        - display: >
+            [[[ return variables.timer && states[variables.timer].state == 'active' ? 'block' : 'none' ]]]
+  custom_fields:
+    loadicon: >
+      [[[ return html`<ha-icon id="cbc-loading" rotating icon="mdi:loading"></ha-icon>` ]]]
+    timer:
+      card:
+        type: custom:button-card
+        template: 
+          - transparent
+          - no_actions
+        entity: "[[[ return variables.timer ]]]"
+        icon: mdi:timer-outline
+        label: Double Tap<br>to Cancel
+        show_name: false
+        show_state: true
+        show_label: true
+        size: 20px
+        styles:
+          card:
+            - height: 25px
+            - padding: 0
+          grid:
+            - grid-template-areas: '"i s l"'
+            - grid-template-columns: 20px auto auto
+            - grid-template-rows: auto
+            - align-items: start
+            - justify-items: start
+            - padding: 0
+          state:
+            - justify-self: end
+            - align-self: center
+            - justify-text: right
+            - opacity: 1
+            - font-size: 16px
+            - margin-left: 5px
+          label:
+            - justify-self: start
+            - align-self: center
+            - justify-text: left
+            - opacity: 1
+            - color: var(--accent-color)
+            - font-size: 9px
+            - margin-left: 10px
+            
+            
+
+#########################################################################/
+  

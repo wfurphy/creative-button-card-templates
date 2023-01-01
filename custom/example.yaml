@@ -1,0 +1,21 @@
+####{ CreativeBC }####| Example Custom Template|####[ github.com/wfurphy/creative-button-card-templates ]####>
+
+####| Custom: Blue Title |###############################################>
+title_blue:
+  template: title
+  variables:
+    color: var(--primary-background-color)
+    background_color: rgba(45, 94, 139, 0.3)
+    show_tab: false
+  styles:
+    card:
+      - padding-right: 20px
+      - opacity: 1
+    icon:
+      - opacity: 1
+    name:
+      - opactiy: 0.7
+
+####>> WARNING: DO NOT REMOVE THE FOLLOWING 2 LINES (even empty) <<#####/
+############################################################################/
+  

@@ -1,0 +1,10 @@
+####{ CreativeBC }####| +Transparent |####[ github.com/wfurphy/creative-button-card-templates ]####>
+transparent:
+  styles:
+    card:
+      - background: none
+      - box-shadow: none
+      - border: none
+
+#########################################################################/
+

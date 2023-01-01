@@ -1,27 +1,77 @@
-############| Device |###########################>
+####{ CreativeBC }####| Device |####[ github.com/wfurphy/creative-button-card-templates ]####>
 device:
-  template:
+  template: 
     - button_landscape
   variables:
-    _show_attributes: 0
-    _attr_id: ""
-    _attr_icon: ""
-    _attr_prefix: ""
-    _attr_suffix: ""
-    _attr2_id: ""
-    _attr2_icon: ""
-    _attr2_prefix: ""
-    _attr2_suffix: ""
+    off_hide_info: true
+    ## attr @deprecated v0.2 replaced by attributes
+    attr: []
+    attributes: []
+    attribute_icon_color: var(--state-icon-color)
+    __defaults:
+      id: '' 
+      icon: 'mdi:layers-plus'
+      state:
+      units: ''
+      prefix_units: false
   show_state: false
   show_label: true
-  label: >-
+  label: >
     [[[
-      let lbl = `<elt>`
-      if (variables._show_attributes > 0 && variables._attr_id.length)
-        lbl += `<ha-icon icon="${variables._attr_icon}" style="width:18px; padding-right: 5px; "></ha-icon><span class="cbc-label">${variables._attr_prefix}${entity.attributes[variables._attr_id]}${variables._attr_suffix}</span>`
+        variables.attributes = [...variables.attr, ...variables.attributes]
 
-      if (variables._show_attributes > 1 && variables._attr2_id.length)
-        lbl += `<ha-icon icon="${variables._attr2_icon}" style="width:18px; padding-right: 5px; margin-left: 10px"></ha-icon><span class="cbc-label">${variables._attr2_prefix}${entity.attributes[variables._attr2_id]}${variables._attr2_suffix}</span>`
+        if (!variables.attributes || !variables.attributes.length) return ''
 
-      return lbl += `</elt>`
+        let lab = `
+          <style>
+            ha-icon.cbc-icon {
+              color: ${variables.attribute_icon_color};
+              width:18px; 
+              padding-right: 5px; 
+            }
+            .cbc-units {
+              font-size: 80%;
+              opacity: 0.6;
+            }
+          </style>
+          `
+        
+        variables.attributes.forEach(function(a,i) {
+          const at = {...variables.__defaults, ...a}
+          const state = `<span class="cbc-value">${a.state || entity.attributes[at.id]}</span>` 
+          const units = `<span class="cbc-units">${at.units}</span>`
+
+          lab += `<div id="cbc-attr${i}-${a.id}" class="cbc-attr ellipsis">
+                    <ha-icon icon="${at.icon}" class="cbc-icon"></ha-icon>`
+          
+          if (a.prefix_units) {
+            lab += units + state
+          } else {
+            lab += state + units
+          }
+
+          lab += `</div>`
+        })
+        
+        return lab
     ]]]
+  state:
+    - id: cbc_on
+      styles:
+        icon:
+          - color: var(--accent-color)
+    - id: cbc_off
+      styles:
+        label:
+          - 
+  styles:
+    grid:
+      - grid-template-rows: >
+          [[[
+            if (!variables.attributes || variables.attributes.length < 2) return '1fr 1fr'
+
+            return entity.state == 'on' ? '1fr 2fr' : '1fr 1fr'
+          ]]]
+
+#########################################################################/
+  

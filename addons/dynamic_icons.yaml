@@ -1,0 +1,16 @@
+############| +Addon > Dynamic Icons |###########################>
+dynamic_icons:
+  template: state_helper
+  variables:
+    icon: "mdi:wifi"
+    icon_on: "mdi:wifi-star"
+    icon_unavailable: "mdi:wifi-cancel"
+  state:
+    - id: cbc_on
+      icon: "[[[ return variables.icon_on ]]]"
+    - id: cbc_unavailable
+      icon: "[[[ return variables.icon_unavailable ]]]"
+  icon: "[[[ return variables.icon ]]]"
+
+#########################################################################/
+  

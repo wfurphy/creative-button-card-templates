@@ -1,0 +1,16 @@
+####{ CreativeBC }####| Gap Card Template |####[ github.com/wfurphy/creative-button-card-templates ]####>
+gap:
+  template: 
+    - transparent
+    - resizable
+  styles:
+    grid:
+      - padding: 0
+      - margin: 0
+    card:
+      - opacity: 0
+      - padding: 0
+      - margin: 0
+
+#########################################################################/
+  

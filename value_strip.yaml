@@ -1,0 +1,337 @@
+#################( Value Strip Item )################################>
+value_strip_item:
+  template:
+  - transparent
+  - interactive
+  variables:
+    item:
+      active: false
+      prefix:
+      units: ''
+      value: 100
+      icon: mdi:bomb
+      label:
+      active_color: var(--button-card-light-color, var(--accent-color))
+      color: 'var(--paper-item-icon-color)'
+    show:
+      icon: true
+      value: true
+      fade: true
+    __css: >
+      [[[
+        return `
+      <style>
+        .cbc-units {
+          opacity: 0.5;
+          font-size: 85%;
+          margin-top: 10%;
+        }
+      </style>`
+      ]]]
+  name: >
+    [[[
+      variables.__opc = (variables.item.value / 100) + 0.07
+      variables.__both = variables.show.icon && variables.show.value
+
+      if (variables.item.label) {
+        return `${variables.__css}<span class="cbc-units item-prefix">${variables.item.prefix}</span><span class="cbc-item-value label">${variables.item.label}</span>`
+      }
+
+      return `${variables.__css}<span class="cbc-item-value">${variables.item.value}</span><span class="cbc-units item-units">${variables.item.units}</span>`
+    ]]]
+  state:
+    - id: cbc_active
+      operator: template
+      value: >
+        [[[
+          return Boolean(entity.state == variables.item.value)
+        ]]]
+      styles:
+        icon:
+          - color: "[[[ return variables.item.active_color ]]]"
+        name:
+          - color: "[[[ return variables.item.active_color ]]]"
+  icon: "[[[ return variables.item.icon ]]]"
+  lock:
+    enabled: "[[[ return variables.__lock = !entity || entity.state == 'unavailable' ]]]"
+  styles:
+    grid:
+      - grid-template-areas: >
+          [[[
+            if (variables.__both) return '\"i\" \"n\"';
+            return variables.show.icon ? '\"i\"' : '\"n\"'
+          ]]]
+      - grid-template-columns: 1fr
+      - grid-template-rows: "[[[ return variables.__both ? '1fr 1fr' : '1fr' ]]]"
+      - justify-items: center
+      - align-items: center
+    name:
+      - display: "[[[ return variables.__both || variables.show.value ? 'inline-flex' : 'none' ]]]"
+      - opacity: >
+          [[[
+            if (variables.__lock) return 0.2;
+            return (!variables.show.fade || variables.__opc > 1) ? 0.8 : variables.__opc
+          ]]]
+      - color: "[[[ return variables.item.color ]]]"
+      - font-size: "[[[ return variables.__both ? '14px' : '16px' ]]]"
+      - align-self: "[[[ return variables.__both ? 'start' : 'center' ]]]"
+    card:
+      - height: 40px
+      - border-radius: 40%
+    lock:
+      - opacity: 0
+    custom_fields:
+      active_logic:
+        - width: 0
+        - height: 0
+        # - display: none
+        - visibility: hidden
+    icon:
+      - width: "[[[ return variables.__both || variables.show.value ? '18px' : '30px' ]]]"
+      - display: "[[[ return variables.__both || variables.show.icon ? 'inline-flex' : 'none' ]]]"
+      - color: "[[[ return variables.item.color ]]]"
+      - opacity: >
+          [[[
+            if (variables.__lock) return 0.1;
+            return (!variables.show.fade || variables.__opc > 1) ? 0.9 : variables.__opc
+          ]]]
+
+#################( Adaptive Lighting Strip Item )################################>
+adaptive_lighting_strip_item:
+  template:
+    - value_strip_item
+  variables:
+    al_area_id: main_area
+    item:
+      value: 100
+  color: auto
+  custom_fields:
+    active_logic: >
+      [[[
+        variables.__al = 'switch.adaptive_lighting_' + variables.al_area_id
+        variables.__alb = 'switch.adaptive_lighting_adapt_brightness_' + variables.al_area_id
+      ]]]
+  lock:
+    enabled: >
+      [[[
+        return variables.__lock = states[variables.__al].state == 'on' && states[variables.__alb].state == 'on'
+      ]]]
+  tap_action:
+    action: call-service
+    service: script.al_set
+    service_data:
+      area_id: "[[[ return variables.al_area_id ]]]"
+      brightness: "[[[ return variables.item.value ]]]"
+    haptic: success
+  state:
+    - id: cbc_active
+      operator: template
+      value: >
+        [[[
+          return Boolean(variables.item.value == states['input_number.brightness_' + variables.al_area_id].state)
+        ]]]
+
+#################( Brightness Strip Item )################################>
+brightness_strip_item:
+  template: value_strip_item
+  variables:
+    item:
+      value: 100
+  color: auto
+  tap_action:
+    action: call-service
+    service: light.turn_on
+    service_data:
+      entity_id: "[[[ return entity.entity_id ]]]"
+      brightness_pct: "[[[ return variables.item.value ]]]"
+    haptic: success
+  state:
+    - id: cbc_active
+      operator: template
+      value: >
+        [[[
+          return Boolean(Math.round(entity.attributes.brightness / 2.55) == variables.item.value)
+        ]]]
+
+#################( Cover Strip Item )################################>
+cover_strip_item:
+  template: value_strip_item
+  variables:
+    item:
+      value: 100
+  state:
+    - id: cbc_active
+      operator: template
+      value: >
+        [[[
+          return Boolean(entity.attributes.current_position == variables.item.value)
+        ]]]
+  tap_action:
+    action: call-service
+    service: cover.set_cover_position
+    service_data:
+      entity_id: "[[[ return entity.entity_id ]]]"
+      position: "[[[ return variables.item.value ]]]"
+    haptic: success
+
+
+#################( Value Strip )################################>
+value_strip:
+  show_icon: false
+  show_value: false
+  show_state: false
+  show_name: false
+  variables:
+    type: value
+    al_area_id: null
+    triggers: []
+    items: []
+    show:
+      icon: true
+      value: true
+      fade: true
+    __merge:
+      value: 0
+      active: false
+      prefix: ''
+      units: ''
+      icon: 'mdi:cancel'
+      label: ''
+      active_color: 'var(--accent-color)'
+      color: 'var(--paper-item-icon-color)'
+    __defaults: []
+    _defaults_brightness:
+      - value: 10
+        units: '%'
+        icon: mdi:brightness-3
+      - value: 25
+        units: '%'
+        icon: mdi:brightness-4
+      - value: 50
+        units: '%'
+        icon: mdi:brightness-5
+      - value: 75
+        units: '%'
+        icon: mdi:brightness-6
+      - value: 100
+        units: '%'
+        icon: mdi:brightness-7
+    _defaults_cover:
+      - value: 0
+        icon: mdi:blinds
+        prefix: ''
+        units: '%'
+        label: close
+      - value: 25
+        icon: mdi:blinds
+        units: '%'
+      - value: 50
+        icon: mdi:blinds-open
+        units: '%'
+      - value: 75
+        icon: mdi:blinds-open
+        units: '%'
+      - value: 100
+        icon: mdi:blinds-open
+        units: '%'
+        prefix: ''
+        label: open
+  styles:
+    card:
+      - clear: >
+          [[[
+            switch (variables.type) {
+              case 'adaptive_lighting':
+                variables.__defaults = variables._defaults_brightness
+                variables.__entity_id = 'light.al_lights_' + variables.al_area_id
+                variables.triggers = ['switch.adaptive_lighting_' + variables.al_area_id, 'switch.adaptive_lighting_adapt_brightness_' + variables.al_area_id]
+                break
+              case 'cover':
+                variables.__defaults = variables._defaults_cover
+                variables.__entity_id = entity.entity_id
+                break
+              case 'brightness':
+              case 'value':
+              default:
+                variables.__defaults = variables._defaults_brightness
+                variables.__entity_id = entity.entity_id
+                break
+            }
+
+            return 'none'
+          ]]]
+      - height: 40px
+    grid:
+      - grid-template-areas: '"c1 c2 c3 c4 c5"'
+      - grid-template-columns: 1fr 1fr 1fr 1fr 1fr
+      - grid-template-rows: 1fr
+      - justify-items: center
+      - align-items: center
+      - height: 40px
+      - padding: 5px
+      - margin-top: 5px
+    custom_fields:
+      c1:
+        - width: 100%
+      c2:
+        - width: 100%
+      c3:
+        - width: 100%
+      c4:
+        - width: 100%
+      c5:
+        - width: 100%
+  custom_fields:
+    c1:
+      card:
+        type: custom:button-card
+        template: "[[[ return variables.type + '_strip_item' ]]]"
+        entity: "[[[ return variables.__entity_id ]]]"
+        triggers_update: "[[[ return variables.triggers ]]]"
+        variables:
+          item: "[[[ return {...variables.__merge, ...variables.__defaults[0], ...variables.items[0]} ]]]"
+          show: "[[[ return variables.show ]]]"
+          al_area_id: "[[[ return variables.al_area_id ]]]"
+    c2:
+      card:
+        type: custom:button-card
+        template: "[[[ return variables.type + '_strip_item' ]]]"
+        entity: "[[[ return variables.__entity_id ]]]"
+        triggers_update: "[[[ return variables.triggers ]]]"
+        variables:
+          item: "[[[ return {...variables.__merge, ...variables.__defaults[1], ...variables.items[1]} ]]]"
+          show: "[[[ return variables.show ]]]"
+          al_area_id: "[[[ return variables.al_area_id ]]]"
+    c3:
+      card:
+        type: custom:button-card
+        template: "[[[ return variables.type + '_strip_item' ]]]"
+        entity: "[[[ return variables.__entity_id ]]]"
+        triggers_update: "[[[ return variables.triggers ]]]"
+        variables:
+          item: "[[[ return {...variables.__merge, ...variables.__defaults[2], ...variables.items[2]} ]]]"
+          show: "[[[ return variables.show ]]]"
+          al_area_id: "[[[ return variables.al_area_id ]]]"
+    c4:
+      card:
+        type: custom:button-card
+        template: "[[[ return variables.type + '_strip_item' ]]]"
+        entity: "[[[ return variables.__entity_id ]]]"
+        triggers_update: "[[[ return variables.triggers ]]]"
+        variables:
+          item: "[[[ return {...variables.__merge, ...variables.__defaults[3], ...variables.items[3]} ]]]"
+          show: "[[[ return variables.show ]]]"
+          al_area_id: "[[[ return variables.al_area_id ]]]"
+    c5:
+      card:
+        type: custom:button-card
+        template: "[[[ return variables.type + '_strip_item' ]]]"
+        entity: "[[[ return variables.__entity_id ]]]"
+        triggers_update: "[[[ return variables.triggers ]]]"
+        variables:
+          item: "[[[ return {...variables.__merge, ...variables.__defaults[4], ...variables.items[4]} ]]]"
+          show: "[[[ return variables.show ]]]"
+          al_area_id: "[[[ return variables.al_area_id ]]]"
+
+
+#########################################################################/
