@@ -12,6 +12,7 @@
 custom/*.yaml
 !custom/example.yaml
 js
+cbc.yml
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

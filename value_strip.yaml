@@ -4,8 +4,6 @@ value_strip_item:
   - transparent
   - interactive
   variables:
-    style:
-      interactive: true
     item:
       active: false
       prefix:
@@ -34,7 +32,7 @@ value_strip_item:
     [[[
       variables.__opc = (variables.item.value / 100) + 0.07
       variables.__both = variables.show.icon && variables.show.value
-      
+
       if (variables.item.label) {
         return `${variables.__css}<span class="cbc-units item-prefix">${variables.item.prefix}</span><span class="cbc-item-value label">${variables.item.label}</span>`
       }
@@ -94,13 +92,13 @@ value_strip_item:
       - color: "[[[ return variables.item.color ]]]"
       - opacity: >
           [[[
-            if (variables.__lock) return 0.1; 
+            if (variables.__lock) return 0.1;
             return (!variables.show.fade || variables.__opc > 1) ? 0.9 : variables.__opc
           ]]]
 
 #################( Adaptive Lighting Strip Item )################################>
 adaptive_lighting_strip_item:
-  template: 
+  template:
     - value_strip_item
   variables:
     al_area_id: main_area
@@ -154,7 +152,7 @@ brightness_strip_item:
         [[[
           return Boolean(Math.round(entity.attributes.brightness / 2.55) == variables.item.value)
         ]]]
-  
+
 #################( Cover Strip Item )################################>
 cover_strip_item:
   template: value_strip_item
@@ -189,7 +187,7 @@ value_strip:
     triggers: []
     items: []
     show:
-      icon: false
+      icon: true
       value: true
       fade: true
     __merge:
@@ -201,7 +199,8 @@ value_strip:
       label: ''
       active_color: 'var(--accent-color)'
       color: 'var(--paper-item-icon-color)'
-    __defaults:
+    __defaults: []
+    _defaults_brightness:
       - value: 10
         units: '%'
         icon: mdi:brightness-3
@@ -217,7 +216,7 @@ value_strip:
       - value: 100
         units: '%'
         icon: mdi:brightness-7
-    __defaults_cover:
+    _defaults_cover:
       - value: 0
         icon: mdi:blinds
         prefix: ''
@@ -243,16 +242,18 @@ value_strip:
           [[[
             switch (variables.type) {
               case 'adaptive_lighting':
+                variables.__defaults = variables._defaults_brightness
                 variables.__entity_id = 'light.al_lights_' + variables.al_area_id
                 variables.triggers = ['switch.adaptive_lighting_' + variables.al_area_id, 'switch.adaptive_lighting_adapt_brightness_' + variables.al_area_id]
                 break
               case 'cover':
-                variables.__defaults = variables.__defaults
+                variables.__defaults = variables._defaults_cover
                 variables.__entity_id = entity.entity_id
                 break
               case 'brightness':
               case 'value':
               default:
+                variables.__defaults = variables._defaults_brightness
                 variables.__entity_id = entity.entity_id
                 break
             }
@@ -287,7 +288,7 @@ value_strip:
         template: "[[[ return variables.type + '_strip_item' ]]]"
         entity: "[[[ return variables.__entity_id ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
-        variables: 
+        variables:
           item: "[[[ return {...variables.__merge, ...variables.__defaults[0], ...variables.items[0]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
@@ -297,7 +298,7 @@ value_strip:
         template: "[[[ return variables.type + '_strip_item' ]]]"
         entity: "[[[ return variables.__entity_id ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
-        variables: 
+        variables:
           item: "[[[ return {...variables.__merge, ...variables.__defaults[1], ...variables.items[1]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
@@ -307,7 +308,7 @@ value_strip:
         template: "[[[ return variables.type + '_strip_item' ]]]"
         entity: "[[[ return variables.__entity_id ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
-        variables: 
+        variables:
           item: "[[[ return {...variables.__merge, ...variables.__defaults[2], ...variables.items[2]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
@@ -317,7 +318,7 @@ value_strip:
         template: "[[[ return variables.type + '_strip_item' ]]]"
         entity: "[[[ return variables.__entity_id ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
-        variables: 
+        variables:
           item: "[[[ return {...variables.__merge, ...variables.__defaults[3], ...variables.items[3]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
@@ -331,7 +332,6 @@ value_strip:
           item: "[[[ return {...variables.__merge, ...variables.__defaults[4], ...variables.items[4]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
-  
+
 
 #########################################################################/
-
