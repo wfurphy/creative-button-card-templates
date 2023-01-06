@@ -978,7 +978,7 @@ Displays the icon and state of an entity only. Good for displaying information n
 
 | Variable | Values | Default | Description |
 | - | - | - | - |
-| `layout` | `stack` | `inline` | `stack` | `stack` will show the state with units underneath and `inline` shows the state followed by the units. |
+| `layout` | `stack` \| `inline` | `stack` | `stack` will show the state with units underneath and `inline` shows the state followed by the units. |
 | `attribute` | `entity.attributes.*` | | The id of any attribute of the entity specified above. If provided the value of the attribute will be used rather than the entity state. |
 | `state` | String | | Providing this will completely override the `entity` and `attribute` states and display this string instead. |
 | `units` | String | The entity attribute `unit_of_measurement` | Set a custom unit of measurement for the displayed value |
