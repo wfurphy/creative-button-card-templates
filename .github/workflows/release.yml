@@ -30,7 +30,7 @@ jobs:
         run: echo 'button_card_templates:' > cbc.yml && cat */*.yaml *.yaml | sed -n '/^ *#/!p' | sed -n '/^ *$/!p' | sed 's/^/  /' >> cbc.yml
         
       # Add cbc.yml to the repository
-      - uses: actions/add-and-commit@v9
-        name: Add `cbc.yml`
-        with:
-          add: 'cbc.yml'
+      # - uses: EndBug/add-and-commit@v9
+      #  name: Add `cbc.yml`
+      #  with:
+      #    add: 'cbc.yml'
