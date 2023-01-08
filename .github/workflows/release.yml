@@ -27,10 +27,14 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Create `cbc.yaml` release file
-        run: echo 'button_card_templates:' > cbc.yml && cat */*.yaml *.yaml | sed -n '/^ *#/!p' | sed -n '/^ *$/!p' | sed 's/^/  /' >> cbc.yml
-        
-      # Add cbc.yml to the repository
-      # - uses: EndBug/add-and-commit@v9
-      #  name: Add `cbc.yml`
-      #  with:
-      #    add: 'cbc.yml'
+        run: echo 'button_card_templates:' > cbc_master.yml && cat */*.yaml *.yaml | sed -n '/^ *#/!p' | sed -n '/^ *$/!p' | sed 's/^/  /' >> cbc_master.yml
+
+      - name: Add & Commit
+        uses: EndBug/add-and-commit@v9.1.1
+        with:
+          add: 'cbc_master.yml'
+          author_name: GitHub
+          author_email: actions@github.com
+          cwd: $GITHUB_WORKSPACE
+          message: 'Auto generation of `cbc.yml`'
+          remove: './cbc_master.yml'
