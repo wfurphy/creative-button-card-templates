@@ -32,9 +32,9 @@ jobs:
       - name: Add & Commit
         uses: EndBug/add-and-commit@v9.1.1
         with:
-          add: 'cbc_master.yml'
-          author_name: GitHub
-          author_email: actions@github.com
-          cwd: $GITHUB_WORKSPACE
+          add: './cbc_master.yml'
+          #author_name: GitHub
+          #author_email: actions@github.com
+          cwd: "${GITHUB_WORKSPACE}"
           message: 'Auto generation of `cbc.yml`'
-          remove: './cbc_master.yml'
+          #remove: './cbc_master.yml'
