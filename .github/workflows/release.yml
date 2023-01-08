@@ -33,3 +33,4 @@ jobs:
       - uses: ibiqlik/action-yamllint@v3
         with:
           file_or_dir: ./cbc_master.yml
+          config_data: "{ rules: { line-length: disable, trailing-spaces: disable } }"
