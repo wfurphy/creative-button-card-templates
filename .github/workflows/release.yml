@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v3
 
       # Runs a single command using the runners shell
-      - name: Create `cbc.yaml` release file
+      - name: Create `cbc_master.yaml` release file
         run: echo 'button_card_templates:' > cbc_master.yml && cat */*.yaml *.yaml | sed -n '/^ *#/!p' | sed -n '/^ *$/!p' | sed 's/^/  /' >> cbc_master.yml
 
       # Check yaml is valid
