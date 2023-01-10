@@ -9,10 +9,10 @@
 *.user
 *.userosscache
 *.sln.docstates
-custom/*.yaml
+custom/*
 !custom/example.yaml
-js
 cbc.yml
+cbc_master.yml
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
