@@ -1,0 +1,77 @@
+####{ CreativeBC }####| Entity |####[ github.com/wfurphy/creative-button-card-templates ]####>
+entity:
+  template: 
+    - button_landscape
+  variables:
+    off_hide_info: true
+    ## attr @deprecated v0.2 replaced by attributes
+    attr: []
+    attributes: []
+    attribute_icon_color: var(--state-icon-color)
+    __defaults:
+      id: '' 
+      icon: 'mdi:layers-plus'
+      state:
+      units: ''
+      prefix_units: false
+  show_state: false
+  show_label: true
+  label: >
+    [[[
+        variables.attributes = [...variables.attr, ...variables.attributes]
+
+        if (!variables.attributes || !variables.attributes.length) return ''
+
+        let lab = `
+          <style>
+            ha-icon.cbc-icon {
+              color: ${variables.attribute_icon_color};
+              width:18px; 
+              padding-right: 5px; 
+            }
+            .cbc-units {
+              font-size: 80%;
+              opacity: 0.6;
+            }
+          </style>
+          `
+        
+        variables.attributes.forEach(function(a,i) {
+          const at = {...variables.__defaults, ...a}
+          const state = `<span class="cbc-value">${a.state || entity.attributes[at.id]}</span>` 
+          const units = `<span class="cbc-units">${at.units}</span>`
+
+          lab += `<div id="cbc-attr${i}-${a.id}" class="cbc-attr ellipsis">
+                    <ha-icon icon="${at.icon}" class="cbc-icon"></ha-icon>`
+          
+          if (a.prefix_units) {
+            lab += units + state
+          } else {
+            lab += state + units
+          }
+
+          lab += `</div>`
+        })
+        
+        return lab
+    ]]]
+  state:
+    - id: cbc_on
+      styles:
+        icon:
+          - color: var(--accent-color)
+    - id: cbc_off
+      styles:
+        label:
+          - 
+  styles:
+    grid:
+      - grid-template-rows: >
+          [[[
+            if (!variables.attributes || variables.attributes.length < 2) return '1fr 1fr'
+
+            return entity.state == 'on' ? '1fr 2fr' : '1fr 1fr'
+          ]]]
+
+#########################################################################/
+  

@@ -1,0 +1,159 @@
+notify:
+  type: custom:button-card
+  template:
+    - resizable
+  variables:
+    __debugJson: "[[[ console.log(`::[${entity.entity_id}]::JSON::>`,JSON.parse(entity.state)) ]]]"
+    __color: >
+      [[[
+        return function(col, opc = 1) {
+          let out = null
+          if (col) {
+            if (Array.isArray(col) && col.length) {
+              out = `${col[0]}, ${col[1]}, ${col[2]}`
+            } else if (col !== '[]') {
+              col = col.trim()
+              switch (col.substring(0,1)) {
+                case '[':
+                  out = col.substring(1, col.length - 1)
+                  break
+                case 'r':
+                  const b = col.search('(')
+                  if (b !== -1) {
+                    out = col.substring(b + 1, col.length - 1)
+                  }
+                  break
+                case '#':
+                  return `${col}${Math.floor(opc * 255).toString(16).padStart(2, 0)}`
+              }
+            }
+          }
+          
+          if (!out) {
+            switch (JSON.parse(entity.state).type) {
+              case 'event':
+                out = '25, 136, 115'
+                break
+              case 'warning':
+                out = '254, 190, 110'
+                break
+              case 'error':
+                out = '157, 48, 66'
+                break
+              case 'info':
+              default:
+                out = '71, 133, 183'
+                break
+            }
+          }
+
+          return `rgba(${out}, ${opc})`
+        }
+      ]]]
+    icon: >
+      [[[
+        const json = JSON.parse(entity.state)
+        if (json.icon && json.icon.search('mdi:') !== -1) { return json.icon }
+
+        switch (json.type) {
+          case 'event':
+            return 'mdi:calendar'
+          case 'warning':
+            return 'mdi:alert-outline'
+          case 'error':
+            return 'mdi:alert-octagon-outline'
+          case 'info':
+          default:
+            return 'mdi:information-outline'
+        }
+      ]]]
+    script: script.dashbaord_notification
+    _updated_at: "[[[ JSON.parse(entity.state).updated_at || Date.now() ]]]"
+    json: "[[[ return JSON.parse(entity.state) ]]]"
+      # type: "[[[ return JSON.parse(entity.state).type ]]]"
+      # icon: "[[[ return JSON.parse(entity.state).icon || undefined ]]]"
+      # title: "[[[ return JSON.parse(entity.state).title || undefined ]]]"
+      # message: "[[[ return JSON.parse(entity.state).message ]]]"
+      # color: "[[[ return JSON.parse(entity.state).color || undefined ]]]"
+  name: "[[[ return variables.json.title ]]]"
+  label: "[[[ return variables.json.message ]]]"
+  show_icon: true
+  show_name: true
+  show_label: true
+  size: 40px
+  tap_action:
+    action: call-service
+    service: input_text.set_value
+    service_data:
+      entity_id: "[[[ return entity.entity_id ]]]"
+      value: >
+        [[[
+          return JSON.stringify({
+            type: 'clear',
+            persistent: false
+          })
+        ]]]
+  double_tap_action:
+    action: call-service
+    service: input_text.set_value
+    service_data:
+      entity_id: "[[[ return entity.entity_id ]]]"
+      value: >
+        [[[
+          return JSON.stringify({
+            type: "info",
+            icon: "mdi:egg-easter",
+            title: "You Found Me!",
+            message: "That's right, it's your old software favourite, an easter egg!",
+            color: '#bd4dfa',
+            persistent: false
+          })
+        ]]]
+  state:
+    - id: cbc_custom_1
+      operator: template
+      value: "[[[ return variables.json.type == 'event' && states[variables.json.rentity]?.attributes.entity_picture ]]]"
+      entity_picture: "[[[ return hass.hassUrl(states[variables.json.rentity].attributes.entity_picture) ]]]"
+      name: >
+        [[[
+
+        ]]]
+  icon: "[[[ return variables.icon ]]]"
+  styles:
+    card:
+      - display: "[[[ return !variables.json.type || variables.json.type === 'clear' ? 'none' : 'block' ]]]"
+      - background-color: "[[[ return variables.__color(variables.json.color, 0.4) ]]]"
+      - padding: 5px
+      - text-align: left
+    grid:
+      - grid-template-areas: |
+          "i n n x"
+          "i l l ."
+          "i . u u"
+      - grid-template-columns: 1fr 3fr 2fr 15px
+      - grid-template-rows: 1fr min-content 20px
+      - align-items: center
+      - justify-items: start
+    icon:
+      - color: "[[[ return variables.__color(variables.json.color, 1) ]]]"
+    name:
+      - text-align: left
+      - justify-self: start
+      - color: "[[[ return variables.__color(variables.json.color, 1) ]]]"
+    label:
+      - justify-self: start
+      - text-align: left
+      - font-size: 14px
+      - white-space: normal
+      - text-wrap: word
+      - opacity: 0.6
+    custom_fields:
+      x:
+        - width: 15px
+        - margin-top: -4px
+        - align-self: start
+        - justify-self: end
+        - opacity: 0.6
+  custom_fields:
+    x: "[[[ return html`<ha-icon icon=\"mdi:close\"></ha-icon>` ]]]"
+    u: "[[[ return html`<span class=\"ellipses\">${variables._updated_at}</span>` ]]]"

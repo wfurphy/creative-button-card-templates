@@ -5,8 +5,6 @@ resizable:
     width:
   styles:
     card:
-      - min-height: 40px
-      - max-width: 100%
       - height: "[[[ return variables.height ]]]"
       - width: "[[[ return variables.width ]]]"
 

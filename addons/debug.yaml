@@ -4,7 +4,14 @@ debug:
     debug: true
     debug_hass: false
     debug_extras:
-    __title: '::CreativeButtonCards::DEBUG::>'
+    __title: >
+      [[[
+        if (entity && entity.entity_id) {
+          return `::CreativeBCT::DEBUG::| ${entity.entity_id} |::>` 
+        }
+        
+        return `::CreativeBCT::DEBUG::>`
+      ]]]
   custom_fields:
     debugger: >
       [[[

@@ -13,6 +13,8 @@ state_helper:
     - id: cbc_custom_4
       operator: template
       value: false
+    - id: cbc_action_timer
+      value: false
     - id: cbc_on
       value: 'on'
       styles:

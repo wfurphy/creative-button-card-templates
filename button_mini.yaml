@@ -8,6 +8,14 @@ button_mini:
     - interactive
   variables:
     height: 40px
+    __get: >
+      [[[
+        return function(prop, vars) {
+          if (!vars.item) return vars[prop] || undefined
+          return vars.item[prop] || vars[prop] || undefined
+        }
+      ]]]
+    item: {}
     symbol:
     symbol_width: 50%
     symbol_font_size: 10pt
@@ -16,40 +24,43 @@ button_mini:
   custom_fields:
     symbol: >
       [[[
-          if (!variables.symbol) return ''
-          
-          let sym = String(variables.symbol)
+        if (!variables.__get('symbol', variables)) return ''
+        
+        let sym = String(variables.__get('symbol', variables))
 
-          if (sym.search('mdi:') !== -1) {
-            return `<ha-icon icon="${sym}" class="cbc-symbol" />`
-          }
-          
-          sym = sym.substring(0,1)
-          return `<span class="cbc-symbol">${sym}</span>`
+        if (sym.search('mdi:') !== -1) {
+          return `<ha-icon icon="${sym}" class="cbc-symbol" />`
+        }
+        
+        sym = sym.substring(0,1)
+        return `<span class="cbc-symbol">${sym}</span>`
       ]]]
   styles:
     card:
       - min-width: 30px
     custom_fields:
       symbol:
-        - width: "[[[ return variables.symbol_width ]]]"
+        - z-index: 7
+        - width: "[[[ return variables.__get('symbol_width', variables) ]]]"
         - position: absolute
         - justify-self: center
-        - margin-top: "-25%"
-        - color: "[[[ return variables.symbol_color ]]]"
-        - font-size: "[[[ return variables.symbol_font_size ]]]"
+        - margin-top: -25%
+        - color: "[[[ return variables.__get('symbol_color', variables) ]]]"
+        - font-size: "[[[ return variables.__get('symbol_font_size', variables) ]]]"
         - font-weight: bold
 
 ############| Button Mini - Embeded |###########################>
 button_mini_embed:
-  variables:
-    width: 30px
   template:
     - button_mini
-    - transparent
+  variables:
+    width: 30px
   styles:
     card:
       - min-width: 10px
+      - background: none
+      - box-shadow: none
+      - border: 0
 
 ############| Button Mini + State |###########################>
 button_mini_state:

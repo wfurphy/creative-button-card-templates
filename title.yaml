@@ -2,6 +2,7 @@
 title:
   template:
     - style_helper
+    - no_actions
   variables:
     mirror: false
     color: var(--primary-background-color)
@@ -20,6 +21,7 @@ title:
       - padding: 6px
       - overflow: visible
     card:
+      - cursor: default
       - --mdc-ripple-press-opacity: 0
       - opacity: 0.5
       - height: 40px

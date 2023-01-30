@@ -3,20 +3,60 @@ light:
   template:
     - button_landscape
   variables:
+    __grid: >
+      [[[
+        return function(type, bs) {
+          switch (type) {
+            case 'areas':
+              if(bs && entity.state == 'on') {
+                return '"i i n" "i i l" "i i bc"'
+              } else if (entity.state == 'on') {
+                return '"i i n" "i i l"'
+              } else {
+                return `"i i n" "i i ${bs ? 'bc' : 'l'}"`
+              }
+            case 'rows':
+              if(bs && entity.state == 'on') {
+                return '1fr 1fr 1fr'
+              } else {
+                return '1fr 1fr'
+              }
+          }
+        }
+      ]]]
     off_hide_info: true
     height: 80px
     attribute_icon_color: var(--state-icon-color)
-    _rgb_symbols: 
+    rgb_symbols:
       - R
       - G
       - B
+    brightness_strip: false
+    strip_show:
+      icon: true
+      value: false
+      fade: true
+    strip_items: []
   color: auto
   show_label: true
   styles:
+    grid:
+      - grid-template-areas: "[[[ return variables.__grid('areas', variables.brightness_strip) ]]]"
+      - grid-template-columns: 1fr 1fr 4fr
+      - grid-template-rows: "[[[ return variables.__grid('rows', variables.brightness_strip) ]]]"
     label:
-      - display: "[[[ return entity.state == 'on' ? 'block' : 'none' ]]]"
+      # - display: "[[[ return entity.state == 'on' ? 'block' : 'none' ]]]"
       - overflow: visible
       - text-overflow: visible
+      - align-self: start
+    custom_fields:
+      bc:
+        - z-index: 5
+        - align-self: center
+        - justify-self: start
+        - width: 90%
+        - display: "[[[ return variables.brightness_strip ? 'block' : 'none' ]]]"
+        - padding: 0
   label: >
     [[[
       const styles = `
@@ -42,6 +82,9 @@ light:
             font-weight: bold;
             margin-left: -1px;
           }
+          .cbc-l-value {
+            margin-left: 3px;
+          }
         </style>`
 
       if (!entity) return styles + `<elt><ha-icon icon="mdi:wifi-cancel" class="cbc-l-icon"></ha-icon><span class="cbc-l-value">Unavailable</span></elt>`
@@ -53,9 +96,9 @@ light:
       const rgb = String(entity.attributes.rgb_color).split(',')
       let clr = `
       <span class="ellipsis">
-        <span class="cbc-l-rgb cbc-i" style="color: #ad0826;">${variables._rgb_symbols[0]}</span><span class="cbc-l-rgb">${rgb[0]}</span>
-        <span class="cbc-l-rgb cbc-i" style="color: #00b558;">${variables._rgb_symbols[1]}</span><span class="cbc-l-rgb">${rgb[1]}</span>
-        <span class="cbc-l-rgb cbc-i" style="color: #1a89f5;">${variables._rgb_symbols[2]}</span><span class="cbc-l-rgb">${rgb[2]}</span>
+        <span class="cbc-l-rgb cbc-i" style="color: #ad0826;">${variables.rgb_symbols[0]}</span><span class="cbc-l-rgb">${rgb[0]}</span>
+        <span class="cbc-l-rgb cbc-i" style="color: #00b558;">${variables.rgb_symbols[1]}</span><span class="cbc-l-rgb">${rgb[1]}</span>
+        <span class="cbc-l-rgb cbc-i" style="color: #1a89f5;">${variables.rgb_symbols[2]}</span><span class="cbc-l-rgb">${rgb[2]}</span>
       </span>`
       let ci = ''
 
@@ -79,6 +122,22 @@ light:
         </elt>
       `
     ]]]
+  custom_fields:
+    bc:
+      card:
+        type: custom:button-card
+        template: 
+          - value_strip
+          - transparent
+        entity: "[[[ return entity.entity_id ]]]"
+        variables:
+          type: brightness
+          show: "[[[ return variables.strip_show ]]]"
+          items: "[[[ return variables.strip_items ]]]"
+        styles:
+          card:
+            - height: 25px
+
 
 # From when we had to convert the color_temp, now kelvin is standard in HA
 # Math.round(1000000/entity.attributes.color_temp, 0)

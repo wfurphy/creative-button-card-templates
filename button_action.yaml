@@ -12,6 +12,7 @@ button_action:
     icon_on: mdi:stop
     name_on: "Cancel"
     timer:
+    name_timer: 
   show_state: true
   show_name: true
   show_label: true
@@ -36,7 +37,7 @@ button_action:
     action: more-info
     haptic: success
   state:
-    - id: cbc_custom_1
+    - id: cbc_action_timer
       operator: template
       value: >
         [[[ 
@@ -84,7 +85,7 @@ button_action:
       - grid-template-areas: >
           [[[ return variables.timer && states[variables.timer].state == 'active' ? '"i n" "i timer"' : '"i n" "i l"' ]]]
       # - grid-template-areas: '"i n" "i l"'
-      - grid-template-columns: 60px auto
+      - grid-template-columns: 50px auto
       - grid-template-rows: 1fr 1fr
       - justify-items: start
       - align-items: center
@@ -122,7 +123,7 @@ button_action:
         - align-self: center
         - justify-self: start
         - width: 35px
-        - margin-left: 12.5px
+        - margin-left: 9px
         - opacity: 0.6
         - display: none
       timer:

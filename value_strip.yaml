@@ -21,10 +21,14 @@ value_strip_item:
       [[[
         return `
       <style>
+        .cbc-item-value {
+          display: inline-block;
+          vertical-align: baseline;
+        }
         .cbc-units {
-          opacity: 0.5;
-          font-size: 85%;
-          margin-top: 10%;
+          vertical-align: baseline;
+          display: inline-block;
+          font-size: 75%;
         }
       </style>`
       ]]]
@@ -62,22 +66,25 @@ value_strip_item:
             return variables.show.icon ? '\"i\"' : '\"n\"'
           ]]]
       - grid-template-columns: 1fr
-      - grid-template-rows: "[[[ return variables.__both ? '1fr 1fr' : '1fr' ]]]"
+      - grid-template-rows: "[[[ return variables.__both ? '2fr 1fr' : '1fr' ]]]"
       - justify-items: center
       - align-items: center
     name:
-      - display: "[[[ return variables.__both || variables.show.value ? 'inline-flex' : 'none' ]]]"
+      - display: "[[[ return variables.__both || variables.show.value ? 'block' : 'none' ]]]"
       - opacity: >
           [[[
             if (variables.__lock) return 0.2;
             return (!variables.show.fade || variables.__opc > 1) ? 0.8 : variables.__opc
           ]]]
       - color: "[[[ return variables.item.color ]]]"
-      - font-size: "[[[ return variables.__both ? '14px' : '16px' ]]]"
+      - font-size: "[[[ return variables.__both ? '12px' : '16px' ]]]"
       - align-self: "[[[ return variables.__both ? 'start' : 'center' ]]]"
+      - justify-self: center
     card:
-      - height: 40px
+      - height: "[[[ return variables.height ]]]"
+      - min-height: 40px
       - border-radius: 40%
+      - padding: 0
     lock:
       - opacity: 0
     custom_fields:
@@ -87,14 +94,19 @@ value_strip_item:
         # - display: none
         - visibility: hidden
     icon:
-      - width: "[[[ return variables.__both || variables.show.value ? '18px' : '30px' ]]]"
-      - display: "[[[ return variables.__both || variables.show.icon ? 'inline-flex' : 'none' ]]]"
+      - display: "[[[ return variables.__both || variables.show.icon ? 'block' : 'none' ]]]"
+      - width: auto
+      - height: 80%
+      - padding: "[[[ return variables.__both || variables.show.value ? 0 : '5px' ]]]"
       - color: "[[[ return variables.item.color ]]]"
       - opacity: >
           [[[
             if (variables.__lock) return 0.1;
             return (!variables.show.fade || variables.__opc > 1) ? 0.9 : variables.__opc
           ]]]
+      - align-self: 'center'
+      - justify-self: center
+
 
 #################( Adaptive Lighting Strip Item )################################>
 adaptive_lighting_strip_item:
@@ -183,6 +195,7 @@ value_strip:
   show_name: false
   variables:
     type: value
+    height: 45px
     al_area_id: null
     triggers: []
     items: []
@@ -260,27 +273,33 @@ value_strip:
 
             return 'none'
           ]]]
-      - height: 40px
+      - height: "[[[ return variables.height ]]]"
+      - padding: 0
     grid:
       - grid-template-areas: '"c1 c2 c3 c4 c5"'
       - grid-template-columns: 1fr 1fr 1fr 1fr 1fr
       - grid-template-rows: 1fr
       - justify-items: center
       - align-items: center
-      - height: 40px
-      - padding: 5px
-      - margin-top: 5px
+      - min-height: "[[[ return variables.height ]]]"
+      # - padding: 5px
+      - margin-bottom: 3px
     custom_fields:
       c1:
         - width: 100%
+        - align-self: start
       c2:
         - width: 100%
+        - align-self: start
       c3:
         - width: 100%
+        - align-self: start
       c4:
         - width: 100%
+        - align-self: start
       c5:
         - width: 100%
+        - align-self: start
   custom_fields:
     c1:
       card:
@@ -289,6 +308,7 @@ value_strip:
         entity: "[[[ return variables.__entity_id ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
+          height: "[[[ return variables.height ]]]"
           item: "[[[ return {...variables.__merge, ...variables.__defaults[0], ...variables.items[0]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
@@ -299,6 +319,7 @@ value_strip:
         entity: "[[[ return variables.__entity_id ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
+          height: "[[[ return variables.height ]]]"
           item: "[[[ return {...variables.__merge, ...variables.__defaults[1], ...variables.items[1]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
@@ -309,6 +330,7 @@ value_strip:
         entity: "[[[ return variables.__entity_id ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
+          height: "[[[ return variables.height ]]]"
           item: "[[[ return {...variables.__merge, ...variables.__defaults[2], ...variables.items[2]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
@@ -319,6 +341,7 @@ value_strip:
         entity: "[[[ return variables.__entity_id ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
+          height: "[[[ return variables.height ]]]"
           item: "[[[ return {...variables.__merge, ...variables.__defaults[3], ...variables.items[3]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
@@ -329,6 +352,7 @@ value_strip:
         entity: "[[[ return variables.__entity_id ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
+          height: "[[[ return variables.height ]]]"
           item: "[[[ return {...variables.__merge, ...variables.__defaults[4], ...variables.items[4]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"

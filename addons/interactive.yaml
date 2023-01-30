@@ -11,7 +11,7 @@ interactive:
         height: 100%;
         background: rgba(255,255,255,0.02);
         content: '';
-        z-index: 1
+        z-index: 1;
       }
       ha-card:hover #label { opacity: 0.8 !important; }
       ha-card:hover #name { opacity: 1 !important; }

@@ -99,6 +99,7 @@ info_mini:
       - width: 48px
       - margin-top: -3px
       - padding: 0
+      - z-index: 1
       - color: >
           [[[
             if(variables.__item(variables).color) { return variables.__item(variables).color } else
@@ -113,6 +114,7 @@ info_mini:
       - margin-top: 0
       - margin-bottom: 0
       - overflow: visible
+      - z-index: 5
 
 #################( Info Item )################################>
 info_item:
@@ -175,10 +177,11 @@ info_item:
       - opacity: 0.3
       - justify-self: center 
       - align-self: center
-      - min-width: 60px
-      - min-height: 60px
+      - min-width: 50px
+      - min-height: 50px
       - overflow: visible
       - color: "[[[ return variables.__item(variables).color || variables.icon_color ]]]"
+      - z-index: 1
     name:
       - color: var(--secondary-text-color)
       - justify-self: end
@@ -187,12 +190,14 @@ info_item:
       - text-justify: right
       - overflow: visible
       - text-transform: uppercase
+      - z-index: 8
     state:
       - justify-self: end
       - align-self: end
       - font-size: 20px
       - text-justify: right
       - overflow: visible
+      - z-index: 9
 
 #################( Info Icon )################################>
 info_icon:
