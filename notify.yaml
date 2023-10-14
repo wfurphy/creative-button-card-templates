@@ -1,9 +1,12 @@
+####{ CreativeBC }####| Light |####[ github.com/wfurphy/creative-button-card-templates ]####>
+# ::Changes::0.3::> Fixed z-index, brightness & effects
 notify:
   type: custom:button-card
   template:
     - resizable
+    - datetime
   variables:
-    __debugJson: "[[[ console.log(`::[${entity.entity_id}]::JSON::>`,JSON.parse(entity.state)) ]]]"
+    __debugJson: "[[[ console.log(`::[${entity.entity_id}]::JSON::>`, JSON.parse(entity.state)) ]]]"
     __color: >
       [[[
         return function(col, opc = 1) {
@@ -68,7 +71,7 @@ notify:
         }
       ]]]
     script: script.dashbaord_notification
-    _updated_at: "[[[ JSON.parse(entity.state).updated_at || Date.now() ]]]"
+    _updated_at: "[[[ return new Date(entity.last_updated || null) ]]]"
     json: "[[[ return JSON.parse(entity.state) ]]]"
       # type: "[[[ return JSON.parse(entity.state).type ]]]"
       # icon: "[[[ return JSON.parse(entity.state).icon || undefined ]]]"
@@ -109,15 +112,15 @@ notify:
             persistent: false
           })
         ]]]
-  state:
-    - id: cbc_custom_1
-      operator: template
-      value: "[[[ return variables.json.type == 'event' && states[variables.json.rentity]?.attributes.entity_picture ]]]"
-      entity_picture: "[[[ return hass.hassUrl(states[variables.json.rentity].attributes.entity_picture) ]]]"
-      name: >
-        [[[
+  # state:
+  #   - id: cbc_custom_1
+  #     operator: template
+  #     value: "[[[ return variables.json.type == 'event' && states[variables.json.rentity]?.attributes.entity_picture ]]]"
+  #     entity_picture: "[[[ return hass.hassUrl(states[variables.json.rentity].attributes.entity_picture) ]]]"
+  #     name: >
+  #       [[[
 
-        ]]]
+  #       ]]]
   icon: "[[[ return variables.icon ]]]"
   styles:
     card:
@@ -154,6 +157,11 @@ notify:
         - align-self: start
         - justify-self: end
         - opacity: 0.6
+      u:
+        - text-align: left
+        - justify-self: end
+        - font-size: 12px
+        - opacity: 0.6
   custom_fields:
     x: "[[[ return html`<ha-icon icon=\"mdi:close\"></ha-icon>` ]]]"
-    u: "[[[ return html`<span class=\"ellipses\">${variables._updated_at}</span>` ]]]"
+    u: "[[[ return html`<span class=\"ellipses\">${variables._updated_at ? variables.__dateString(variables._updated_at, 'R') : ''}</span>` ]]]"

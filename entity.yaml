@@ -9,7 +9,7 @@ entity:
     attributes: []
     attribute_icon_color: var(--state-icon-color)
     __defaults:
-      id: '' 
+      id: ''
       icon: 'mdi:layers-plus'
       state:
       units: ''
@@ -55,15 +55,11 @@ entity:
         
         return lab
     ]]]
-  state:
-    - id: cbc_on
-      styles:
-        icon:
-          - color: var(--accent-color)
-    - id: cbc_off
-      styles:
-        label:
-          - 
+  # state:
+  #   - id: cbc_on
+  #     styles:
+  #       icon:
+  #         - color: var(--accent-color)
   styles:
     grid:
       - grid-template-rows: >
@@ -73,5 +69,6 @@ entity:
             return entity.state == 'on' ? '1fr 2fr' : '1fr 1fr'
           ]]]
 
+          
 #########################################################################/
   

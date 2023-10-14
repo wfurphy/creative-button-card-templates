@@ -1,19 +1,27 @@
 ####{ CreativeBC }####| Light Group |####[ github.com/wfurphy/creative-button-card-templates ]####>
+# ::Changes::0.3::> Fixed z-index, symbol 2chr @ 10px, BREAKING fix layout, brightness & effects, added `symbol_...`
 light_group:
   template: light
   color: auto
   variables:
     items: []
+    show:
+      info: true
+      brightness_strip: false
+      effect_selector: false
     item_template: button_mini_embed
     __defaults:
       entity: "[[[ return entity?.entity_id ]]]"
       icon: mdi:lightbulb
       symbol:
       symbol_width: 50%
-      symbol_font_size: 10pt
+      symbol_font_size: 10px
       symbol_color: var( --ha-card-background, var(--card-background-color, white) )
+      symbol_margin_top: -10%
       display: none
   styles:
+    # card:
+      # - max-height: 120px
     grid:
       - grid-template-areas: >
           [[[
@@ -34,72 +42,109 @@ light_group:
             }
 
             variables._qty = variables.items.length > 6 ? 6 : variables.items.length
-            let pre = '\"i'
-            let cf = '\"'
-            let post = '\"'
+            let pre = 'i'
+            let cf = ''
+            let inf = 'i'
+            let bs = ''
+            let es = ''
 
-            for(let i = 0; i < variables._qty; i++) {
+            for (let i = 0; i < variables._qty; i++) {
               const sp = i ? ' ' : ''
               pre += i ? ` n` : ''
+              inf += i ? ` l` : ''
               cf += `${sp}li${i+1}`
-              post += `${sp}l`
+              bs += `${sp}bc`
+              es += `${sp}es`
               variables.items[i].display = 'block'
               variables.items[i] = {...variables.__defaults, ...variables.items[i]}
             }
-                        
-            return pre + '\" ' + cf + '\" ' + post + '\" '
+
+            if (variables._qty == 2) {
+              pre += ' n n'
+              cf = 'li1 li1 li2 li2'
+              inf += ' l l'
+              bs += ' bc bc'
+              es += ' es es'
+            }
+
+            const info = entity.state == 'on' && variables.show.info ? inf : pre
+            const bso = variables.show.brightness_strip ? ` "${bs}"` : ''
+            const eso = variables.show.effect_selector ? ` "${es}"` : ''
+            
+            return `"${pre}" "${info}" "${cf}"${bso}${eso}`
           ]]]
-      - grid-template-columns: "[[[ return `repeat(${variables._qty}, 1fr)` ]]]"
-      - grid-template-rows: 1fr 1fr 1fr
+      - grid-template-columns: "[[[ return variables._qty == 2 ? 'repeat(4, 1fr)' : `repeat(${variables._qty}, 1fr)` ]]]"
+      - grid-template-rows: >-
+          [[[
+            // let rows = '35px 45px'
+            let rows = entity.state == 'on' && variables.show.info ? '20px 20px 45px' : '40px 0px 45px'
+            rows += variables.show.brightness_strip ? ' 30px' : ''
+            rows += variables.show.effect_selector ? ' 30px' : ''
+
+            return rows
+          ]]]
       - justify-items: center
       - align-items: center
       - padding: 4px
       - position: relative
-      - max-width: 100%
+      # - width: 100%
+      # - height: 100%
     label:
       - justify-self: center
-      - align-self: start
+      - align-self: center
       - text-align: center
+      # - height: 40px
+    icon:
+      - height: 35px
     name:
       - justify-self: center
       - align-self: center
       - text-align: left
+      - height: 35px
+      - margin-top: 10px
     custom_fields:
       li1:
         - display: "[[[ return variables.items[0]?.display || 'none' ]]]"
-        - z-index: 5
+        - z-index: 3
         - justify-self: center
         - align-self: center
       li2:
         - display: "[[[ return variables.items[1]?.display || 'none' ]]]"
-        - z-index: 5
+        - z-index: 3
         - justify-self: center
         - align-self: center
       li3:
         - display: "[[[ return variables.items[2]?.display || 'none' ]]]"
-        - z-index: 5
+        - z-index: 3
         - justify-self: center
         - align-self: center
       li4:
         - display: "[[[ return variables.items[3]?.display || 'none' ]]]"
-        - z-index: 5
+        - z-index: 3
         - justify-self: center
         - align-self: center
       li5:
         - display: "[[[ return variables.items[4]?.display || 'none' ]]]"
-        - z-index: 5
+        - z-index: 3
         - justify-self: center
         - align-self: center
       li6:
         - display: "[[[ return variables.items[5]?.display || 'none' ]]]"
-        - z-index: 5
+        - z-index: 3
         - justify-self: center
         - align-self: center
+      bc:
+        - height: 30px
+        - justify-self: center
+        - width: 60%
+      es:
+        - height: 30px
+        - justify-self: center
   custom_fields:
     li1:
       card:
         type: custom:button-card
-        template: 
+        template:
           - "[[[ return variables.item_template || 'button_mini_embed' ]]]"
           - actions
         entity: "[[[ return variables.items[0]?.entity ]]]"
@@ -107,6 +152,12 @@ light_group:
         color: auto
         variables: 
           item: "[[[ return variables.items[0] ]]]"
+        styles:
+          card:
+            - max-height: 45px
+          icon:
+            - max-height: 35px
+            - max-width: 35px
     li2:
       card:
         type: custom:button-card
@@ -116,6 +167,12 @@ light_group:
         color: auto
         variables: 
           item: "[[[ return variables.items[1] ]]]"
+        styles:
+          card:
+            - max-height: 45px
+          icon:
+            - max-height: 35px
+            - max-width: 35px
     li3:
       card:
         type: custom:button-card
@@ -125,6 +182,12 @@ light_group:
         color: auto
         variables: 
           item: "[[[ return variables.items[2] ]]]"
+        styles:
+          card:
+            - max-height: 45px
+          icon:
+            - max-height: 35px
+            - max-width: 35px
     li4:
       card:
         type: custom:button-card
@@ -134,6 +197,12 @@ light_group:
         color: auto
         variables: 
           item: "[[[ return variables.items[3] ]]]"
+        styles:
+          card:
+            - max-height: 45px
+          icon:
+            - max-height: 35px
+            - max-width: 35px
     li5:
       card:
         type: custom:button-card
@@ -143,6 +212,12 @@ light_group:
         color: auto
         variables: 
           item: "[[[ return variables.items[4] ]]]"
+        styles:
+          card:
+            - max-height: 45px
+          icon:
+            - max-height: 35px
+            - max-width: 35px
     li6:
       card:
         type: custom:button-card
@@ -152,6 +227,12 @@ light_group:
         color: auto
         variables: 
           item: "[[[ return variables.items[5] ]]]"
+        styles:
+          card:
+            - max-height: 45px
+          icon:
+            - max-height: 35px
+            - max-width: 35px
 
 
 #########################################################################/

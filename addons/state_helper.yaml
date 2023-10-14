@@ -1,4 +1,5 @@
 ####{ Creative BC }########| +State Helper |########[ github.com/wfurphy ]#####>
+## ::Changes::0.3::> Add `cbc_motion` state and changed order to off,motion,on.
 state_helper:
   state:
     - id: cbc_custom_1
@@ -15,13 +16,6 @@ state_helper:
       value: false
     - id: cbc_action_timer
       value: false
-    - id: cbc_on
-      value: 'on'
-      styles:
-        icon:
-          - opacity: 0.95
-        name:
-          - opactiy: 0.9
     - id: cbc_off
       value: 'off'
       styles:
@@ -29,18 +23,34 @@ state_helper:
           - opacity: 0.8
         name:
           - opactiy: 0.8
+    - id: cbc_motion
+      operator: template
+      value: false
+    - id: cbc_on
+      value: 'on'
+      styles:
+        icon:
+          - opacity: 0.95
+        name:
+          - opactiy: 0.9
     - id: cbc_unavailable
       value: "unavailable"
       label: Unavailable
+      icon: mdi:wifi-alert
       styles:
         card:
           - min-height: 40px
-          - height: 40px
+          # - height: 50px
           - opacity: 0.2
           - box-shadow: none;
         label:
           - display: block
           - margin-top: 0
+        custom_fields:
+          bc:
+            - display: none
+          es:
+            - display: none
 
 ################################################################################/
 

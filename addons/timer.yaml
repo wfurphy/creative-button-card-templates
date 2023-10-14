@@ -1,0 +1,44 @@
+timer:
+  type: custom:button-card
+  template: 
+    - transparent
+  custom_fields:
+    t:
+      type: custom:button-card
+      template:
+        - info_mini
+        - transparent
+        - state_helper
+      icon: mdi:timer
+      show_state: true
+      variables:
+        height: 20px
+        timer_entity:
+      tap_action:
+        action: call-service
+        service: timer.pause
+        service_data:
+          entity_id: entity.entity_id
+      double_tap_action:
+        action: call-service
+        service: timer.cancel
+        service_data:
+          entity_id: entity.entity_id
+      state:
+        - id: cbc_on
+          value: active
+          styles:
+            # card:
+            #   - display: block
+            state:
+              - color: var(--highlight)
+  styles:
+    card:
+      # - display: none
+      - position: absolute
+      - left: 5px
+      - bottom: 5px
+    state:
+      font_size: 15px
+
+

@@ -1,0 +1,83 @@
+############| +Addon > Date Time Helper (datetime) |###########################>
+# ::Changes::0.3::> Created `datetime` addon
+datetime:
+  variables:
+    __dateString: >
+      [[[
+        return function(date, format) {
+          const d = date instanceof Date ? date : new Date(date);
+
+          if (!date || !d.getMonth()) {
+            throw Error(`You must supply a Date object or a string that can convert to a date! Provided: ${date}`);
+          }
+
+          const _days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+          const _months = ['Janurary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+          const CDate = {
+            d,
+            _days,
+            _months,
+            day: _days[d.getDay()],
+            month: _months[d.getMonth()],
+
+            getShort: function() {
+              return `${this.day} at ${this.d.getHours()}:${this.d.getMinutes()}`;
+            },
+
+            getFull: function() {
+              return `${this.day} ${this.d.getDate()} ${this.month} ${this.d.getFullYear()} at ${this.d.getHours()}:${this.d.getMinutes()}`;
+            },
+
+            getRelative: function() {
+              let now = new Date();
+              let secondsPast = (now.getTime() - this.d.getTime()) / 1000;
+
+              if (secondsPast < 5) {
+                const u = parseInt(secondsPast);
+                return `just now`;
+              }
+              if (secondsPast < 60) {
+                const u = parseInt(secondsPast);
+                return `${u} second${u > 1 ? 's' : ''} ago`;
+              }
+              if (secondsPast < 3600) {
+                const u = parseInt(secondsPast / 60);
+                return `${u} minute${u > 1 ? 's' : ''} ago`;
+              }
+              if (secondsPast <= 86400) {
+                const u = parseInt(secondsPast / 3600);
+                return `${u} hour${u > 1 ? 's' : ''} ago`;
+              }
+              if (secondsPast > 86400) {
+                return this.getFull();
+              }
+            },
+
+            get: function(format) {
+              switch (format) {
+                case 'D':
+                  return this.day;
+                case 'M':
+                  return this.month;
+                case 'S':
+                  return this.getShort();
+                case 'R':
+                  return this.getRelative();
+                case 'F':
+                default:
+                  return this.getFull();
+              }
+            },
+          }
+
+          if(format) {
+            return CDate.get(format);
+          }
+          
+          return CDate;
+        }
+      ]]]
+
+#
+#

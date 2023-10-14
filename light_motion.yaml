@@ -19,11 +19,13 @@ light_motion:
               timer: 'none'
             }
           }
-
-          if (timer_entity && states[timer_entity].state == 'active') {
-            ps.custom_field = 'timer'
-            ps.display.motion = 'none'
-            ps.display.timer = 'block'
+          
+          if (timer_entity) {
+            if(states[timer_entity].state == 'active') {
+              ps.custom_field = 'timer'
+              ps.display.motion = 'none'
+              ps.display.timer = 'block'
+            }
           }
 
           if (entity.state == 'on') {

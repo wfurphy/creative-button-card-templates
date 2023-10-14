@@ -1,16 +1,28 @@
 ############| +Addon > Dynamic Icons |###########################>
+# ::Changes::0.3::> Add `icon_color` and `icon_on_color`
 dynamic_icons:
   template: state_helper
   variables:
     icon: "mdi:wifi"
     icon_on: "mdi:wifi-star"
     icon_unavailable: "mdi:wifi-cancel"
+    icon_on_color: var(--accent-color)
+    icon_color: var(--state-light-off-color, var(--state-light-inactive-color, var(--state-inactive-color)))
   state:
     - id: cbc_on
       icon: "[[[ return variables.icon_on ]]]"
+      styles:
+        icon:
+          - color: "[[[ return variables.icon_on_color ]]]"
+    - id: cbc_off
+      styles:
+        icon:
+          - color: "[[[ return variables.icon_color ]]]"
     - id: cbc_unavailable
       icon: "[[[ return variables.icon_unavailable ]]]"
+      styles:
+        icon:
+          - color: var(--state-light-off-color, var(--state-light-inactive-color, var(--state-inactive-color)))
   icon: "[[[ return variables.icon ]]]"
 
 #########################################################################/
-  

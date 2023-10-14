@@ -1,4 +1,5 @@
 #################( Value Strip Item )################################>
+# ::Changes::0.3::> Added ability to have different types on the same strip, Added fan, fan mode, air purifier and climate types
 value_strip_item:
   template:
   - transparent
@@ -6,6 +7,8 @@ value_strip_item:
   variables:
     item:
       active: false
+      max: 3
+      mode: null
       prefix:
       units: ''
       value: 100
@@ -34,7 +37,7 @@ value_strip_item:
       ]]]
   name: >
     [[[
-      variables.__opc = (variables.item.value / 100) + 0.07
+      variables.__opc = variables.item.opacity ?? (variables.item.value / 100) + 0.07
       variables.__both = variables.show.icon && variables.show.value
 
       if (variables.item.label) {
@@ -73,8 +76,9 @@ value_strip_item:
       - display: "[[[ return variables.__both || variables.show.value ? 'block' : 'none' ]]]"
       - opacity: >
           [[[
-            if (variables.__lock) return 0.2;
-            return (!variables.show.fade || variables.__opc > 1) ? 0.8 : variables.__opc
+            if (variables.__lock) return 0.1;
+            if (variables.item.opacity) return variables.item.opacity;
+            return (!variables.show.fade || variables.__opc >= 1) ? 0.9 : variables.__opc
           ]]]
       - color: "[[[ return variables.item.color ]]]"
       - font-size: "[[[ return variables.__both ? '12px' : '16px' ]]]"
@@ -96,13 +100,14 @@ value_strip_item:
     icon:
       - display: "[[[ return variables.__both || variables.show.icon ? 'block' : 'none' ]]]"
       - width: auto
-      - height: 80%
+      - height: 70%
       - padding: "[[[ return variables.__both || variables.show.value ? 0 : '5px' ]]]"
       - color: "[[[ return variables.item.color ]]]"
       - opacity: >
           [[[
             if (variables.__lock) return 0.1;
-            return (!variables.show.fade || variables.__opc > 1) ? 0.9 : variables.__opc
+            if (variables.item.opacity) return variables.item.opacity;
+            return (!variables.show.fade || variables.__opc >= 1) ? 0.9 : variables.__opc
           ]]]
       - align-self: 'center'
       - justify-self: center
@@ -114,8 +119,8 @@ adaptive_lighting_strip_item:
     - value_strip_item
   variables:
     al_area_id: main_area
-    item:
-      value: 100
+    # item:
+    #   value: 100
   color: auto
   custom_fields:
     active_logic: >
@@ -146,9 +151,9 @@ adaptive_lighting_strip_item:
 #################( Brightness Strip Item )################################>
 brightness_strip_item:
   template: value_strip_item
-  variables:
-    item:
-      value: 100
+  # variables:
+  #   item:
+  #     value: 100
   color: auto
   tap_action:
     action: call-service
@@ -168,9 +173,9 @@ brightness_strip_item:
 #################( Cover Strip Item )################################>
 cover_strip_item:
   template: value_strip_item
-  variables:
-    item:
-      value: 100
+  # variables:
+  #   item:
+  #     value: 100
   state:
     - id: cbc_active
       operator: template
@@ -187,6 +192,92 @@ cover_strip_item:
     haptic: success
 
 
+#################( Climate Strip Item )################################>
+climate_strip_item:
+  template: value_strip_item
+  tap_action:
+    action: call-service
+    service: climate.set_temperature
+    service_data:
+      entity_id: "[[[ return entity.entity_id ]]]"
+      temperature: "[[[ return variables.item.value ]]]"
+    haptic: success
+  state:
+    - id: cbc_active
+      operator: template
+      value: >
+        [[[
+          return Boolean(variables.item.value == entity.attributes.temperature)
+        ]]]
+
+#################( Fan Strip Item )################################>
+fan_strip_item:
+  template: value_strip_item
+  # variables:
+  #   item:
+  #     value: 100
+  state:
+    - id: cbc_active
+      operator: template
+      value: >
+        [[[
+          return Boolean(entity.attributes.percentage == variables.item.value)
+        ]]]
+  tap_action:
+    action: call-service
+    service: fan.set_percentage
+    service_data:
+      entity_id: "[[[ return entity.entity_id ]]]"
+      percentage: "[[[ return variables.item.value ]]]"
+    haptic: success
+
+#################( Fan Mode Strip Item )################################>
+fan_mode_strip_item:
+  template: value_strip_item
+  # variables:
+    # item:
+    #   value: 100
+    #   mode: Auto
+  state:
+    - id: cbc_active
+      operator: template
+      value: >
+        [[[
+          return Boolean(entity.attributes.preset_mode == variables.item.mode)
+        ]]]
+  tap_action:
+    action: call-service
+    service: fan.set_preset_mode
+    service_data:
+      entity_id: "[[[ return entity.entity_id ]]]"
+      preset_mode: "[[[ return variables.item.mode ]]]"
+    haptic: success
+
+#################( Air Purifier Strip Item )################################>
+air_purifier_strip_item:
+  template: 
+    - value_strip_item
+    - style_helper
+    - state_helper
+  variables:
+    level_entity: "[[[ return `${entity.entity_id.replace('fan.', 'number.')}_fan_level` ]]]"
+    # item:
+    #   value: 100
+  state:
+    - id: cbc_active
+      operator: template
+      value: >
+        [[[
+          return Boolean(entity.attributes.preset_mode == 'Fan' && states[variables.level_entity].state == variables.item.value)
+        ]]]
+  tap_action:
+    action: call-service
+    service: number.set_value
+    service_data:
+      entity_id: "[[[ return variables.level_entity ]]]"
+      value: "[[[ return variables.item.value ]]]"
+    haptic: success
+
 #################( Value Strip )################################>
 value_strip:
   show_icon: false
@@ -194,7 +285,13 @@ value_strip:
   show_state: false
   show_name: false
   variables:
-    type: value
+    #::::[ type ]::::( value | brightness | adaptive_lighting | cover | fan )::::>
+    type: domain
+    __domains:
+      - light
+      - cover
+      - fan
+      - climate
     height: 45px
     al_area_id: null
     triggers: []
@@ -203,7 +300,23 @@ value_strip:
       icon: true
       value: true
       fade: true
+    __has: >
+        [[[
+          /**
+          * Get the value of a property from an object, or a fallback value if the property is not found.
+          *
+          * @param {Object} obj - The object to retrieve the property value from.
+          * @param {string} prop - The name of the property to retrieve.
+          * @param {*} [fallback=null] - The fallback value to return if the property is not found.
+          * @returns {*} - The value of the property, or the fallback value if the property is not found or the object is falsy.
+          */
+          return function(obj, prop, fallback = null) {
+            return obj && Object.keys(obj).includes(prop) ? obj[prop] : fallback
+          }
+        ]]]
     __merge:
+      type: null
+      entity: null
       value: 0
       active: false
       prefix: ''
@@ -212,61 +325,108 @@ value_strip:
       label: ''
       active_color: 'var(--accent-color)'
       color: 'var(--paper-item-icon-color)'
+      max: 3
+      opacity: null
     __defaults: []
-    _defaults_brightness:
-      - value: 10
-        units: '%'
-        icon: mdi:brightness-3
-      - value: 25
-        units: '%'
-        icon: mdi:brightness-4
-      - value: 50
-        units: '%'
-        icon: mdi:brightness-5
-      - value: 75
-        units: '%'
-        icon: mdi:brightness-6
-      - value: 100
-        units: '%'
-        icon: mdi:brightness-7
-    _defaults_cover:
-      - value: 0
-        icon: mdi:blinds
-        prefix: ''
-        units: '%'
-        label: close
-      - value: 25
-        icon: mdi:blinds
-        units: '%'
-      - value: 50
-        icon: mdi:blinds-open
-        units: '%'
-      - value: 75
-        icon: mdi:blinds-open
-        units: '%'
-      - value: 100
-        icon: mdi:blinds-open
-        units: '%'
-        prefix: ''
-        label: open
+    _defaults:
+      brightness:
+        - value: 10
+          units: '%'
+          icon: mdi:brightness-3
+        - value: 25
+          units: '%'
+          icon: mdi:brightness-4
+        - value: 50
+          units: '%'
+          icon: mdi:brightness-5
+        - value: 75
+          units: '%'
+          icon: mdi:brightness-6
+        - value: 100
+          units: '%'
+          icon: mdi:brightness-7
+      cover:
+        - value: 0
+          icon: mdi:blinds
+          prefix: ''
+          units: '%'
+          label: close
+        - value: 25
+          icon: mdi:blinds
+          units: '%'
+        - value: 50
+          icon: mdi:blinds-open
+          units: '%'
+        - value: 75
+          icon: mdi:blinds-open
+          units: '%'
+        - value: 100
+          icon: mdi:blinds-open
+          units: '%'
+          prefix: ''
+          label: open
+      fan:
+        - value: 10
+          icon: mdi:circle-slice-1
+          prefix: ''
+          units: '%'
+        - value: 25
+          icon: mdi:circle-slice-2
+          units: '%'
+        - value: 50
+          icon: mdi:circle-slice-4
+          units: '%'
+        - value: 75
+          icon: mdi:circle-slice-6
+          units: '%'
+        - value: 100
+          icon: mdi:circle-slice-8
+          units: '%'
+          prefix: ''
+      climate:
+        - value: 18
+          units: '℃'
+          icon: mdi:thermometer-low
+          opacity: 0.3
+        - value: 19
+          units: '℃'
+          icon: mdi:thermometer
+          opacity: 0.45
+        - value: 20
+          units: '℃'
+          icon: mdi:thermometer
+          opacity: 0.6
+        - value: 21
+          units: '℃'
+          icon: mdi:thermometer
+          opacity: 0.75
+        - value: 22
+          units: '℃'
+          icon: mdi:thermometer-high
+          opacity: 0.9
   styles:
     card:
       - clear: >
           [[[
+            if (variables.type === 'domain') {
+              const domain = entity.entity_id.toString().substring(0, entity.entity_id.indexOf('.'))
+
+              variables.type = domain === 'light' ? 'brightness' : domain
+            }
+
             switch (variables.type) {
               case 'adaptive_lighting':
-                variables.__defaults = variables._defaults_brightness
-                variables.__entity_id = 'light.al_lights_' + variables.al_area_id
+                variables.__defaults = variables._defaults.brightness
+                variables.__entity_id = 'light.al_group_' + variables.al_area_id
                 variables.triggers = ['switch.adaptive_lighting_' + variables.al_area_id, 'switch.adaptive_lighting_adapt_brightness_' + variables.al_area_id]
                 break
               case 'cover':
-                variables.__defaults = variables._defaults_cover
-                variables.__entity_id = entity.entity_id
-                break
+              case 'fan':
               case 'brightness':
               case 'value':
+              case 'climate':
               default:
-                variables.__defaults = variables._defaults_brightness
+                variables.__defaults = variables._defaults[variables.type.trim()] ?? variables._defaults.brightness
                 variables.__entity_id = entity.entity_id
                 break
             }
@@ -277,7 +437,7 @@ value_strip:
       - padding: 0
     grid:
       - grid-template-areas: '"c1 c2 c3 c4 c5"'
-      - grid-template-columns: 1fr 1fr 1fr 1fr 1fr
+      - grid-template-columns: repeat(5, 1fr)
       - grid-template-rows: 1fr
       - justify-items: center
       - align-items: center
@@ -287,25 +447,25 @@ value_strip:
     custom_fields:
       c1:
         - width: 100%
-        - align-self: start
+        - align-self: center
       c2:
         - width: 100%
-        - align-self: start
+        - align-self: center
       c3:
         - width: 100%
-        - align-self: start
+        - align-self: center
       c4:
         - width: 100%
-        - align-self: start
+        - align-self: center
       c5:
         - width: 100%
-        - align-self: start
+        - align-self: center
   custom_fields:
     c1:
       card:
         type: custom:button-card
-        template: "[[[ return variables.type + '_strip_item' ]]]"
-        entity: "[[[ return variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[0], 'type') ?? variables.type}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[0], 'entity') ?? variables.__entity_id ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
           height: "[[[ return variables.height ]]]"
@@ -315,8 +475,8 @@ value_strip:
     c2:
       card:
         type: custom:button-card
-        template: "[[[ return variables.type + '_strip_item' ]]]"
-        entity: "[[[ return variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[1], 'type') ?? variables.type}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[1], 'entity') ?? variables.__entity_id ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
           height: "[[[ return variables.height ]]]"
@@ -326,8 +486,8 @@ value_strip:
     c3:
       card:
         type: custom:button-card
-        template: "[[[ return variables.type + '_strip_item' ]]]"
-        entity: "[[[ return variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[2], 'type') ?? variables.type}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[2], 'entity') ?? variables.__entity_id ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
           height: "[[[ return variables.height ]]]"
@@ -337,8 +497,8 @@ value_strip:
     c4:
       card:
         type: custom:button-card
-        template: "[[[ return variables.type + '_strip_item' ]]]"
-        entity: "[[[ return variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[3], 'type') ?? variables.type}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[3], 'entity') ?? variables.__entity_id ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
           height: "[[[ return variables.height ]]]"
@@ -348,8 +508,8 @@ value_strip:
     c5:
       card:
         type: custom:button-card
-        template: "[[[ return variables.type + '_strip_item' ]]]"
-        entity: "[[[ return variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[4], 'type') ?? variables.type}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[4], 'entity') ?? variables.__entity_id ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
           height: "[[[ return variables.height ]]]"

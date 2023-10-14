@@ -1,4 +1,5 @@
 ####{ CreativeBC }####| Info |####[ github.com/wfurphy/creative-button-card-templates ]####>
+# ::Changes::0.3::> Fixed z-index, state position, style.opacity.icon > transparency
 info_helper:
   variables:
     __item: >
@@ -57,9 +58,10 @@ info_mini:
     icon_color: var(--state-icon-color, var(--paper-item-icon-color))
     color:
     width: 60px
+    height: 45px
     style:
       opacity:
-        icon: 0.4
+        icon: 
     __css: |
         <style>
           .cbc-units {
@@ -90,14 +92,23 @@ info_mini:
       - padding: 0
       - margin: 0
     icon:
-      - opacity: "[[[ return this.___config.template.includes('transparent') ? 1 : variables.style.opacity.icon ]]]"
-      - justify-self: center
-      - align-self: center
+      # :::: Breaking Change 0.3 ::::> Now style.opacity.icon will override transparent rule if set.
+      - opacity: >-
+          [[[
+            if (variables.style.opacity.icon) { return variables.style.opacity.icon }
+            return this.___config.template.includes('transparent') ? 1 : 0.4
+          ]]]
+      - justify-self: start
+      - align-self: start
+      - position: absolute
+      - top: 0
+      - left: 0
       - max-height: 200%
       - max-width: 200%
-      - height: 48px
-      - width: 48px
-      - margin-top: -3px
+      - height: 100%
+      - width: 100%
+      # - margin-top: -20%
+      - margin-left: -25%
       - padding: 0
       - z-index: 1
       - color: >
@@ -107,26 +118,28 @@ info_mini:
             return this.___config.template.includes('transparent') ? 'var( --ha-card-background, var(--card-background-color, white) )' : 'var(--state-icon-color)'
           ]]]
     state:
-      - position: fixed
+      - position: absolute #:::: Update 0.3 ::::>
       - justify-self: end
       - align-self: end
       - font-size: 18px
       - margin-top: 0
       - margin-bottom: 0
       - overflow: visible
-      - z-index: 5
+      - text-align: right
+      - z-index: 3
 
 #################( Info Item )################################>
+#:::: Changes 0.3 added `font_size`
 info_item:
   template:
     - style_helper
-    - no_actions
     - transparent
     - info_helper
   variables:
     group: false
     item: {}
     icon_color: "var(--state-icon-color, var(--paper-item-icon-color))"
+    font_size: 20px
     name: ''
     attribute: ''
     color:
@@ -156,6 +169,7 @@ info_item:
       let att = String(item.attribute)
       return att.length > 0 ? att.replace('_', ' ') : entity?.attributes.friendly_name
     ]]]
+  
   # styles:
   styles:
     grid:
@@ -190,14 +204,14 @@ info_item:
       - text-justify: right
       - overflow: visible
       - text-transform: uppercase
-      - z-index: 8
+      - z-index: 3
     state:
       - justify-self: end
       - align-self: end
-      - font-size: 20px
+      - font-size: "[[[ return variables.__item(variables).font_size || variables.font_size ]]]"
       - text-justify: right
       - overflow: visible
-      - z-index: 9
+      - z-index: 3
 
 #################( Info Icon )################################>
 info_icon:

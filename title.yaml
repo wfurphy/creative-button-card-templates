@@ -1,30 +1,78 @@
 ####{ CreativeBC }####| Title |####[ github.com/wfurphy/creative-button-card-templates ]####>
+# ::{ Update 0.3 }:: Added `resizable`, added info }
+
+###################[ title_info ]#######################################################>
+title_info:
+  template:
+    - info_mini
+    - transparent
+  variables:
+    width: 45px
+    _item: []
+    styles:
+      icon:
+        - opacity: "[[[ return variables._item.opacity ?? '0.2' ]]]"
+        - color: "[[[ return variables._item.color ?? 'var(--accent-color)' ]]]"
+
 title:
   template:
     - style_helper
     - no_actions
+    - resizable
   variables:
     mirror: false
     color: var(--primary-background-color)
     background_color: var(--state-icon-color)
     show_tab: false
     offset: 0
+    info:
+      - layout: stack
+      - layout: stack
+      - layout: stack
+  custom_fields:
+    i1:
+      card:
+        type: custom:button-card
+        template: title_info
+        entity: "[[[ return variables.info[0].entity ]]]"
+        variables: 
+          _item: "[[[ return variables.info[0] ]]]"
+          layout: "[[[ return variables.info[0].layout ?? 'stack' ]]]"
+    i2:
+      card:
+        type: custom:button-card
+        template: title_info
+        entity: "[[[ return variables.info[1].entity ]]]"
+        variables: 
+          _item: "[[[ return variables.info[1] ]]]"
+          layout: "[[[ return variables.info[1].layout ?? 'stack' ]]]"
+    i3:
+      card:
+        type: custom:button-card
+        template: title_info
+        entity: "[[[ return variables.info[2].entity ]]]"
+        variables: 
+          _item: "[[[ return variables.info[2] ]]]"
+          layout: "[[[ return variables.info[2].layout ?? 'stack' ]]]"
+        
   styles:
     grid:
       - position: relative
-      - grid-template-areas: >
-          [[[ return variables.mirror ? '\"i n\"' : '\"n i\"' ]]]
-      - grid-template-columns: 3fr 1fr
+      - grid-template-areas: >-
+          [[[ return variables.mirror ? '\"i i3 i2 i1 n\"' : '\"n i1 i2 i3 i\"' ]]]
+      - grid-template-columns: >-
+          [[[ return variables.mirror ? '2fr 1fr 1fr 1fr 5fr' : '5fr 1fr 1fr 1fr 2fr' ]]]
       - grid-template-rows: 1fr
       - justify-items: start
       - align-items: center
-      - padding: 6px
+      - padding: 4px
       - overflow: visible
     card:
       - cursor: default
       - --mdc-ripple-press-opacity: 0
       - opacity: 0.5
-      - height: 40px
+      - min-height: 40px
+      - height: "[[[ return variables.height ?? '40px' ]]]"
       - margin-left: "[[[ return variables.offset ]]]"
       - background-color: "[[[ return variables.background_color ]]]"
       - box-shadow: none
@@ -60,17 +108,15 @@ title:
       - height: 155%
       - width: 155%
       - max-height: 500%
+    custom_fields:
+      i1:
+        - display: "[[[ return variables.info.length && variables.info[0].entity ? 'block' : 'none' ]]]"
+      i2:
+        - display: "[[[ return variables.info.length >= 2 && variables.info[1].entity ? 'block' : 'none' ]]]"
+      i3:
+        - display: "[[[ return variables.info.length >= 3 && variables.info[2].entity ? 'block' : 'none' ]]]"
+  
 
-#### title_grid ####>
-# @deprecated v0.2 to be removed in v0.3
-##/
-title_grid:
-  template: title
-  styles:
-    card:
-      - margin-top: 40px
-      - justify-self: center
-      - align-self: end
 
 #########################################################################/
   
