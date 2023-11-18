@@ -108,7 +108,7 @@ info_mini:
       - height: 100%
       - width: 100%
       # - margin-top: -20%
-      - margin-left: -25%
+      # - margin-left: -25%
       - padding: 0
       - z-index: 1
       - color: >

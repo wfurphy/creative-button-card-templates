@@ -20,7 +20,7 @@ button_action:
   name: Start
   tap_action:
     action: >
-      [[[ return entity?.entity_id.search('timer.') !== -1 ? 'call-service' : 'toggle' ]]]
+      [[[ return entity?.entity_id.includes('timer.') ? 'call-service' : 'toggle' ]]]
     service: >
       [[[ return entity?.state == 'active' ? 'timer.cancel' : 'timer.start' ]]]
     service_data:
@@ -40,8 +40,8 @@ button_action:
     - id: cbc_action_timer
       operator: template
       value: >
-        [[[ 
-          return entity?.entity_id.search('timer.') !== -1 && entity.state == 'active'
+        [[[
+          return entity?.entity_id.includes('timer.') && entity.state == 'active'
         ]]]
       icon: "[[[ return variables.icon_on ]]]"
       name: "[[[ return variables.name_on ]]]"

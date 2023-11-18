@@ -104,8 +104,6 @@ datetime:
             },
           }
 
-          console.log(CDate); // DEBUG
-
           if(format) {
             return CDate.get(format);
           }

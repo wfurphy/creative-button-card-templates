@@ -11,7 +11,7 @@ button_mini:
     - interactive
   variables:
     min-height: 40px
-    icon_width: 30px
+    icon_min_width: 30px
     __get: >
       [[[
         return function(prop, vars, sub = undefined) {
@@ -48,7 +48,7 @@ button_mini:
     icon:
       - opacity: "[[[ return (variables.__get('symbol', variables) == '$state') ? 0.4 : 0.8 ]]]" #::Breaking::0.3::> Changed the Opacity of icon to 0.8 to match other cards
       # - color: "[[[ return variables.__get('color', variables) == '$state' ? 'var(--state-icon-color, var(--paper-item-icon-color))' : 'var(--paper-item-icon-color)' ]]]"
-      - min-width: "[[[ return variables.icon_width ]]]"
+      - min-width: "[[[ return variables.icon_min_width ]]]"
       - min-height: 40px
     card:
       - min-width: 30px
@@ -92,8 +92,8 @@ button_mini_embed:
       - box-shadow: none
       - border: 0
       - cursor: crosshair
-    icon:
-      - color: var(--button-card-light-color)
+    # icon:
+    #   - color: var(--button-card-light-color)
 
 ############| Button Mini + State |###########################>
 button_mini_state:
@@ -123,13 +123,13 @@ button_mini_state:
 button_mini_power:
   type: custom:button-card
   template: button_mini
-  label: "[[[ console.log(states.light) ]]]"
+  # label: "[[[ console.log(states.light) ]]]"
   variables:
     area: 
     width: 45px
   icon: mdi:power
   color_type: card
-  # color: var(--accent-color)
+  color: var(--accent-color)
   tap_action:
     action: call-service
     service: light.toggle

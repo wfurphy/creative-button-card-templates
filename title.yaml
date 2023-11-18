@@ -54,7 +54,6 @@ title:
         variables: 
           _item: "[[[ return variables.info[2] ]]]"
           layout: "[[[ return variables.info[2].layout ?? 'stack' ]]]"
-        
   styles:
     grid:
       - position: relative
@@ -72,7 +71,7 @@ title:
       - --mdc-ripple-press-opacity: 0
       - opacity: 0.5
       - min-height: 40px
-      - height: "[[[ return variables.height ?? '40px' ]]]"
+      - height: "[[[ return variables.height ?? '45px' ]]]"
       - margin-left: "[[[ return variables.offset ]]]"
       - background-color: "[[[ return variables.background_color ]]]"
       - box-shadow: none
@@ -115,8 +114,6 @@ title:
         - display: "[[[ return variables.info.length >= 2 && variables.info[1].entity ? 'block' : 'none' ]]]"
       i3:
         - display: "[[[ return variables.info.length >= 3 && variables.info[2].entity ? 'block' : 'none' ]]]"
-  
-
 
 #########################################################################/
   

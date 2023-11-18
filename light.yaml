@@ -1,8 +1,7 @@
 ####{ CreativeBC }####| Light |####[ github.com/wfurphy/creative-button-card-templates ]####>
-# ::Changes::0.3::> Fixed z-index, brightness & effects
+# ::Changes::0.3::> Fixed z-index, add brightness & effects
 light:
-  template:
-    - button_landscape
+  template: button_landscape
   variables:
     __grid: >
       [[[
@@ -67,6 +66,9 @@ light:
       - overflow: visible
       - text-overflow: visible
       - align-self: start
+    name:
+      - justify-self: start
+      - align-self: center
     custom_fields:
       bc:
         - z-index: 3
@@ -208,16 +210,17 @@ light:
               script.innerHTML = `
                 cbcJS = {
                   version: "0.3.0",
-                  runLightEffect: function(ef, entity) {
-                    this.hass.callService('light', 'turn_on', {
-                      entity_id: entity,
-                      effect: ef,
-                    })
-                  },
                 };
               `
               document.head.appendChild(script);
             }
+
+            cbcJS.runLightEffect = function(ef, entity) {
+              this.hass.callService('light', 'turn_on', {
+                entity_id: entity,
+                effect: ef,
+              })
+            },
 
             cbcJS.hass = hass
                   
