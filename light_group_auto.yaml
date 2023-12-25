@@ -148,6 +148,7 @@ light_group_auto:
         - height: 30px
         - justify-self: center
   custom_fields:
+    
     x: >
       [[[
         const lc = {
