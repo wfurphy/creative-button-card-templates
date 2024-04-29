@@ -1,12 +1,33 @@
 ####{ CreativeBC }####| Light |####[ github.com/wfurphy/creative-button-card-templates ]####>
-# ::Changes::0.3::> Fixed z-index, brightness & effects
+# ::Changes::0.3::> Fixed z-index, brightness & effects, replace __debugJson with __console.
 notify:
   type: custom:button-card
   template:
     - resizable
     - datetime
+    # - css
   variables:
-    __debugJson: "[[[ console.log(`::[${entity.entity_id}]::JSON::>`, JSON.parse(entity.state)) ]]]"
+    __console: >
+      [[[
+        const json = JSON.parse(entity.state);
+
+        if (json.type == 'clear') return;
+
+        const message = json.message ?? '';
+        const output = `::CBC::| ${json.type.toUpperCase()} |::[${entity.entity_id}]::::>\n${message}`;
+
+        switch (json.type) {
+          case 'warning':
+          case 'warn':
+            console.warn(output, json);
+            break;
+          case 'error':
+            console.error(output, json);
+            break;
+          default:
+            console.log(output, json);
+        }
+      ]]]
     __color: >
       [[[
         return function(col, opc = 1) {
@@ -38,6 +59,7 @@ notify:
                 out = '25, 136, 115'
                 break
               case 'warning':
+              case 'warn':
                 out = '254, 190, 110'
                 break
               case 'error':
@@ -62,6 +84,7 @@ notify:
           case 'event':
             return 'mdi:calendar'
           case 'warning':
+          case 'warn':
             return 'mdi:alert-outline'
           case 'error':
             return 'mdi:alert-octagon-outline'
@@ -71,7 +94,7 @@ notify:
         }
       ]]]
     script: script.dashbaord_notification
-    _updated_at: "[[[ return new Date(entity.last_updated || null) ]]]"
+    _updated_at: "[[[ return entity.last_updated || null ]]]"
     json: "[[[ return JSON.parse(entity.state) ]]]"
       # type: "[[[ return JSON.parse(entity.state).type ]]]"
       # icon: "[[[ return JSON.parse(entity.state).icon || undefined ]]]"
@@ -112,15 +135,6 @@ notify:
             persistent: false
           })
         ]]]
-  # state:
-  #   - id: cbc_custom_1
-  #     operator: template
-  #     value: "[[[ return variables.json.type == 'event' && states[variables.json.rentity]?.attributes.entity_picture ]]]"
-  #     entity_picture: "[[[ return hass.hassUrl(states[variables.json.rentity].attributes.entity_picture) ]]]"
-  #     name: >
-  #       [[[
-
-  #       ]]]
   icon: "[[[ return variables.icon ]]]"
   styles:
     card:

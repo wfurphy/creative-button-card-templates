@@ -96,6 +96,8 @@ light_group:
       # - height: 40px
     icon:
       - height: 35px
+      - justify-self: center
+      - align-self: center
     name:
       - justify-self: center
       - align-self: center
@@ -108,31 +110,37 @@ light_group:
         - z-index: 3
         - justify-self: center
         - align-self: center
+        - padding: 5px 0 5px 0
       li2:
         - display: "[[[ return variables.items[1]?.display || 'none' ]]]"
         - z-index: 3
         - justify-self: center
         - align-self: center
+        - padding: 5px 0 5px 0
       li3:
         - display: "[[[ return variables.items[2]?.display || 'none' ]]]"
         - z-index: 3
         - justify-self: center
         - align-self: center
+        - padding: 5px 0 5px 0
       li4:
         - display: "[[[ return variables.items[3]?.display || 'none' ]]]"
         - z-index: 3
         - justify-self: center
         - align-self: center
+        - padding: 5px 0 5px 0
       li5:
         - display: "[[[ return variables.items[4]?.display || 'none' ]]]"
         - z-index: 3
         - justify-self: center
         - align-self: center
+        - padding: 5px 0 5px 0
       li6:
         - display: "[[[ return variables.items[5]?.display || 'none' ]]]"
         - z-index: 3
         - justify-self: center
         - align-self: center
+        - padding: 5px 0 5px 0
       bc:
         - height: 30px
         - justify-self: center

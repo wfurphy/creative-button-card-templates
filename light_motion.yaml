@@ -1,11 +1,12 @@
 ####{ CreativeBC }####| Light associated with a Motion Sensor |####[ github.com/wfurphy/creative-button-card-templates ]####>
+####:::Changes 0.3:::> Added `active_entity` functionality
 light_motion:
   template:
     - light
   color: auto
   variables:
     motion_entity:
-    enabled_entity:
+    active_entity:
     timer_entity:
     __pauseState: >
       [[[
@@ -40,6 +41,10 @@ light_motion:
           return ps
         }
       ]]]
+  triggers_update:
+    - "[[[ return variables.motion_entity ]]]"
+    - "[[[ return variables.timer_entity ]]]"
+    - "[[[ return variables.active_entity ]]]"
   styles:
     grid:
       - grid-template-areas: "[[[ return variables.__pauseState(variables.timer_entity, entity).areas ]]]"
@@ -48,7 +53,7 @@ light_motion:
       - justify-items: start
       - padding: 6px
     name:
-      - line-height: 18px
+      - line-height: 22px
     label:
       - display: "[[[ return variables.__pauseState(variables.timer_entity, entity).display.label ]]]"
       - align-self: center
@@ -74,21 +79,47 @@ light_motion:
         triggers_update:
           - "[[[ return variables.motion_entity ]]]"
           - "[[[ return variables.timer_entity ]]]"
-          - "[[[ return variables.enabled_entity ]]]"
+          - "[[[ return variables.active_entity ]]]"
+        tap_action:
+          action: "[[[ return variables.active_entity ? 'call-service' : 'none' ]]]"
+          service: input_boolean.toggle
+          target:
+            entity_id: "[[[ return variables.active_entity || '' ]]]"
+        double_tap_action: none #:::TODO::> Add ability to pause with timer on tap and move stop to here.
         state:
+          - id: cbc_motion_active
+            operator: template
+            value: >
+              [[[ 
+                // const mstate = variables.active_entity ? states[variables.active_entity].state : 'none'
+                // console.log(variables.active_entity, mstate, variables.active_entity && states[variables.active_entity].state == 'off', { bc: this })
+                
+                return variables.active_entity && states[variables.active_entity].state == 'off'
+              ]]]
+            icon: mdi:motion-sensor-off
+            styles:
+              icon:
+                - opactiy: 0.8
+                - color: "#C62F48"
           - id: cbc_on
             value: "on"
             icon: mdi:run-fast
             styles:
-              card:
+              icon:
                 - opactiy: 0.8
         icon: mdi:run
+        # icon: >
+        #   [[[
+        #     if (!variables.active_entity || states[variables.active_entity].state == 'on') {
+        #       return 
+        #     }
+        #   ]]]
         styles:
           card:
             - overflow: visible
-            - opacity: 0.4
             - margin-left: -2px
             - padding: 0
+            - z-index: 3
           grid:
             - grid-template-areas: '"i l"'
             - grid-template-columns: 1fr 3fr
@@ -98,13 +129,64 @@ light_motion:
             - overflow: visible
             - justify-self: start
             - align-self: center
-            - font-size: 75%
+            - font-size: 80%
             - margin: 2px 0 0 -2px
             - text-align: left
+            - opacity: 0.4
           icon:
-            - width: 18px
-            - height: 18px
+            - width: 22px
+            - height: 22px
             - padding-right: 5px
+            - z-index: 2
+            - opacity: "[[[ return variables.active_entity && states[variables.active_entity].state == 'off' ? 0.8 : 0.4 ]]]"
+          custom_fields:
+            sc:
+              - width: 0px;
+              - height: 0px;
+              - visibility: hidden
+        custom_fields:
+          sc: >
+            [[[
+                let content = ''
+                if (variables.active_entity) {
+                  content = states[variables.active_entity].state == 'off' ? '▶︎' : 'II'
+                }
+
+                return `
+                  <style>
+                    :host {
+                      --cbc-hover-content: '${content}';
+                    }
+                  </style>`
+            ]]]
+        card_mod:
+          style: |
+            ha-card:hover::after {
+              display: block;
+              position:absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: rgba(255,255,255,0.03);
+              content: '';
+              z-index: 1;
+            }
+            ha-card:hover #img-cell::after {
+              display: block;
+              position: absolute;
+              content: var(--cbc-hover-content);
+              top: 0;
+              left: 0;
+              width: 60%;
+              height: 60%;
+              margin: auto;
+              font-weight: bold;
+              z-index: 3;
+              text-align: center;
+              justify-self: center;
+              align-self: center;
+            }
     timer:
       card:
         type: custom:button-card
@@ -113,7 +195,7 @@ light_motion:
         triggers_update:
           - "[[[ return variables.motion_entity ]]]"
           - "[[[ return variables.timer_entity ]]]"
-          - "[[[ return variables.enabled_entity ]]]"
+          - "[[[ return variables.active_entity ]]]"
         show_state: true
         show_name: false
         show_icon: true

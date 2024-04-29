@@ -1,12 +1,17 @@
 ####{ CreativeBC }####| +Resizable |####[ github.com/wfurphy/creative-button-card-templates ]####>
+#::Changes::0.3::> added `min_height` and `min_width`
 resizable:
   variables:
     height:
     width:
+    min_height:
+    min_width:
   styles:
     card:
       - height: "[[[ return variables.height ]]]"
       - width: "[[[ return variables.width ]]]"
+      - min-height: "[[[ return variables.min_height ]]]"
+      - min-width: "[[[ return variables.min_width ]]]"
 
 ############################################################################/
   

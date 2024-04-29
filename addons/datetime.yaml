@@ -5,107 +5,108 @@ datetime:
     __dateString: >
       [[[
         return function(date, format) {
-          const d = date instanceof Date ? date : new Date(date);
+          try {
+            const d = new Date(date);
 
-          if (!date || !d.getMonth()) {
-            throw Error(`You must supply a Date object or a string that can convert to a date! Provided: ${date}`);
-          }
+            const _days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const _months = ['Janurary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const time = new Date(d).toLocaleTimeString('en-AU', { hour12: true, hour: 'numeric', minute: 'numeric', second: undefined });
 
-          const _days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-          const _months = ['Janurary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-          // const intld = new Intl.DateTimeFormat('en-AU', options).format(d);
-          const time = new Date(d).toLocaleTimeString('en-AU', { hour12: true, hour: 'numeric', minute: 'numeric', second: undefined });
+            const CDate = {
+              d,
+              _days,
+              _months,
+              day: _days[d.getDay()],
+              month: _months[d.getMonth()],
+              time,
 
-          const CDate = {
-            d,
-            _days,
-            _months,
-            day: _days[d.getDay()],
-            month: _months[d.getMonth()],
-            time,
+              getShort: function() {
+                return new Date(this.d).toLocaleTimeString('en-AU', {
+                  year: "numreric",
+                  month: "numeric",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                  second: undefined,
+                  hour12: true,
+                });
+              },
 
-            getShort: function() {
-              return new Date(this.d).toLocaleTimeString('en-AU', {
-                year: "numreric",
-                month: "numeric",
-                day: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-                second: undefined,
-                hour12: true,
-              });
-            },
+              getNext: function() {
+                const now = new Date();
+                let day = this.day;
 
-            getNext: function() {
-              const now = new Date();
-              let day = this.day;
+                console.log('::now::>', now.getDay(),'::d.getDay::>', this.d.getDay(), '::d::>', this.d)
 
-              console.log('::now::>', now.getDay(),'::d.getDay::>', this.d.getDay(), '::d::>', this.d)
+                if (now.getDay() === this.d.getDay()) {
+                  day = 'Today';
+                } else if (now.getDay() === (this.d.getDay() -1) || (now.getDay() === 6 && this.d.getDay() === 0)) {
+                  day = 'Tomorrow';
+                }
+                
+                return `${day} at ${this.time}`;
+              },
 
-              if (now.getDay() === this.d.getDay()) {
-                day = 'Today';
-              } else if (now.getDay() === (this.d.getDay() -1) || (now.getDay() === 6 && this.d.getDay() === 0)) {
-                day = 'Tomorrow';
-              }
-              
-              return `${day} at ${this.time}`;
-            },
+              getFull: function() {
+                return `${this.day} ${this.d.getDate()} ${this.month} ${this.d.getFullYear()} at ${this.time}`;
+              },
 
-            getFull: function() {
-              return `${this.day} ${this.d.getDate()} ${this.month} ${this.d.getFullYear()} at ${this.time}`;
-            },
+              getRelative: function() {
+                let secondsPast = (Date.now() - this.d.getTime()) / 1000;
 
-            getRelative: function() {
-              let secondsPast = (Date.now() - this.d.getTime()) / 1000;
-
-              if (secondsPast < 3) {
-                const u = parseInt(secondsPast);
-                return `just now`;
-              }
-              if (secondsPast < 60) {
-                const u = parseInt(secondsPast);
-                return `${u} second${u > 1 ? 's' : ''} ago`;
-              }
-              if (secondsPast < 3600) {
-                const u = parseInt(secondsPast / 60);
-                return `${u} minute${u > 1 ? 's' : ''} ago`;
-              }
-              if (secondsPast <= 86400) {
-                const u = parseInt(secondsPast / 3600);
-                return `${u} hour${u > 1 ? 's' : ''} ago`;
-              }
-              if (secondsPast > 86400) {
-                return this.getShort();
-              }
-            },
-
-            get: function(format) {
-              switch (format) {
-                case 'D':
-                case 'day':
-                  return this.day;
-                case 'M':
-                case 'month':
-                  return this.month;
-                case 'S':
-                case 'short':
+                if (secondsPast < 3) {
+                  const u = parseInt(secondsPast);
+                  return `just now`;
+                }
+                if (secondsPast < 60) {
+                  const u = parseInt(secondsPast);
+                  return `${u} second${u > 1 ? 's' : ''} ago`;
+                }
+                if (secondsPast < 3600) {
+                  const u = parseInt(secondsPast / 60);
+                  return `${u} minute${u > 1 ? 's' : ''} ago`;
+                }
+                if (secondsPast <= 86400) {
+                  const u = parseInt(secondsPast / 3600);
+                  return `${u} hour${u > 1 ? 's' : ''} ago`;
+                }
+                if (secondsPast > 86400) {
                   return this.getShort();
-                case 'N':
-                case 'next':
-                  return this.getNext();
-                case 'R':
-                case 'relative':
-                  return this.getRelative();
-                case 'F':
-                case 'full':
-                default:
-                  return this.getFull();
-              }
-            },
-          }
+                }
+              },
 
-          if(format) {
-            return CDate.get(format);
+              get: function(format) {
+                switch (format) {
+                  case 'D':
+                  case 'day':
+                    return this.day;
+                  case 'M':
+                  case 'month':
+                    return this.month;
+                  case 'S':
+                  case 'short':
+                    return this.getShort();
+                  case 'N':
+                  case 'next':
+                    return this.getNext();
+                  case 'R':
+                  case 'relative':
+                    return this.getRelative();
+                  case 'F':
+                  case 'full':
+                  default:
+                    return this.getFull();
+                }
+              },
+            }
+
+            if(format) {
+              return CDate.get(format);
+            }
+          } catch(e) {
+            // Modified to fail silently
+            console.error(e, `provided: ${date} and requested ${format} format.`);
+            return date;
           }
           
           return CDate;

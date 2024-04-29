@@ -1,5 +1,5 @@
 ####{ CreativeBC }####| Info |####[ github.com/wfurphy/creative-button-card-templates ]####>
-# ::Changes::0.3::> Fixed z-index, state position, style.opacity.icon > transparency
+# ::Changes::0.3::> Fixed z-index, state position, icon_opacity > transparency
 info_helper:
   variables:
     __item: >
@@ -43,6 +43,7 @@ info_helper:
       ]]]
 
 #################( Info Mini )################################>
+
 info_mini:
   template:
     - button_mini
@@ -56,12 +57,13 @@ info_mini:
     ####/ layout / string { stack|inline } / default: stack /####>
     layout: stack
     icon_color: var(--state-icon-color, var(--paper-item-icon-color))
+    icon_opactiy:
     color:
     width: 60px
     height: 45px
-    style:
-      opacity:
-        icon: 
+    style: ##> Deprecated 0.3
+      opacity:  ##> Deprecated 0.3
+        icon:  ##> Deprecated 0.3
     __css: |
         <style>
           .cbc-units {
@@ -95,6 +97,7 @@ info_mini:
       # :::: Breaking Change 0.3 ::::> Now style.opacity.icon will override transparent rule if set.
       - opacity: >-
           [[[
+            if (variables.icon_opactiy) { return variables.icon_opactiy }
             if (variables.style.opacity.icon) { return variables.style.opacity.icon }
             return this.___config.template.includes('transparent') ? 1 : 0.4
           ]]]

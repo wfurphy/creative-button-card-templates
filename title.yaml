@@ -19,12 +19,15 @@ title:
     - style_helper
     - no_actions
     - resizable
+    # - css
   variables:
     mirror: false
-    color: var(--primary-background-color)
-    background_color: var(--state-icon-color)
+    color: var(--cbc-title-color, var(--primary-background-color))
+    background_color: var(--cbc-title-background-color, var(--state-icon-color, var(--accent-color)))
+    text_color: var(--cbc-title-text-color, var(--cbc-title-color, '#ffffff'))
     show_tab: false
     offset: 0
+    opacity: var(--cbc-title-opacity, 0.5)
     info:
       - layout: stack
       - layout: stack
@@ -69,7 +72,7 @@ title:
     card:
       - cursor: default
       - --mdc-ripple-press-opacity: 0
-      - opacity: 0.5
+      - opacity: "[[[ return variables.opacity ]]]"
       - min-height: 40px
       - height: "[[[ return variables.height ?? '45px' ]]]"
       - margin-left: "[[[ return variables.offset ]]]"
@@ -97,6 +100,7 @@ title:
       - font-size: 14px
       - text-align: "[[[ return variables.mirror ? 'right' : 'left' ]]]"
       - overflow: visible
+      - color: "[[[ return variables.text_color ]]]"
     icon:
       - opacity: 1
       - position: absolute

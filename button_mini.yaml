@@ -1,6 +1,7 @@
 # ::Changes::0.3::> Fixed z-index, Added option for $state as symbol, made symbol 2chr @ 10px, added `symbol_font_style: normal`, added `symbol_margin_top: '-25%'` 
 # ::Changes::0.3::> Added `button_mini_power`
 # ::Changes::0.3::> Remove all color settings
+# ::Changes::0.3::> Replaced `icon_width` with `icon_size` and `icon_min_size`. Changed minimum sizes of cards and icons
 button_mini:
   template:
     - style_helper
@@ -10,8 +11,8 @@ button_mini:
     - resizable
     - interactive
   variables:
-    min-height: 40px
-    icon_min_width: 30px
+    min_height: 45px
+    min_width: 45px
     __get: >
       [[[
         return function(prop, vars, sub = undefined) {
@@ -20,13 +21,15 @@ button_mini:
         }
       ]]]
     item: {}
+    icon_max_size:
+    icon_min_size: 35px
+    # icon_width:  #::Breaking::0.3::> Replaced with max and min above
     symbol:
     symbol_width: 50%
-    symbol_font_size: 10px
+    symbol_font_size: auto
     symbol_color: var( --ha-card-background, var(--card-background-color, white) )
     symbol_margin_top: 0
-    symbol_padding: 0 1px 2px 1px
-  # size: 30px
+    symbol_padding:
   # color: "[[[ return variables.__get('color', variables) == '$state' ? 'var(--state-icon-color, var(--paper-item-icon-color))' : this.config.color ]]]"
   custom_fields:
     symbol: >
@@ -35,23 +38,26 @@ button_mini:
 
         if (variables.__get('symbol', variables) == '$state') return entity.state
         
+        const css = 'width: 100%; height: 100%; margin: auto; text-align: center;'
         let sym = String(variables.__get('symbol', variables))
 
         if (sym.search('mdi:') !== -1) {
-          return `<ha-icon icon="${sym}" class="cbc-symbol" />`
+          return `<ha-icon icon="${sym}" style="${css}"/>`
         }
         
         sym = sym.substring(0,2)
-        return `<span class="cbc-symbol">${sym}</span>`
+        return `<span style="${css}">${sym}</span>`
       ]]]
   styles:
     icon:
       - opacity: "[[[ return (variables.__get('symbol', variables) == '$state') ? 0.4 : 0.8 ]]]" #::Breaking::0.3::> Changed the Opacity of icon to 0.8 to match other cards
       # - color: "[[[ return variables.__get('color', variables) == '$state' ? 'var(--state-icon-color, var(--paper-item-icon-color))' : 'var(--paper-item-icon-color)' ]]]"
-      - min-width: "[[[ return variables.icon_min_width ]]]"
-      - min-height: 40px
-    card:
-      - min-width: 30px
+      - min-width: "[[[ return variables.__get('icon_min_size', variables) ]]]"
+      - min-height: "[[[ return variables.__get('icon_min_size', variables) ]]]"
+      - max-width: "[[[ return variables.__get('icon_max_size', variables) ]]]"
+      - max-height: "[[[ return variables.__get('icon_max_size', variables) ]]]"
+    grid:
+      - position: relative
     custom_fields:
       symbol:
         - z-index: 3
@@ -76,6 +82,7 @@ button_mini:
             ]]]
         - font-size: "[[[ return variables.__get('symbol_font_size', variables)  ]]]"
         - font-weight: bold
+        - text-align: center
         - opacity: 0.9 #::Breaking::0.3::> Changed the Opacity of Symbol to 0.9
 
 ############| Button Mini - Embeded |###########################>
@@ -83,17 +90,17 @@ button_mini_embed:
   template:
     - button_mini
   variables:
-    icon_width: 30px
+    min_width:
+    icon_max_size:
+    icon_min_size: 40px
   color: auto
   styles:
     card:
-      - min-width: 30px
+      # - min-width: "[[[ return variables.icon_width ]]]"
       - background: none
       - box-shadow: none
       - border: 0
       - cursor: crosshair
-    # icon:
-    #   - color: var(--button-card-light-color)
 
 ############| Button Mini + State |###########################>
 button_mini_state:
@@ -123,7 +130,6 @@ button_mini_state:
 button_mini_power:
   type: custom:button-card
   template: button_mini
-  # label: "[[[ console.log(states.light) ]]]"
   variables:
     area: 
     width: 45px

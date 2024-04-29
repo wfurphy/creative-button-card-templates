@@ -284,6 +284,7 @@ value_strip:
   show_value: false
   show_state: false
   show_name: false
+  template: css
   variables:
     #::::[ type ]::::( value | brightness | adaptive_lighting | cover | fan )::::>
     type: domain
@@ -464,8 +465,8 @@ value_strip:
     c1:
       card:
         type: custom:button-card
-        template: "[[[ return `${variables.__has(variables.items[0], 'type') ?? variables.type}_strip_item` ]]]"
-        entity: "[[[ return variables.__has(variables.items[0], 'entity') ?? variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[0], 'type', variables.type)}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[0], 'entity', variables.__entity_id) ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
           height: "[[[ return variables.height ]]]"
@@ -475,8 +476,8 @@ value_strip:
     c2:
       card:
         type: custom:button-card
-        template: "[[[ return `${variables.__has(variables.items[1], 'type') ?? variables.type}_strip_item` ]]]"
-        entity: "[[[ return variables.__has(variables.items[1], 'entity') ?? variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[1], 'type', variables.type)}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[1], 'entity', variables.__entity_id) ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
           height: "[[[ return variables.height ]]]"
@@ -486,8 +487,8 @@ value_strip:
     c3:
       card:
         type: custom:button-card
-        template: "[[[ return `${variables.__has(variables.items[2], 'type') ?? variables.type}_strip_item` ]]]"
-        entity: "[[[ return variables.__has(variables.items[2], 'entity') ?? variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[2], 'type', variables.type)}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[2], 'entity', variables.__entity_id) ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
           height: "[[[ return variables.height ]]]"
@@ -497,8 +498,8 @@ value_strip:
     c4:
       card:
         type: custom:button-card
-        template: "[[[ return `${variables.__has(variables.items[3], 'type') ?? variables.type}_strip_item` ]]]"
-        entity: "[[[ return variables.__has(variables.items[3], 'entity') ?? variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[3], 'type', variables.type)}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[3], 'entity', variables.__entity_id) ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
           height: "[[[ return variables.height ]]]"
@@ -508,8 +509,8 @@ value_strip:
     c5:
       card:
         type: custom:button-card
-        template: "[[[ return `${variables.__has(variables.items[4], 'type') ?? variables.type}_strip_item` ]]]"
-        entity: "[[[ return variables.__has(variables.items[4], 'entity') ?? variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[4], 'type', variables.type)}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[4], 'entity', variables.__entity_id) ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
           height: "[[[ return variables.height ]]]"

@@ -1,0 +1,88 @@
+####{ CreativeBC }####| Effect Selector |####[ github.com/wfurphy/creative-button-card-templates ]####>
+effect_selector:
+  template:
+    - show_only_name
+    - transparent
+  name: >
+    [[[ 
+      if (!variables.show.effect_selector || !entity.attributes.effect_list || !Array.isArray(entity.attributes.effect_list)) return ''
+
+      const entid = entity.entity_id.replace('light.','').replace('_','-')
+      let options = `<option id="cbc-es-opt-none" class="cbc-option cbc-es cbce-${entid}" value="effect_stop">Effects Off</option>`
+
+      entity.attributes.effect_list.forEach((val, i) => {
+        const selected = entity.attributes.effect === val ? 'selected' : ''
+        let label = val.replace('effect_', '').replace('_', ' ')
+        label = label.charAt(0).toUpperCase() + label.slice(1)
+        options += `
+          <option id="cbc-es-opt-${i}" class="cbc-option ${selected} cbc-es cbce-${entid} ellipsis" style="text-transform: capitalize;" value="${val}" ${selected}>${label}</option>`
+      })
+
+      if (!document.getElementById('cbcjs-script')) {
+        const script = document.createElement("script");
+        script.id = 'cbcjs-script'
+        script.innerHTML = `
+          cbcJS = {
+            version: "0.3.0",
+            globals: {},
+            css: {},
+          };
+        `
+        document.head.appendChild(script);
+      }
+
+      cbcJS.runLightEffect = function(ef, entity) {
+        this.hass.callService('light', 'turn_on', {
+          entity_id: entity,
+          effect: ef,
+        })
+      },
+
+      cbcJS.hass = hass
+            
+      return `
+          <style>
+            .cbc-div {
+              width: 100%;
+            }
+            .cbc-es-cont {
+              background: none;
+              display: grid;
+              grid: "i s" 1fr / 20px 1fr;
+              opacity: 0.6;
+              pointer-events: auto;
+            }
+            .cbc-es-cont:hover {
+              opacity: 1;
+            }
+            .cbc-icon {
+              width: 18px;
+              padding-right: 2px;
+              color: ${!entity.attributes.effect || entity.attributes.effect == 'effect_stop' ? 'var(--primary-text-color)' : 'var(--accent-color)'}
+            }
+            .cbc-select {
+              width: 100%;
+              background: none;
+              border: 0;
+            }
+            .cbc-option {
+              text-transform: capitalize;
+            }
+            .cbc-option .selected {
+              color: var(--accent-color);
+            }
+          </style>
+          <div class="cbc-es-cont">
+            <div id="cbc-es-icon" class="cbc-div cbc-es cbce-${entid}" style="grid-area: i / i / i / i;">
+              <ha-icon id="cbc-es-icon" class="cbc-icon cbc-es cbce-${entid}" icon="mdi:creation"></ha-icon>
+            </div>
+            <div id="cbc-es-select" class="cbc-div cbc-es cbce-${entid}" style="grid-area: s / s / s / s;">
+              <select id="cbc-es-select" class="cbc-select cbc-es cbce-${entid}" onChange="cbcJS.runLightEffect(this.options[this.selectedIndex].value, '${entity.entity_id}')">
+                ${options}
+              </select>
+            </div>
+          </div>
+      `
+    ]]]
+
+###
