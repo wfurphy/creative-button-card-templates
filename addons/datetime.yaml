@@ -1,5 +1,5 @@
 ############| +Addon > Date Time Helper (datetime) |###########################>
-# ::Changes::0.3::> Created `datetime` addon
+# :: @Changes v0.3::> Created `datetime` addon
 datetime:
   variables:
     __dateString: >

@@ -1,7 +1,7 @@
-# ::Changes::0.3::> Fixed z-index, Added option for $state as symbol, made symbol 2chr @ 10px, added `symbol_font_style: normal`, added `symbol_margin_top: '-25%'` 
-# ::Changes::0.3::> Added `button_mini_power`
-# ::Changes::0.3::> Remove all color settings
-# ::Changes::0.3::> Replaced `icon_width` with `icon_size` and `icon_min_size`. Changed minimum sizes of cards and icons
+# :: @Changes v0.3::> Fixed z-index, Added option for $state as symbol, made symbol 2chr @ 10px, added `symbol_font_style: normal`, added `symbol_margin_top: '-25%'` 
+# :: @Changes v0.3::> Added `button_mini_power`
+# :: @Changes v0.3::> Remove all color settings
+# :: @Changes v0.3::> Replaced `icon_width` with `icon_size` and `icon_min_size`. Changed minimum sizes of cards and icons
 button_mini:
   template:
     - style_helper
@@ -23,7 +23,7 @@ button_mini:
     item: {}
     icon_max_size:
     icon_min_size: 35px
-    # icon_width:  #::Breaking::0.3::> Replaced with max and min above
+    # icon_width:  # :: @Breaking v0.3::> Replaced with max and min above
     symbol:
     symbol_width: 50%
     symbol_font_size: auto
@@ -50,7 +50,7 @@ button_mini:
       ]]]
   styles:
     icon:
-      - opacity: "[[[ return (variables.__get('symbol', variables) == '$state') ? 0.4 : 0.8 ]]]" #::Breaking::0.3::> Changed the Opacity of icon to 0.8 to match other cards
+      - opacity: "[[[ return (variables.__get('symbol', variables) == '$state') ? 0.4 : 0.8 ]]]" # :: @Breaking v0.3::> Changed the Opacity of icon to 0.8 to match other cards
       # - color: "[[[ return variables.__get('color', variables) == '$state' ? 'var(--state-icon-color, var(--paper-item-icon-color))' : 'var(--paper-item-icon-color)' ]]]"
       - min-width: "[[[ return variables.__get('icon_min_size', variables) ]]]"
       - min-height: "[[[ return variables.__get('icon_min_size', variables) ]]]"
@@ -83,7 +83,7 @@ button_mini:
         - font-size: "[[[ return variables.__get('symbol_font_size', variables)  ]]]"
         - font-weight: bold
         - text-align: center
-        - opacity: 0.9 #::Breaking::0.3::> Changed the Opacity of Symbol to 0.9
+        - opacity: 0.9 # :: @Breaking v0.3::> Changed the Opacity of Symbol to 0.9
 
 ############| Button Mini - Embeded |###########################>
 button_mini_embed:

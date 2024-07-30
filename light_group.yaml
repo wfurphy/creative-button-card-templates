@@ -1,5 +1,5 @@
 ####{ CreativeBC }####| Light Group |####[ github.com/wfurphy/creative-button-card-templates ]####>
-# ::Changes::0.3::> Fixed z-index, symbol 2chr @ 10px, BREAKING fix layout, brightness & effects, added `symbol_...`
+# :: @Changes v0.3::> Fixed z-index, symbol 2chr @ 10px, BREAKING fix layout, brightness & effects, added `symbol_...`
 light_group:
   template: light
   color: auto

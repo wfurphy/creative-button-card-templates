@@ -8,7 +8,6 @@ title_info:
     - transparent
   variables:
     width: 45px
-    _item: []
     styles:
       icon:
         - opacity: "[[[ return variables._item.opacity ?? '0.2' ]]]"
@@ -28,35 +27,32 @@ title:
     show_tab: false
     offset: 0
     opacity: var(--cbc-title-opacity, 0.5)
-    info:
-      - layout: stack
-      - layout: stack
-      - layout: stack
+    info: []
   custom_fields:
     i1:
       card:
         type: custom:button-card
         template: title_info
-        entity: "[[[ return variables.info[0].entity ]]]"
+        entity: "[[[ return variables.info[0]?.entity ]]]"
         variables: 
-          _item: "[[[ return variables.info[0] ]]]"
-          layout: "[[[ return variables.info[0].layout ?? 'stack' ]]]"
+          _item: "[[[ return variables.info[0] ?? '' ]]]"
+          layout: "[[[ return variables.info[0]?.layout ?? 'stack' ]]]"
     i2:
       card:
         type: custom:button-card
         template: title_info
-        entity: "[[[ return variables.info[1].entity ]]]"
+        entity: "[[[ return variables.info[1]?.entity ]]]"
         variables: 
-          _item: "[[[ return variables.info[1] ]]]"
-          layout: "[[[ return variables.info[1].layout ?? 'stack' ]]]"
+          _item: "[[[ return variables.info[1] ?? '' ]]]"
+          layout: "[[[ return variables.info[1]?.layout ?? 'stack' ]]]"
     i3:
       card:
         type: custom:button-card
         template: title_info
-        entity: "[[[ return variables.info[2].entity ]]]"
+        entity: "[[[ return variables.info[2]?.entity ]]]"
         variables: 
-          _item: "[[[ return variables.info[2] ]]]"
-          layout: "[[[ return variables.info[2].layout ?? 'stack' ]]]"
+          _item: "[[[ return variables.info[2] ?? '' ]]]"
+          layout: "[[[ return variables.info[2]?.layout ?? 'stack' ]]]"
   styles:
     grid:
       - position: relative
@@ -113,11 +109,11 @@ title:
       - max-height: 500%
     custom_fields:
       i1:
-        - display: "[[[ return variables.info.length && variables.info[0].entity ? 'block' : 'none' ]]]"
+        - display: "[[[ return variables.info.length && variables.info[0]?.entity ? 'block' : 'none' ]]]"
       i2:
-        - display: "[[[ return variables.info.length >= 2 && variables.info[1].entity ? 'block' : 'none' ]]]"
+        - display: "[[[ return variables.info.length >= 2 && variables.info[1]?.entity ? 'block' : 'none' ]]]"
       i3:
-        - display: "[[[ return variables.info.length >= 3 && variables.info[2].entity ? 'block' : 'none' ]]]"
+        - display: "[[[ return variables.info.length == 3 && variables.info[2]?.entity ? 'block' : 'none' ]]]"
 
 #########################################################################/
   

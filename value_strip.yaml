@@ -1,5 +1,5 @@
 #################( Value Strip Item )################################>
-# ::Changes::0.3::> Added ability to have different types on the same strip, Added fan, fan mode, air purifier and climate types
+# :: @Changes v0.3::> Added ability to have different types on the same strip, Added fan, fan mode, air purifier and climate types
 value_strip_item:
   template:
   - transparent

@@ -1,5 +1,5 @@
 ####{ CreativeBC }####| Light |####[ github.com/wfurphy/creative-button-card-templates ]####>
-# ::Changes::0.3::> Fixed z-index, add brightness & effects
+# :: @Changes v0.3::> Fixed z-index, add brightness & effects
 light:
   template: button_landscape
   variables:
@@ -178,21 +178,6 @@ light:
           card:
             - max-height: 25px
             - max-width: 200px
-    # es: 
-    #   card:
-    #     type: custom:button-card
-    #     # template: effect_selector
-    #     # entity: "[[[ return entity.entity_id ]]]"
-    #     template:
-    #       - transparent
-    #       - show_only_name
-    #     styles:
-    #       card:
-    #         - padding: 0
-    #       name:
-    #         - display: grid
-    #         - grid: '"i s" 1fr / 20px 1fr'
-    #     name: >
     es: 
       card:
         type: custom:button-card

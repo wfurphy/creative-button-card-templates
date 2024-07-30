@@ -1,5 +1,5 @@
 ####{ CreativeBC }####| Info |####[ github.com/wfurphy/creative-button-card-templates ]####>
-# ::Changes::0.3::> Fixed z-index, state position, icon_opacity > transparency
+# :: @Changes v0.3::> Fixed z-index, state position, icon_opacity > transparency
 info_helper:
   variables:
     __item: >
@@ -61,9 +61,9 @@ info_mini:
     color:
     width: 60px
     height: 45px
-    style: ##> Deprecated 0.3
-      opacity:  ##> Deprecated 0.3
-        icon:  ##> Deprecated 0.3
+    style: # :: @Deprecated v0.3
+      opacity:  # :: @Deprecated v0.3
+        icon:  # :: @Deprecated v0.3
     __css: |
         <style>
           .cbc-units {
@@ -94,7 +94,7 @@ info_mini:
       - padding: 0
       - margin: 0
     icon:
-      # :::: Breaking Change 0.3 ::::> Now style.opacity.icon will override transparent rule if set.
+      # :: @Breaking v0.3 ::::> Now style.opacity.icon will override transparent rule if set.
       - opacity: >-
           [[[
             if (variables.icon_opactiy) { return variables.icon_opactiy }
@@ -132,7 +132,7 @@ info_mini:
       - z-index: 3
 
 #################( Info Item )################################>
-#:::: Changes 0.3 added `font_size`
+# :: @Changes v0.3 added `font_size`
 info_item:
   template:
     - style_helper

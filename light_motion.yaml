@@ -1,5 +1,5 @@
 ####{ CreativeBC }####| Light associated with a Motion Sensor |####[ github.com/wfurphy/creative-button-card-templates ]####>
-####:::Changes 0.3:::> Added `active_entity` functionality
+# :: @Changes v0.3:::> Added `active_entity` functionality
 light_motion:
   template:
     - light
@@ -84,7 +84,7 @@ light_motion:
           action: "[[[ return variables.active_entity ? 'call-service' : 'none' ]]]"
           service: input_boolean.toggle
           target:
-            entity_id: "[[[ return variables.active_entity || '' ]]]"
+            entity_id: "[[[ return variables.active_entity ?? '' ]]]"
         double_tap_action: none #:::TODO::> Add ability to pause with timer on tap and move stop to here.
         state:
           - id: cbc_motion_active

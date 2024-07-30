@@ -1,5 +1,5 @@
 ####{ Creative BC }########| +State Helper |########[ github.com/wfurphy ]#####>
-## ::Changes::0.3::> Add `cbc_motion` state and changed order to off,motion,on.
+# :: @Changes v0.3::> Add `cbc_motion` state and changed order to off,motion,on.
 state_helper:
   state:
     - id: cbc_custom_1

@@ -1,8 +1,5 @@
 # ::::Creative Button Cards:::| Globals (`cbc_globals`) |::::>
 css:
-  template: 
-    - show_none
-    - transparent
   entity: sensor.air_quality_den_temperature
   variables:
     _css:
@@ -11,19 +8,7 @@ css:
       accent_green: '#65b49d'
       accent-blue: '#5088f1'
     css: {}
-  style:
-    grid:
-      - width: 0
-      - height: 0
-      - margin: 0
-      - padding: 0
-      - visibility: hidden
-    card:
-      - width: 0
-      - height: 0
-      - margin: 0
-      - padding: 0
-      - visibility: hidden
+  styles:
     custom_fields:
       css:
         - width: 0
@@ -31,6 +16,7 @@ css:
         - margin: 0
         - padding: 0
         - visibility: hidden
+        - position: absolute
   custom_fields:
     css: >
       [[[

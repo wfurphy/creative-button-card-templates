@@ -1,5 +1,7 @@
 ####{ CreativeBC }####| +Interactive |####[ github.com/wfurphy/creative-button-card-templates ]####>
+# ::@Changes v0.3::> Added `style_helper` template.
 interactive:
+  template: style_helper
   card_mod:
     style: |
       ha-card:hover::after {

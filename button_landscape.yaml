@@ -2,7 +2,6 @@
 button_landscape:
   template:
     - state_helper
-    - style_helper
     - actions
     - resizable
     - interactive

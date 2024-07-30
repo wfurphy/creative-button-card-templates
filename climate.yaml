@@ -1,0 +1,73 @@
+climate:
+  type: custom:button-card
+  entity: climate.office_heater
+  template:
+    - entity
+    - dynamic_icons
+  variables:
+    _service_data:
+      hvac_mode: "auto"
+    icon_on: mdi:radiator
+    switch_entity:
+    attributes:
+      - id: current_temperature
+        icon: mdi:thermometer-auto
+        units: °C
+      - id: state
+        icon: mdi:state-machine
+    features:
+      - type: target-temperature
+      - type: climate-hvac-modes
+        style: icons
+  state:
+    - id: cbc_off
+      value: >
+        [[[ return variables.switch_entity ? states[variables.switch_entity].state == 'off' : ['standby', 'off'].includes(entity.state) ]]]
+    - id: cbc_on
+      value: >
+        [[[ return variables.switch_entity ? states[variables.switch_entity].state == 'on' : !['standby', 'off'].includes(entity.state) ]]]
+  tap_action:
+    action: call-service
+    service: "[[[ return variables.switch_entity ? 'switch.toggle' : 'climate.set_hvac_mode' ]]]"
+    target:
+      entity_id: "[[[ return variables.switch_entity ? variables.switch_entity : entity.entity_id ]]]"
+    data: "[[[ variables.switch_entity ? {} : variables._service_data ]]]"
+  icon: mdi:radiator-disabled
+  custom_fields:
+    c:
+      card:
+        type: tile
+        features: "[[[ return variables.features ]]]"
+        entity: "[[[ return entity.entity_id ]]]"
+        card_mod:
+          style: |
+            ha-card {
+              background: none;
+              box-shadow: none;
+              border: none;
+              opacity: 0.7;
+              width: 100%;
+              z-index: 3;
+            }
+            .sc-shutter-top {
+              display: none !important;
+            }
+            .sc-shutters {
+              padding: 5px !important;
+            }
+            ha-card:hover {
+              opacity: 0.9;
+            }
+            :host .content {
+              display: none;
+            }
+  styles:
+    grid:
+      - grid-template-areas: '"i i n" "i i l" "c c c"'
+      - grid-template-rows: auto
+      - grid-template-columns: 1fr 1fr 4fr
+    custom_fields:
+      c:
+        - width: 100%
+        - margin-top: 10px
+        

@@ -1,5 +1,5 @@
 ####{ CreativeBC }####| Light |####[ github.com/wfurphy/creative-button-card-templates ]####>
-# ::Changes::0.3::> Fixed z-index, brightness & effects, replace __debugJson with __console.
+# :: @Changes v0.3::> Fixed z-index, brightness & effects, replace __debugJson with __console.
 notify:
   type: custom:button-card
   template:

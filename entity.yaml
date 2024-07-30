@@ -1,4 +1,5 @@
 ####{ CreativeBC }####| Entity |####[ github.com/wfurphy/creative-button-card-templates ]####>
+# :: @Changes v0.3 ::> Breaking: Changed attributes to display flex
 entity:
   template: 
     - button_landscape
@@ -24,6 +25,13 @@ entity:
 
         let lab = `
           <style>
+            div.cbc-attr-container {
+              display: flex;
+              flex-flow: row wrap;
+            }
+            div.cbc-attr {
+              padding: 1px 4px 1px 1px
+            }
             ha-icon.cbc-icon {
               color: ${variables.attribute_icon_color};
               width:18px; 
@@ -34,15 +42,17 @@ entity:
               opacity: 0.6;
             }
           </style>
+          <div class="cbc-attr-container">
           `
         
         variables.attributes.forEach(function(a,i) {
           const at = {...variables.__defaults, ...a}
-          const state = `<span class="cbc-value">${a.state || entity.attributes[at.id]}</span>` 
-          const units = `<span class="cbc-units">${at.units}</span>`
+          const display = at.id === 'state' ? entity.state : (a.state ?? entity.attributes[at.id]);
+          const state = `<span class="cbc-value">${display}</span>`;
+          const units = `<span class="cbc-units">${at.units}</span>`;
 
           lab += `<div id="cbc-attr${i}-${a.id}" class="cbc-attr ellipsis">
-                    <ha-icon icon="${at.icon}" class="cbc-icon"></ha-icon>`
+                    <ha-icon icon="${at.icon}" class="cbc-icon"></ha-icon>`;
           
           if (a.prefix_units) {
             lab += units + state
@@ -53,7 +63,7 @@ entity:
           lab += `</div>`
         })
         
-        return lab
+        return `${lab}</div>` 
     ]]]
   # state:
   #   - id: cbc_on
@@ -66,8 +76,9 @@ entity:
           [[[
             if (!variables.attributes || variables.attributes.length < 2) return '1fr 1fr'
 
-            return entity.state == 'on' ? '1fr 2fr' : '1fr 1fr'
-          ]]]
+            // ::v0.3::State check for false or OFF as ON is not always the active state value.
+            return entity.state && entity.state !== 'off' ? '1fr 2fr' : '1fr 1fr'
+          ]]]      
 
           
 #########################################################################/
