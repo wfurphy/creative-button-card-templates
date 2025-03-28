@@ -160,12 +160,14 @@ light_group:
         color: auto
         variables: 
           item: "[[[ return variables.items[0] ]]]"
-        styles:
+          icon_min_size: 40px
+          icon_max_size: 45px
+        # styles:
           card:
             - max-height: 45px
-          icon:
-            - max-height: 35px
-            - max-width: 35px
+          # icon:
+            # - max-height: 40px
+            # - max-width: 40px
     li2:
       card:
         type: custom:button-card
@@ -175,12 +177,14 @@ light_group:
         color: auto
         variables: 
           item: "[[[ return variables.items[1] ]]]"
-        styles:
+          icon_min_size: 40px
+          icon_max_size: 45px
+        # styles:
           card:
             - max-height: 45px
-          icon:
-            - max-height: 35px
-            - max-width: 35px
+          # icon:
+            # - max-height: 40px
+            # - max-width: 40px
     li3:
       card:
         type: custom:button-card
@@ -190,12 +194,14 @@ light_group:
         color: auto
         variables: 
           item: "[[[ return variables.items[2] ]]]"
-        styles:
+          icon_min_size: 40px
+          icon_max_size: 45px
+        # styles:
           card:
             - max-height: 45px
-          icon:
-            - max-height: 35px
-            - max-width: 35px
+          # icon:
+            # - max-height: 40px
+            # - max-width: 40px
     li4:
       card:
         type: custom:button-card
@@ -205,12 +211,14 @@ light_group:
         color: auto
         variables: 
           item: "[[[ return variables.items[3] ]]]"
-        styles:
+          icon_min_size: 40px
+          icon_max_size: 45px
+        # styles:
           card:
             - max-height: 45px
-          icon:
-            - max-height: 35px
-            - max-width: 35px
+          # icon:
+            # - max-height: 40px
+            # - max-width: 40px
     li5:
       card:
         type: custom:button-card
@@ -220,12 +228,14 @@ light_group:
         color: auto
         variables: 
           item: "[[[ return variables.items[4] ]]]"
-        styles:
+          icon_min_size: 40px
+          icon_max_size: 45px
+        # styles:
           card:
             - max-height: 45px
-          icon:
-            - max-height: 35px
-            - max-width: 35px
+          # icon:
+            # - max-height: 40px
+            # - max-width: 40px
     li6:
       card:
         type: custom:button-card
@@ -235,12 +245,14 @@ light_group:
         color: auto
         variables: 
           item: "[[[ return variables.items[5] ]]]"
-        styles:
+          icon_min_size: 40px
+          icon_max_size: 45px
+        # styles:
           card:
             - max-height: 45px
-          icon:
-            - max-height: 35px
-            - max-width: 35px
+          # icon:
+            # - max-height: 40px
+            # - max-width: 40px
 
 
 #########################################################################/

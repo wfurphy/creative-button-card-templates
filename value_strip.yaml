@@ -2,6 +2,7 @@
 # :: @Changes v0.3::> Added ability to have different types on the same strip, Added fan, fan mode, air purifier and climate types
 value_strip_item:
   template:
+  - cbcjs
   - transparent
   - interactive
   variables:
@@ -159,7 +160,7 @@ brightness_strip_item:
     action: call-service
     service: light.turn_on
     service_data:
-      entity_id: "[[[ return entity.entity_id ]]]"
+      entity_id: "[[[ return entity?.entity_id ]]]"
       brightness_pct: "[[[ return variables.item.value ]]]"
     haptic: success
   state:
@@ -187,7 +188,7 @@ cover_strip_item:
     action: call-service
     service: cover.set_cover_position
     service_data:
-      entity_id: "[[[ return entity.entity_id ]]]"
+      entity_id: "[[[ return entity?.entity_id ]]]"
       position: "[[[ return variables.item.value ]]]"
     haptic: success
 
@@ -199,7 +200,7 @@ climate_strip_item:
     action: call-service
     service: climate.set_temperature
     service_data:
-      entity_id: "[[[ return entity.entity_id ]]]"
+      entity_id: "[[[ return entity?.entity_id ]]]"
       temperature: "[[[ return variables.item.value ]]]"
     haptic: success
   state:
@@ -227,7 +228,7 @@ fan_strip_item:
     action: call-service
     service: fan.set_percentage
     service_data:
-      entity_id: "[[[ return entity.entity_id ]]]"
+      entity_id: "[[[ return entity?.entity_id ]]]"
       percentage: "[[[ return variables.item.value ]]]"
     haptic: success
 
@@ -249,7 +250,7 @@ fan_mode_strip_item:
     action: call-service
     service: fan.set_preset_mode
     service_data:
-      entity_id: "[[[ return entity.entity_id ]]]"
+      entity_id: "[[[ return entity?.entity_id ]]]"
       preset_mode: "[[[ return variables.item.mode ]]]"
     haptic: success
 

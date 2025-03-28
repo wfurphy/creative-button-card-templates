@@ -16,8 +16,14 @@ interactive:
         z-index: 1;
       }
       ha-card:hover #label { opacity: 0.8 !important; }
-      ha-card:hover #name { opacity: 1 !important; }
-      ha-card:hover #icon { opacity: 1 !important; }
+      ha-card:hover #name { opacity: 1 !important; font-size: 103%; }
+      ha-card:hover #icon { 
+        opacity: 1 !important; 
+        max-width: 105% !important;
+        max-height: 105% !important;
+        height: 103%; 
+        width: 103%; 
+      }
 
 ############################################################################/
   

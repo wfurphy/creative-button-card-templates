@@ -46,6 +46,7 @@ info_helper:
 
 info_mini:
   template:
+    - cbcjs
     - button_mini
     - no_actions
     - info_helper

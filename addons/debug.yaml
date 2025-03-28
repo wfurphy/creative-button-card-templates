@@ -1,26 +1,28 @@
 ####{ CreativeBC }####| +Debug |####[ github.com/wfurphy/creative-button-card-templates ]####>
+# :: @Changes v0.3::> `debug_hass` is now true by default
 debug:
   variables:
     debug: true
-    debug_hass: false
+    debug_hass: true
     debug_extras:
     __title: >
       [[[
-        if (entity && entity.entity_id) {
-          return `::CreativeBCT::DEBUG::| ${entity.entity_id} |::>` 
+        if (entity?.entity_id) {
+          return `::CBC::DEBUG::| ${entity.entity_id} |::>` 
         }
         
-        return `::CreativeBCT::DEBUG::>`
+        return `::CBC::DEBUG::>`
       ]]]
   custom_fields:
     debugger: >
       [[[
-        if (!variables.debug) return
+        if (!variables?.debug) return
 
         const o = {
           variables: variables, 
           entity: entity ? entity : {},
-          bc: this
+          bc: this,
+          cbcjs: cbcJS,
         }
 
         if (variables.debug_hass) {

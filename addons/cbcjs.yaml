@@ -1,0 +1,80 @@
+############| +Addon > Creative Button Card Javascript Object (cbcjs) |###########################>
+cbcjs:
+  variables:
+    __cbcjs: >
+      [[[
+        const ct = new Date().getTime();
+
+        if (!document.getElementById('cbcjs-script')) {
+          const script = document.createElement("script");
+          script.id = 'cbcjs-script'
+          script.innerHTML = `
+            const cbcJS = {
+              version: "0.3.0",
+              ct: ${ct},
+              count: 0,
+              globals: {},
+              css: {},
+            };
+          `;
+          document.head.appendChild(script);
+          console.info("%c CREATIVE BUTTON-CARD TEMPLATES %c ".concat(cbcJS.version, " "), "color: black; background: #1bccac; font-weight: 700;", "color: #1bccac; background: black; font-weight: 700;");
+        }
+
+        if (cbcJS.ct === ct) {
+          // Build cbcJS
+          cbcJS.runLightEffect = function(ef, entity) {
+            const data = {
+              entity_id: entity,
+              effect: ef,
+            }
+
+            let theme = this.hass.states[`select.${entity.replace('light.')}_theme`]?.state;
+            if (theme && theme !== 'unknown') data.theme = theme;
+            this.hass.callService('light', 'turn_on', data);
+          },
+
+          cbcJS.selectOption = function(val, entity) {
+            this.hass.callService('select', 'select_option', {
+              entity_id: entity,
+              option: val,
+            });
+          },
+
+          cbcJS.action = function(domain, action, data) {
+            this.hass.callService(domain, action, data);
+
+            return this;
+          }
+
+          cbcJS.addCss = function(css = {}) {
+            this.css = {...this.css, ...css};
+            
+            return this;
+          }
+
+          cbcJS.setView = function(path) {
+            path = path ?? window.location.pathname;
+            this.view = path.substring(1);
+            
+            return this;
+          }
+
+          cbcJS.insertStyles = function() {
+            const html = document.getElementsByTagName('html')[0];
+
+            if (!variables.css || html.getAttribute('data-cbc-view') === this.view) return this;
+
+            for (let prop in variables.css) {
+              html.style.setProperty(`--cbc-${prop.replace('_','-')}`, this.css[prop]);
+            }
+
+            html.setAttribute('data-cbc-view', this.view);
+
+            return this;
+          }
+        }
+
+        cbcJS.hass = hass;
+        cbcJS.count++;
+      ]]]

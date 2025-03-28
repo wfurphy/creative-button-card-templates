@@ -33,6 +33,18 @@ state_helper:
           - opacity: 0.95
         name:
           - opactiy: 0.9
+    # - id: cbc_after_1
+    #   operator: template
+    #   value: false
+    # - id: cbc_after_2
+    #   operator: template
+    #   value: false
+    # - id: cbc_after_3
+    #   operator: template
+    #   value: false
+    # - id: cbc_after_4
+    #   operator: template
+    #   value: false
     - id: cbc_unavailable
       value: "unavailable"
       label: Unavailable

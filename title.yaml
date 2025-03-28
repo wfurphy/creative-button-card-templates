@@ -4,6 +4,7 @@
 ###################[ title_info ]#######################################################>
 title_info:
   template:
+    - cbcjs
     - info_mini
     - transparent
   variables:
@@ -18,7 +19,7 @@ title:
     - style_helper
     - no_actions
     - resizable
-    # - css
+    - css
   variables:
     mirror: false
     color: var(--cbc-title-color, var(--primary-background-color))

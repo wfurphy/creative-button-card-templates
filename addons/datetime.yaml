@@ -36,7 +36,7 @@ datetime:
                 const now = new Date();
                 let day = this.day;
 
-                console.log('::now::>', now.getDay(),'::d.getDay::>', this.d.getDay(), '::d::>', this.d)
+                // console.log('::now::>', now.getDay(),'::d.getDay::>', this.d.getDay(), '::d::>', this.d)
 
                 if (now.getDay() === this.d.getDay()) {
                   day = 'Today';

@@ -1,6 +1,7 @@
 ############| Entity Detail - Detailed information panel for debugging |###########################>
 entity_detail:
   template:
+    - cbcjs
     - no_actions
   variables:
     do_not_split: []

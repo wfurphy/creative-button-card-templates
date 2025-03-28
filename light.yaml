@@ -134,7 +134,7 @@ light:
       const brt = `<ha-icon icon="${bi}" class="cbc-l-icon"></ha-icon><span class="cbc-l-val">${bpct}</span><span class="cbc-l-unit">%</span>`
 
       if (entity.attributes.effect && entity.attributes.effect !== "effect_stop") {
-        const efct = !variables.show.effect_selector ? entity.attributes.effect.replace('effect', '').replace('_', ' ') : ''
+        const efct = entity.attributes.effect.replace('effect', '').replace('_', ' ')
         return `${styles}<elt>${brt}<ha-icon icon="mdi:creation" class="cbc-l-icon effect"></ha-icon><span class="cbc-l-value-effect">${efct}</span></elt>`
       }
 
@@ -169,7 +169,7 @@ light:
         template: 
           - value_strip
           - transparent
-        entity: "[[[ return entity.entity_id ]]]"
+        entity: "[[[ return entity?.entity_id ]]]"
         variables:
           type: brightness
           show: "[[[ return variables.strip_show ]]]"
@@ -188,7 +188,8 @@ light:
           [[[ 
             if (!variables.show.effect_selector || !entity.attributes.effect_list || !Array.isArray(entity.attributes.effect_list)) return ''
 
-            const entid = entity.entity_id.replace('light.','').replace('_','-')
+            const entSubId = entity.entity_id.replace('light.','');
+            const entid = entSubId.replace('_','-');
             let options = `<option id="cbc-es-opt-none" class="cbc-option cbc-es cbce-${entid}" value="effect_stop">Effects Off</option>`
 
             entity.attributes.effect_list.forEach((val, i) => {
@@ -199,28 +200,53 @@ light:
                 <option id="cbc-es-opt-${i}" class="cbc-option ${selected} cbc-es cbce-${entid} ellipsis" style="text-transform: capitalize;" value="${val}" ${selected}>${label}</option>`
             })
 
-            if (!document.getElementById('cbcjs-script')) {
-              const script = document.createElement("script");
-              script.id = 'cbcjs-script'
-              script.innerHTML = `
-                cbcJS = {
-                  version: "0.3.0",
-                };
-              `
-              document.head.appendChild(script);
+            // Theme Selector?
+            let tsCode = '';
+            let tsOptions = '';
+            let theme = '';
+            let tsEnt = states[`select.${entSubId}_theme`] ?? undefined;
+
+            if (!tsEnt && Array.isArray(variables.items)) {
+              const tryStates = variables.items;
+              if (tryStates.length > 0) {
+                tryStates.some(s => {
+                  tsEnt = states[`select.${s.entity.replace('light.')}_theme`] ?? undefined;
+                  return Boolean(tsEnt);
+                });
+              }
             }
 
-            cbcJS.runLightEffect = function(ef, entity) {
-              this.hass.callService('light', 'turn_on', {
-                entity_id: entity,
-                effect: ef,
-              })
-            },
+            if (tsEnt) {
+              theme = tsEnt.state;
+              tsEnt.attributes.options.unshift('unknown')
+              tsEnt.attributes.options.forEach((val, i) => {
+                const selected = theme === val ? 'selected' : ''
+                const label = (!val || val === 'unknown') ? 'None' : val.replace(/\w\S*/g, text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase());
+                tsOptions += `
+                  <option id="cbc-ts-opt-${i}" class="cbc-option ${selected} cbc-es cbce-${entid} ellipsis" style="text-transform: capitalize !important;" value="${val}" ${selected}>${label}</option>`
+              });
 
-            cbcJS.hass = hass
-                  
+              if(tsOptions.length > 0) {
+                tsCode = `
+                  <div class="cbc-es-cont">
+                    <div id="cbc-ts-icon-div" class="cbc-div cbc-es cbce-${entid}" style="grid-area: i / i / i / i;">
+                      <ha-icon id="cbc-ts-icon" class="cbc-icon cbc-es cbce-${entid}" icon="mdi:palette-swatch"></ha-icon>
+                    </div>
+                    <div id="cbc-ts-select-div" class="cbc-div cbc-es cbce-${entid}" style="grid-area: s / s / s / s;">
+                      <select id="cbc-ts-select" class="cbc-select cbc-es cbce-${entid}" onChange="cbcJS.selectOption(this.options[this.selectedIndex].value, '${entity?.entity_id}')">
+                        ${tsOptions}
+                      </select>
+                    </div>
+                  </div>`
+              }
+            }
+                              
             return `
                 <style>
+                  .cbc-extra-cont {
+                    display: flex;
+                    justify-content: space-evenly;
+                  }
                   .cbc-div {
                     width: 100%;
                   }
@@ -251,14 +277,17 @@ light:
                     color: var(--accent-color);
                   }
                 </style>
-                <div class="cbc-es-cont">
-                  <div id="cbc-es-icon" class="cbc-div cbc-es cbce-${entid}" style="grid-area: i / i / i / i;">
-                    <ha-icon id="cbc-es-icon" class="cbc-icon cbc-es cbce-${entid}" icon="mdi:creation"></ha-icon>
-                  </div>
-                  <div id="cbc-es-select" class="cbc-div cbc-es cbce-${entid}" style="grid-area: s / s / s / s;">
-                    <select id="cbc-es-select" class="cbc-select cbc-es cbce-${entid}" onChange="cbcJS.runLightEffect(this.options[this.selectedIndex].value, '${entity.entity_id}')">
-                      ${options}
-                    </select>
+                <div class="cbc-extra-cont">
+                  ${tsCode}
+                  <div class="cbc-es-cont">
+                    <div id="cbc-es-icon-div" class="cbc-div cbc-es cbce-${entid}" style="grid-area: i / i / i / i;">
+                      <ha-icon id="cbc-es-icon" class="cbc-icon cbc-es cbce-${entid}" icon="mdi:creation"></ha-icon>
+                    </div>
+                    <div id="cbc-es-select-div" class="cbc-div cbc-es cbce-${entid}" style="grid-area: s / s / s / s;">
+                      <select id="cbc-es-select" class="cbc-select cbc-es cbce-${entid}" onChange="cbcJS.runLightEffect(this.options[this.selectedIndex].value, '${entity?.entity_id}')">
+                        ${options}
+                      </select>
+                    </div>
                   </div>
                 </div>
             `

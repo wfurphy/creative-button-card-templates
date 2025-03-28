@@ -1,11 +1,11 @@
 # ::::Creative Button Cards:::| Globals (`cbc_globals`) |::::>
 css:
-  entity: sensor.air_quality_den_temperature
+  entity: sensor.air_quality_office_temperature
   variables:
     _css:
       title-background-color: var(--state-icon-color, var(--accent-color))
       accent-red: '#92344a'
-      accent_green: '#65b49d'
+      accent-green: '#65b49d'
       accent-blue: '#5088f1'
     css: {}
   styles:
@@ -20,63 +20,7 @@ css:
   custom_fields:
     css: >
       [[[
-        if (!document.getElementById('cbcjs-script')) {
-          const script = document.createElement("script");
-          script.id = 'cbcjs-script';
-          script.innerHTML = `
-            cbcJS = {
-              version: "0.3.0",
-              globals: {},
-              css: {},
-            };
-          `;
-          document.head.appendChild(script);
-          cbcJS.hass = hass;
+        if (Object.keys(variables.css).length > 0) {
+          cbcJS.addCss({...variables._css, ...variables.css}).insertStyles();
         }
-
-        if (typeof cbcJS.addCss !== 'function') {
-          cbcJS.addCss = function(css) {
-            if (Object.keys(this.css).length) {
-              this.css = {...this.css, ...css};
-            } else {
-              this.css = {...variables._css, ...css};
-            }
-
-            return this;
-          }
-
-          cbcJS.makeView = function(uri) {
-            const parts = document.baseURI.split('/').slice(-2);
-            return `${parts[0].trim()}.${parts[1].trim()}`;
-          }
-
-          cbcJS.insertStyle = function(uri) {
-            this.view = this.makeView(uri ?? document.baseURI);
-
-            const oStyle = document.getElementById('cbc-styles');
-
-            if (oStyle) {
-              if(oStyle.getAttribute('data-cbc-view') === this.view) {
-                return this;
-              }
-              oStyle.remove();
-            }
-
-            const style = document.createElement('style');
-            style.id = 'cbc-styles';
-            style.setAttribute('data-cbc-view', this.view);
-            style.innerHTML = 'body {';
-
-            for (const prop in this.css) {
-              style.innerHTML += `\n--cbc-${prop.replace('_','-')}: ${this.css[prop]};`;
-            }
-
-            style.innerHTML += '\n}';
-            document.head.appendChild(style);
-
-            return this;
-          }
-        }
-
-        cbcJS.addCss(variables.css).insertStyle();
       ]]]

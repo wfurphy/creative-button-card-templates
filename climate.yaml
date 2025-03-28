@@ -30,15 +30,18 @@ climate:
     action: call-service
     service: "[[[ return variables.switch_entity ? 'switch.toggle' : 'climate.set_hvac_mode' ]]]"
     target:
-      entity_id: "[[[ return variables.switch_entity ? variables.switch_entity : entity.entity_id ]]]"
+      entity_id: "[[[ return variables.switch_entity ? variables.switch_entity : entity?.entity_id ]]]"
     data: "[[[ variables.switch_entity ? {} : variables._service_data ]]]"
   icon: mdi:radiator-disabled
   custom_fields:
     c:
       card:
         type: tile
-        features: "[[[ return variables.features ]]]"
-        entity: "[[[ return entity.entity_id ]]]"
+        features: >
+          [[[
+            return [...new Map(variables.features.map(v => [v.type, v])).values()];
+          ]]]
+        entity: "[[[ return entity?.entity_id ]]]"
         card_mod:
           style: |
             ha-card {

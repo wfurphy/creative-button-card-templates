@@ -1,6 +1,7 @@
 ####{ CreativeBC }####| Action Button |####[ github.com/wfurphy/creative-button-card-templates ]####>
 button_action:
   template:
+    - cbcjs
     - state_helper
     - style_helper
     - dynamic_icons

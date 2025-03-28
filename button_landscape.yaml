@@ -1,6 +1,7 @@
 ####{ CreativeBC }####| Landscape Button Template |####[ github.com/wfurphy/creative-button-card-templates ]####>
 button_landscape:
   template:
+    - cbcjs
     - state_helper
     - actions
     - resizable
