@@ -1,6 +1,6 @@
+####{ CreativeBC }####| Climate |####[ github.com/wfurphy/creative-button-card-templates ]####>
 climate:
   type: custom:button-card
-  entity: climate.office_heater
   template:
     - entity
     - dynamic_icons
@@ -73,4 +73,5 @@ climate:
       c:
         - width: 100%
         - margin-top: 10px
-        
+
+        ###

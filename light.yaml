@@ -8,7 +8,6 @@ light:
         return function(type, bs, er = 1) {
           if (entity.state == 'off') { bs.info = false }
 
-          
           switch (type) {
             case 'areas':
               let areas = `"i i n"`

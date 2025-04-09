@@ -1,8 +1,10 @@
 ####{ CreativeBC }####| Entity |####[ github.com/wfurphy/creative-button-card-templates ]####>
+# :: @Changes v0.3 ::> Create attributes from other entities
 # :: @Changes v0.3 ::> Breaking: Changed attributes to display flex
 entity:
   template: 
     - button_landscape
+    - debug
   variables:
     off_hide_info: true
     ## attr @deprecated v0.2 replaced by attributes
@@ -10,10 +12,11 @@ entity:
     attributes: []
     attribute_icon_color: var(--state-icon-color)
     __defaults:
-      id: ''
+      id: 'state'
+      entity: null
       icon: 'mdi:layers-plus'
       state:
-      units: ''
+      units:
       prefix_units: false
   show_state: false
   show_label: true
@@ -47,14 +50,18 @@ entity:
         
         variables.attributes.forEach(function(a,i) {
           const at = {...variables.__defaults, ...a}
-          const display = at.id === 'state' ? entity.state : (a.state ?? entity.attributes[at.id]);
-          const state = `<span class="cbc-value">${display}</span>`;
+          const ae = a.entity ? states[at.entity] : entity;
+          at.display = a.state ?? (at.id === 'state' ? ae.state : ae.attributes[at.id]);
+          at.units = a.units ?? ae?.attributes?.unit_of_measurement;
+          at.icon = a.icon ?? hass.entities[ae.entity_id]?.icon ?? at.icon;
+          
+          const state = `<span class="cbc-value">${at.display}</span>`;
           const units = `<span class="cbc-units">${at.units}</span>`;
 
-          lab += `<div id="cbc-attr${i}-${a.id}" class="cbc-attr ellipsis">
+          lab += `<div id="cbc-attr${i}-${at.id}" class="cbc-attr ellipsis">
                     <ha-icon icon="${at.icon}" class="cbc-icon"></ha-icon>`;
           
-          if (a.prefix_units) {
+          if (at.prefix_units) {
             lab += units + state
           } else {
             lab += state + units

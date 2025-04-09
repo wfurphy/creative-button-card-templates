@@ -20,9 +20,9 @@ debug:
 
         const o = {
           variables: variables, 
-          entity: entity ? entity : {},
+          entity: entity ?? undefined,
           bc: this,
-          cbcjs: cbcJS,
+          cbcjs: window.cbcJS ?? undefined,
         }
 
         if (variables.debug_hass) {
