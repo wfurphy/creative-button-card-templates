@@ -1,0 +1,72 @@
+####{ CreativeBC }####| Select |####[ github.com/wfurphy/creative-button-card-templates ]####>
+select:
+  type: custom:button-card
+  template: 
+    - show_only_icon
+    - transparent
+    - no_actions
+  variables:
+    __getState: > 
+      [[[
+        /**
+         * Return the property value for the current state
+         * @param {string} prop The property to get the value of
+         * @param {*} [def] The default value if the property isn't defined for the current state
+         * @returns {*} The value of the property defined for the current state
+         */
+        return function(prop, def) {
+          const s = variables.state.find((st) => st.value == entity.state);
+          if (!s) return def ?? null;
+          return s[prop] ?? def ?? null;
+        }
+      ]]]
+    name: Select
+    secondary_info: none
+    color:
+    state: []
+  icon: "[[[ return variables.__getState('icon', entity.attributes.icon ?? '') ]]]"
+  styles:
+    grid:
+      - grid-template-areas: "i drop"
+      - grid-template-columns: 2fr 4fr
+      - grid-template-rows: 1fr
+      - justify-items: start
+      - align-items: center
+      - padding: 4px
+    card:
+      - min-height: 40px
+      - height: 50px
+      - grid: relative
+      - overflow: visible
+    icon:
+      # - background-color: var(--mdc-theme-background)
+      - color: "[[[ return variables.__getState('color', 'var(--primary-text-color)') ]]]"
+    custom_fields:
+      drop:
+        - position: absolute
+        - top: -20px
+        - width: 100%
+        - height: 100%
+        - margin: auto auto auto 10px
+  custom_fields:
+    drop:
+      card:
+        type: entities
+        entities:
+          - entity: "[[[ return entity?.entity_id ]]]"
+            secondary_info: "[[[ return variables.secondary_info ]]]"
+            icon: 'mdi:'
+        show_header_toggle: false
+        show_icon: false
+        card_mod:
+          style: |
+            ha-card {
+              background: none;
+              box-shadow: none;
+              border: none;
+            }
+            :host .mdc-select .mdc-select__anchor {
+              background: none;
+            }
+
+###

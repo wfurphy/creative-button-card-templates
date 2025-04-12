@@ -4,7 +4,6 @@
 entity:
   template: 
     - button_landscape
-    - debug
   variables:
     off_hide_info: true
     ## attr @deprecated v0.2 replaced by attributes
