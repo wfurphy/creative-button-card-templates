@@ -15,19 +15,19 @@ title_info:
         - color: "[[[ return variables._item.color ?? 'var(--accent-color)' ]]]"
 
 title:
+  icon: 'mdi:'
   template:
     - style_helper
     - no_actions
     - resizable
-    - css
   variables:
     mirror: false
     color: var(--cbc-title-color, var(--primary-background-color))
-    background_color: var(--cbc-title-background-color, var(--state-icon-color, var(--accent-color)))
+    background_color: var(--cbc-title-background-color, var(--accent-color))
     text_color: var(--cbc-title-text-color, var(--cbc-title-color, '#ffffff'))
     show_tab: false
     offset: 0
-    opacity: var(--cbc-title-opacity, 0.5)
+    opacity: var(--cbc-title-opacity, 0.3) # v0.3 Changed to background color opactiy not whole card ###>
     info: []
   custom_fields:
     i1:
@@ -58,9 +58,16 @@ title:
     grid:
       - position: relative
       - grid-template-areas: >-
-          [[[ return variables.mirror ? '\"i i3 i2 i1 n\"' : '\"n i1 i2 i3 i\"' ]]]
+          [[[
+            const ic = variables.info.length ? ' i3 i2 i1 ' : ' '
+            const icm = variables.info.length ? ' i1 i2 i3 ' : ' '
+            return variables.mirror ? `\"i${ic}n\"` : `\"n${icm}i\"`
+          ]]]
       - grid-template-columns: >-
-          [[[ return variables.mirror ? '2fr 1fr 1fr 1fr 5fr' : '5fr 1fr 1fr 1fr 2fr' ]]]
+          [[[
+            const ic = variables.info.length ? ' 1fr 1fr 1fr ' : ' '
+            return variables.mirror ? `2fr${ic}5fr` : `5fr${ic}2fr`
+          ]]]
       - grid-template-rows: 1fr
       - justify-items: start
       - align-items: center
@@ -69,11 +76,11 @@ title:
     card:
       - cursor: default
       - --mdc-ripple-press-opacity: 0
-      - opacity: "[[[ return variables.opacity ]]]"
+      # - opacity: "[[[ return variables.opacity ]]]"
       - min-height: 40px
       - height: "[[[ return variables.height ?? '45px' ]]]"
       - margin-left: "[[[ return variables.offset ]]]"
-      - background-color: "[[[ return variables.background_color ]]]"
+      - background-color: "[[[ return `rgb(from ${variables.background_color} r g b / ${variables.opacity})` ]]]"
       - box-shadow: none
       - border: none
       - border-radius: "[[[ return variables.mirror ? '10px 0 0 10px' : '0 10px 10px 0' ]]]"

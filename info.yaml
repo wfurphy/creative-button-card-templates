@@ -1,5 +1,5 @@
 ####{ CreativeBC }####| Info |####[ github.com/wfurphy/creative-button-card-templates ]####>
-# :: @Changes v0.3::> Fixed z-index, state position, icon_opacity > transparency
+# :: @Changes v0.3::> Fixed z-index, state position, icon_opacity > transparency, add item.name
 info_helper:
   variables:
     __item: >
@@ -10,12 +10,18 @@ info_helper:
       ]]]
     __makeHtml: >
       [[[
-        return function(vars) {
+        return function(vars, showName = false, defaultName = '') {
           const item = {...vars, ...vars.item}
           const out = {
             units: String(item.units || entity?.attributes.unit_of_measurement || ''),
             tag: item.layout == 'stack' ? 'div' : 'span',
-            prefix: !!item.prefix_units
+            prefix: !!item.prefix_units,
+            name: '',
+          }
+
+          if(showName && item.show_name) {
+            out.name = `<div class="cbc-name">${item.name ?? defaultName}</div>`;
+            out.tag = 'span';
           }
           
           if (item.state) {
@@ -35,9 +41,9 @@ info_helper:
           }
           
           if (out.prefix) {
-            return `<${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}><${out.tag} class="cbc-state">${out.state}</${out.tag}>`
+            return `<${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}><${out.tag} class="cbc-state">${out.state}</${out.tag}>${out.name}`
           } else {
-            return `<${out.tag} class="cbc-state">${out.state}</${out.tag}><${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}>`
+            return `<${out.tag} class="cbc-state">${out.state}</${out.tag}><${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}>${out.name}`
           }
         }
       ]]]
@@ -55,24 +61,31 @@ info_mini:
     item: {}
     __type: mini
     spin: false
-    ####/ layout / string { stack|inline } / default: stack /####>
+    ####/ layout: {string} stack|inline  / default: stack /####>
     layout: stack
     icon_color: var(--state-icon-color, var(--paper-item-icon-color))
-    icon_opactiy:
+    icon_opactiy: 0 # TODO: v0.3 Not working
+    icon_offset_y: 0
+    icon_offset_x: 0
     color:
     width: 60px
     height: 45px
+    show_name: false
     style: # :: @Deprecated v0.3
       opacity:  # :: @Deprecated v0.3
-        icon:  # :: @Deprecated v0.3
+        icon: 0 # :: @Deprecated v0.3
     __css: |
         <style>
           .cbc-units {
-            font-size: 70%;
+            font-size: 70% !important;
             color: var(--secondary-text-color);
           }
-          div.cbc-units {
-            font-size: 70% !important;
+          .cbc-name {
+            font-size: 60% !important;
+            opacity: 0.9;
+          }
+          div.cbc-units,
+          div.cbc-name {
             margin-top: -4px;
           }
         </style>
@@ -86,7 +99,7 @@ info_mini:
       spin: true
   state_display: >
     [[[
-      return variables.__css + variables.__makeHtml(variables)
+      return variables.__css + variables.__makeHtml(variables, true, this.___config.name)
     ]]]
   styles:
     grid:
@@ -95,11 +108,11 @@ info_mini:
       - padding: 0
       - margin: 0
     icon:
-      # :: @Breaking v0.3 ::::> Now style.opacity.icon will override transparent rule if set.
+      # :: @Breaking v0.3 ::::> Now icon_opacity will override transparent rule if set.
       - opacity: >-
           [[[
-            if (variables.icon_opactiy) { return variables.icon_opactiy }
-            if (variables.style.opacity.icon) { return variables.style.opacity.icon }
+            if (variables.__item(variables).icon_opactiy > 0) { return variables.__item(variables).icon_opactiy }
+            if (variables.__item(variables).style.opacity.icon > 0) { return variables.__item(variables).style.opacity.icon }
             return this.___config.template.includes('transparent') ? 1 : 0.4
           ]]]
       - justify-self: start
@@ -111,14 +124,14 @@ info_mini:
       - max-width: 200%
       - height: 100%
       - width: 100%
-      # - margin-top: -20%
-      # - margin-left: -25%
+      - margin-top: "[[[ return (variables.__item(variables).show_name && !variables.__item(variables).icon_offset_y) ? '-2%' : `-${String(variables.__item(variables).icon_offset_y).replace(/[%-]/g,'')}%` ]]]"
+      - margin-left: "[[[ return `-${String(variables.__item(variables).icon_offset_x).replace(/[%-]/g,'')}%` ]]]"
       - padding: 0
       - z-index: 1
       - color: >
           [[[
             if(variables.__item(variables).color) { return variables.__item(variables).color } else
-            if(variables.icon_color && variables.icon_color !== 'var(--state-icon-color, var(--paper-item-icon-color))') { return variables.icon_color }
+            if(variables.__item(variables).icon_color && variables.__item(variables).icon_color !== 'var(--state-icon-color, var(--paper-item-icon-color))') { return variables.__item(variables).icon_color }
             return this.___config.template.includes('transparent') ? 'var( --ha-card-background, var(--card-background-color, white) )' : 'var(--state-icon-color)'
           ]]]
     state:
@@ -171,7 +184,7 @@ info_item:
       }
 
       let att = String(item.attribute)
-      return att.length > 0 ? att.replace('_', ' ') : entity?.attributes.friendly_name
+      return att?.length > 0 ? att.replace('_', ' ') : entity?.attributes.friendly_name
     ]]]
   
   # styles:

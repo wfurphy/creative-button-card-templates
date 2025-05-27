@@ -6,7 +6,6 @@ notify:
     - cbcjs
     - resizable
     - datetime
-    # - css
   variables:
     __console: >
       [[[

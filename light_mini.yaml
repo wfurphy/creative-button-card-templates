@@ -1,0 +1,136 @@
+####{ CreativeBC }####| Light Mini |####[ github.com/wfurphy/creative-button-card-templates ]####>
+light_mini:
+  template:
+    - cbcjs
+    - state_helper
+    - actions
+    - resizable
+    - interactive
+  variables:
+    __get: >
+      [[[
+        return function(prop, vars, sub = undefined) {
+          if (!vars.item) return vars[prop] || sub
+          return vars.item[prop] || vars[prop] || sub
+        }
+      ]]]
+    item: {}
+    attribute_icon_color: var(--state-icon-color)
+    rgb_symbols:
+      - R
+      - G
+      - B
+    show:
+      info: true
+  color: auto
+  show_label: true
+  state:
+    - id: cbc_on
+      styles:
+        label:
+          - display: "[[[ return variables.show.info ? 'block' : 'none' ]]]"
+    - id: cbc_off
+      styles:
+        label:
+          - display: none
+  styles:
+    grid:
+      - grid-template-areas: '"i" "l"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 4fr 1fr
+    card:
+      - width: 45px
+      - min_height: 45px
+      - min_width: 45px
+    label:
+      - display: "[[[ return variables.show.info ? 'block' : 'none' ]]]"
+      - overflow: visible
+      - text-overflow: visible
+      - align-self: start
+    name:
+      - justify-self: start
+      - align-self: center
+    icon:
+      - min-width: "[[[ return variables.__get('icon_min_size', variables) ]]]"
+      - min-height: "[[[ return variables.__get('icon_min_size', variables) ]]]"
+      - max-width: "[[[ return variables.__get('icon_max_size', variables) ]]]"
+      - max-height: "[[[ return variables.__get('icon_max_size', variables) ]]]"
+  label: >
+    [[[
+      const styles = `
+        <style>
+          .cbc-l-icon {
+            color: ${variables.attribute_icon_color};
+            width: 15px;
+            margin-right: 1px;
+          }
+          .cbc-l-icon.effect {
+            margin-left: 2px;
+          }
+          .cbc-l-icon.last {
+            margin-right: 2px;
+          }
+          .cbc-l-unit {
+            color: var(--secondary-text-color);
+            font-size: 85%;
+          }
+          .cbc-l-rgb {
+            font-size: 12px;
+            word-spacing: -4px;
+            letter-spacing: -1px
+          }
+          .cbc-l-rgb.cbc-i {
+            font-weight: bold;
+            margin-left: -1px;
+          }
+          .cbc-l-value {
+            margin-left: 3px;
+          }
+          .cbc-l-value-effect {
+            text-transform: capitalize;
+          }
+        </style>`
+
+      if (!entity) return `${styles}<elt><ha-icon icon="mdi:wifi-cancel" class="cbc-l-icon"></ha-icon><span class="cbc-l-value">Unavailable</span></elt>`
+
+      const bpct = Math.round(entity.attributes.brightness / 2.55)
+      let bi = 'mdi:brightness-2'
+      if (bpct >= 90) { bi = 'mdi:brightness-7' } else
+      if (bpct >= 75) { bi = 'mdi:brightness-6' } else
+      if (bpct >= 50) { bi = 'mdi:brightness-5' } else
+      if (bpct >= 25) { bi = 'mdi:brightness-4' } else
+      if (bpct >= 10) { bi = 'mdi:brightness-3' }
+
+      const brt = `<ha-icon icon="${bi}" class="cbc-l-icon"></ha-icon><span class="cbc-l-val">${bpct}</span><span class="cbc-l-unit">%</span>`
+
+      if (entity.attributes.effect && entity.attributes.effect !== "effect_stop") {
+        const efct = entity.attributes.effect.replace('effect', '').replace('_', ' ')
+        return `${styles}<elt>${brt}<ha-icon icon="mdi:creation" class="cbc-l-icon effect"></ha-icon><span class="cbc-l-value-effect">${efct}</span></elt>`
+      }
+
+      let clr, ci = ''
+
+      if (entity.attributes.color_mode == 'color_temp') {
+        ci = `<ha-icon icon="mdi:palette" class="cbc-l-icon last"></ha-icon>`
+        clr = `${entity.attributes.color_temp_kelvin} <span class="cbc-l-unit">K</span>`
+      } else {
+        const rgb = String(entity.attributes.rgb_color).split(',')
+        clr = `
+        <span class="ellipsis">
+          <span class="cbc-l-rgb cbc-i" style="color: #ad0826;">${variables.rgb_symbols[0]}</span><span class="cbc-l-rgb">${rgb[0]}</span>
+          <span class="cbc-l-rgb cbc-i" style="color: #00b558;">${variables.rgb_symbols[1]}</span><span class="cbc-l-rgb">${rgb[1]}</span>
+          <span class="cbc-l-rgb cbc-i" style="color: #1a89f5;">${variables.rgb_symbols[2]}</span><span class="cbc-l-rgb">${rgb[2]}</span>
+        </span>
+        `
+      }
+
+      return `
+        ${styles}
+        <elt>
+          ${brt}
+          ${ci}${clr}
+        </elt>
+      `
+    ]]]
+
+#########################################################################/

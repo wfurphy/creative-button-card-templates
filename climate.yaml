@@ -15,6 +15,7 @@ climate:
         units: °C
       - id: state
         icon: mdi:state-machine
+        units: ''
     features:
       - type: target-temperature
       - type: climate-hvac-modes

@@ -285,7 +285,7 @@ value_strip:
   show_value: false
   show_state: false
   show_name: false
-  template: css
+  # template: css
   variables:
     #::::[ type ]::::( value | brightness | adaptive_lighting | cover | fan )::::>
     type: domain
