@@ -294,7 +294,9 @@ You will need to ensure you have the following components installed. They are bo
 
 ### [custom-cards/button-card](https://github.com/custom-cards/button-card)
 
-The very first step is to ensure you have [Button Card](https://github.com/custom-cards/button-card) installed and working in home assistant. These templates are not going to work without it! You may notice, as I have, that it hasn't been maintained in some time. However, it all appears to be working perfectly still (_Last Checked HA 2022.10.4_). Perhaps if issues arise I will finally have to bite the bullet and develop my own custom card.
+The very first step is to ensure you have [Button Card](https://github.com/custom-cards/button-card) installed and working in home assistant. These templates are not going to work without it!
+
+> :boom: _Q3 2025: I know I'm a bit slow on this one, but as you may already know, Button Card is back and already releasing new updates!! With Button Card and Home Assistant providing regular updates, please log an issue on GitHub if you notice any complications with your templates. Make a PR if you have a fix already! Stoked to see Button Card brought back to life and looking forward to seeing what they come up with next! Updates have been in the works for CBC Templates too, stay tuned for a release before the year is out._
 
 > :raising_hand_man: _If you plan to further extend these templates or create your own then it is **essential** that you read the [button-card documentation](https://github.com/custom-cards/button-card). In fact, I recommend you read it regardless._
 
