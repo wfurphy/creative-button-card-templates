@@ -51,7 +51,7 @@ entity:
           const at = {...variables.__defaults, ...a}
           const ae = a.entity ? states[at.entity] : entity;
           at.display = a.state ?? (at.id === 'state' ? ae.state : ae.attributes[at.id]);
-          at.units = a.units ?? ae?.attributes?.unit_of_measurement;
+          at.units = a.units ?? ae?.attributes?.unit_of_measurement ?? '';
           at.icon = a.icon ?? hass.entities[ae.entity_id]?.icon ?? at.icon;
           
           const state = `<span class="cbc-value">${at.display}</span>`;

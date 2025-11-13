@@ -8,7 +8,7 @@ climate:
     _service_data:
       hvac_mode: "auto"
     icon_on: mdi:radiator
-    switch_entity:
+    switch_entity: false
     attributes:
       - id: current_temperature
         icon: mdi:thermometer-auto
@@ -26,22 +26,27 @@ climate:
         [[[ return variables.switch_entity ? states[variables.switch_entity].state == 'off' : ['standby', 'off'].includes(entity.state) ]]]
     - id: cbc_on
       value: >
-        [[[ return variables.switch_entity ? states[variables.switch_entity].state == 'on' : !['standby', 'off'].includes(entity.state) ]]]
+        [[[ return variables.switch_entity ? states[variables.switch_entity].state == 'on' : !(['standby', 'off'].includes(entity.state)) ]]]
+      icon: "[[[ return variables.icon_on ]]]"
   tap_action:
     action: call-service
     service: "[[[ return variables.switch_entity ? 'switch.toggle' : 'climate.set_hvac_mode' ]]]"
     target:
       entity_id: "[[[ return variables.switch_entity ? variables.switch_entity : entity?.entity_id ]]]"
-    data: "[[[ variables.switch_entity ? {} : variables._service_data ]]]"
-  icon: mdi:radiator-disabled
+    data: >
+      [[[
+        if (variables.switch_entity) return {};
+        
+        return (entity.state === 'off') ? { ...hvac_mode: 'auto' } : { ...hvac_mode: 'off' }
+      ]]]
+  icon: >
+    [[[ return (variables.switch_entity && states[variables.switch_entity].state == 'off') || ['standby', 'off'].includes(entity.state) ? 'mdi:radiator-disabled' : 'mdi:radiator' ]]]
   custom_fields:
     c:
       card:
         type: tile
         features: >
-          [[[
-            return [...new Map(variables.features.map(v => [v.type, v])).values()];
-          ]]]
+          [[[ return [...new Map(variables.features.map(v => [v.type, v])).values()]; ]]]
         entity: "[[[ return entity?.entity_id ]]]"
         card_mod:
           style: |
@@ -70,6 +75,9 @@ climate:
       - grid-template-areas: '"i i n" "i i l" "c c c"'
       - grid-template-rows: auto
       - grid-template-columns: 1fr 1fr 4fr
+    icon:
+      - color: >
+          [[[ return (variables.switch_entity && states[variables.switch_entity].state == 'off') || ['standby', 'off'].includes(entity.state) ? 'var(--primary-text-color)' : 'var(--state-active-color)' ]]]
     custom_fields:
       c:
         - width: 100%

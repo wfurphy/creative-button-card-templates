@@ -11,6 +11,7 @@ cbcjs:
           script.innerHTML = `
             const cbcJS = {
               version: "0.3.0",
+              update: false,
               ct: ${ct},
               count: 0,
               globals: {},
@@ -18,7 +19,7 @@ cbcjs:
             };
           `;
           document.head.appendChild(script);
-          console.info("%c CREATIVE BUTTON-CARD TEMPLATES %c ".concat(cbcJS.version, " "), "color: black; background: #1bccac; font-weight: 700;", "color: #1bccac; background: black; font-weight: 700;");
+          console.info("%c CREATIVE BUTTON-CARD TEMPLATES %c ".concat(cbcJS.getVersion(), " "), "color: black; background: #1bccac; font-weight: 700;", "color: #1bccac; background: black; font-weight: 700;");
         }
 
         if (cbcJS.ct === ct) {
@@ -73,6 +74,18 @@ cbcjs:
 
             return this;
           }
+        }
+
+        cbcJS.getVersion = async function() {
+          const lv = await import('../.cbcv');
+          // TODO: Update to production link
+          const cv = await fetch('https://raw.githubusercontent.com/wfurphy/creative-button-card-templates/refs/heads/develop/.cbcv');
+
+          if (lv !== cv) {
+            cbcJS.update = true;
+          }
+
+          return cbcJS.version;
         }
 
         cbcJS.hass = hass;
