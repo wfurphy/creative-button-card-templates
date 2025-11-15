@@ -60,7 +60,7 @@ info_mini:
     group: false
     item: {}
     __type: mini
-    spin: false
+    rotate: false
     ####/ layout: {string} stack|inline  / default: stack /####>
     layout: stack
     icon_color: var(--state-icon-color, var(--paper-item-icon-color))
@@ -96,7 +96,7 @@ info_mini:
     - id: cbc_spin
       operator: template
       value: "[[[ return variables.__item(variables).spin ]]]"
-      spin: true
+      rotate: true
   state_display: >
     [[[
       return variables.__css + variables.__makeHtml(variables, true, this.___config.name)

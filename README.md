@@ -255,7 +255,7 @@ This is the code used to create the examples in the gif above. Some entity names
             attribute: current_position
             units: 'SPIN'
             state: '↻'
-            spin: true
+            rotate: true
             icon_color: 'rgba(247, 138, 80, 0.2)'
           icon: mdi:fan
         - type: custom:button-card #                   ####| Inline |####>
@@ -1003,7 +1003,7 @@ Displays the icon and state of an entity only. Good for displaying information n
     attribute: current_position
     units: 'SPIN'
     state: '↻'
-    spin: true
+    rotate: true
     icon_color: 'rgba(247, 138, 80, 0.2)'
   icon: mdi:fan
 - type: custom:button-card #                   ####| Inline |####>

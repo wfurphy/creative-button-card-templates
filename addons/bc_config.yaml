@@ -1,0 +1,10 @@
+bc_config:
+  variables:
+    __config: >
+      [[[
+        const symbols = Object.getOwnPropertySymbols(this);
+        const sym = symbols.filter(sym => this[sym]?.type && this[sym]?.type == 'custom:button-card')[0];
+        return this[sym];
+      ]]]
+
+### /END
