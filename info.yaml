@@ -1,6 +1,7 @@
 ####{ CreativeBC }####| Info |####[ github.com/wfurphy/creative-button-card-templates ]####>
 # :: @Changes v0.3::> Fixed z-index, state position, icon_opacity > transparency, add item.name
 info_helper:
+  template: bc_config
   variables:
     __item: >
       [[[
@@ -99,7 +100,7 @@ info_mini:
       rotate: true
   state_display: >
     [[[
-      return variables.__css + variables.__makeHtml(variables, true, this.___config.name)
+      return variables.__css + variables.__makeHtml(variables, true, variables.__config.name)
     ]]]
   styles:
     grid:
@@ -113,7 +114,7 @@ info_mini:
           [[[
             if (variables.__item(variables).icon_opactiy > 0) { return variables.__item(variables).icon_opactiy }
             if (variables.__item(variables).style.opacity.icon > 0) { return variables.__item(variables).style.opacity.icon }
-            return this.___config.template.includes('transparent') ? 1 : 0.4
+            return variables.__config.template.includes('transparent') ? 1 : 0.4
           ]]]
       - justify-self: start
       - align-self: start
@@ -132,7 +133,7 @@ info_mini:
           [[[
             if(variables.__item(variables).color) { return variables.__item(variables).color } else
             if(variables.__item(variables).icon_color && variables.__item(variables).icon_color !== 'var(--state-icon-color, var(--paper-item-icon-color))') { return variables.__item(variables).icon_color }
-            return this.___config.template.includes('transparent') ? 'var( --ha-card-background, var(--card-background-color, white) )' : 'var(--state-icon-color)'
+            return variables.__config.template.includes('transparent') ? 'var( --ha-card-background, var(--card-background-color, white) )' : 'var(--state-icon-color)'
           ]]]
     state:
       - position: absolute #:::: Update 0.3 ::::>

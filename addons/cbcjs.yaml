@@ -8,7 +8,7 @@ cbcjs:
         [[[
           class CreateiveButtonCardsJS {
             constructor(hass) {
-              this.version = "1.0.0";
+              this.version = "0.3.0";
               this.update = false;
               this.globals = {};
               this.css = {};

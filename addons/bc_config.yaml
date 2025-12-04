@@ -3,7 +3,7 @@ bc_config:
     __config: >
       [[[
         const symbols = Object.getOwnPropertySymbols(this);
-        const sym = symbols.filter(sym => this[sym]?.type && this[sym]?.type == 'custom:button-card')[0];
+        const sym = symbols.filter(s => this[s].type && this[s].type == 'custom:button-card')?.[0];
         return this[sym];
       ]]]
 
