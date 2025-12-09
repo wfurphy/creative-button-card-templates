@@ -43,6 +43,7 @@ climate:
     [[[ return (variables.switch_entity && states[variables.switch_entity].state == 'off') || ['standby', 'off'].includes(entity.state) ? 'mdi:radiator-disabled' : 'mdi:radiator' ]]]
   custom_fields:
     c:
+      force_recreate: true
       card:
         type: tile
         features: >

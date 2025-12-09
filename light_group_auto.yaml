@@ -170,6 +170,7 @@ light_group_auto:
         }
       ]]]
     li1:
+      force_recreate: true
       card:
         type: custom:button-card
         template:
@@ -187,6 +188,7 @@ light_group_auto:
             - max-height: 35px
             - max-width: 35px
     li2:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return variables.item_template || 'button_mini_embed' ]]]"
@@ -202,6 +204,7 @@ light_group_auto:
             - max-height: 35px
             - max-width: 35px
     li3:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return variables.item_template || 'button_mini_embed' ]]]"
@@ -217,6 +220,7 @@ light_group_auto:
             - max-height: 35px
             - max-width: 35px
     li4:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return variables.item_template || 'button_mini_embed' ]]]"
@@ -232,6 +236,7 @@ light_group_auto:
             - max-height: 35px
             - max-width: 35px
     li5:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return variables.item_template || 'button_mini_embed' ]]]"
@@ -247,6 +252,7 @@ light_group_auto:
             - max-height: 35px
             - max-width: 35px
     li6:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return variables.item_template || 'button_mini_embed' ]]]"

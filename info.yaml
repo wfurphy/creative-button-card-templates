@@ -308,6 +308,7 @@ info:
     }
   custom_fields:
     dts1:
+      force_recreate: true
       card:
         type: custom:button-card
         template:
@@ -321,6 +322,7 @@ info:
         entity: "[[[ return variables.__qty >= 1 ? variables.items[0].entity_id : null ]]]"
 
     dts2:
+      force_recreate: true
       card:
         type: custom:button-card
         template:
@@ -334,6 +336,7 @@ info:
         entity: "[[[ return variables.__qty >= 2 ? variables.items[1].entity_id : null ]]]"
 
     dts3:
+      force_recreate: true
       card:
         type: custom:button-card
         template:
@@ -347,6 +350,7 @@ info:
         entity: "[[[ return variables.__qty >= 3 ? variables.items[2].entity_id : null ]]]"
 
     dts4:
+      force_recreate: true
       card:
         type: custom:button-card
         template:

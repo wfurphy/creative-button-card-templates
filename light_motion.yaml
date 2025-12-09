@@ -70,6 +70,7 @@ light_motion:
         - display: "[[[ return variables.__pauseState(variables.timer_entity, entity).display.timer ]]]"
   custom_fields:
     motion:
+      force_recreate: true
       card:
         type: custom:button-card
         template: transparent
@@ -185,6 +186,7 @@ light_motion:
               align-self: center;
             }
     timer:
+      force_recreate: true
       card:
         type: custom:button-card
         template: transparent

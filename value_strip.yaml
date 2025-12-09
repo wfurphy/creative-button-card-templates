@@ -464,6 +464,7 @@ value_strip:
         - align-self: center
   custom_fields:
     c1:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return `${variables.__has(variables.items[0], 'type', variables.type)}_strip_item` ]]]"
@@ -475,6 +476,7 @@ value_strip:
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
     c2:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return `${variables.__has(variables.items[1], 'type', variables.type)}_strip_item` ]]]"
@@ -486,6 +488,7 @@ value_strip:
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
     c3:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return `${variables.__has(variables.items[2], 'type', variables.type)}_strip_item` ]]]"
@@ -497,6 +500,7 @@ value_strip:
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
     c4:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return `${variables.__has(variables.items[3], 'type', variables.type)}_strip_item` ]]]"
@@ -508,6 +512,7 @@ value_strip:
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
     c5:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return `${variables.__has(variables.items[4], 'type', variables.type)}_strip_item` ]]]"

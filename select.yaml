@@ -50,6 +50,7 @@ select:
         - margin: auto auto auto 10px
   custom_fields:
     drop:
+      force_recreate: true
       card:
         type: entities
         entities:
