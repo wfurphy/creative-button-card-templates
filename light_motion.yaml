@@ -91,9 +91,6 @@ light_motion:
             operator: template
             value: >
               [[[ 
-                // const mstate = variables.active_entity ? states[variables.active_entity].state : 'none'
-                // console.log(variables.active_entity, mstate, variables.active_entity && states[variables.active_entity].state == 'off', { bc: this })
-                
                 return variables.active_entity && states[variables.active_entity].state == 'off'
               ]]]
             icon: mdi:motion-sensor-off
