@@ -5,6 +5,7 @@ value_strip_item:
   - cbcjs
   - transparent
   - interactive
+  # - debug
   variables:
     item:
       active: false

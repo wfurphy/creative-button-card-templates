@@ -7,7 +7,7 @@ climate:
   variables:
     _service_data:
       hvac_mode: "auto"
-    icon_on: mdi:radiator
+    #icon_on: mdi:radiator
     switch_entity: false
     attributes:
       - id: current_temperature
