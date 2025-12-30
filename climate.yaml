@@ -15,6 +15,7 @@ climate:
         units: °C
       - id: state
         icon: mdi:state-machine
+        use_state: true
         units: ''
     features:
       - type: target-temperature

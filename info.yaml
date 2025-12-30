@@ -147,6 +147,7 @@ info_mini:
       - overflow: visible
       - text-align: right
       - z-index: 3
+      - text-shadow: 1px 1px 2px var(--view-background,var(--lovelace-background,var(--primary-background-color)));
 
 #################( Info Item )################################>
 # :: @Changes v0.3 added `font_size`

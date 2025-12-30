@@ -27,7 +27,7 @@ title:
     text_color: var(--cbc-title-text-color, var(--cbc-title-color, '#ffffff'))
     show_tab: false
     offset: 0
-    opacity: var(--cbc-title-opacity, 0.3) # v0.3 Changed to background color opactiy not whole card ###>
+    opacity: var(--cbc-title-opacity, 0.4) # v0.3 Changed to background color opactiy not whole card ###>
     info: []
   custom_fields:
     i1:

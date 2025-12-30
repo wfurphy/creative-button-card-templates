@@ -99,7 +99,7 @@ cbcjs:
           if (!window.cbcJS) {
             window.cbcJS = new CreateiveButtonCardsJS(hass);
             cbcJS.getVersion().then(v => console.info(
-                "%c CREATIVE BUTTON-CARD TEMPLATES %c ".concat(v.v, " %c ", cbcJS.update ? `Update Available (${v.cv})` : ''),
+                "%c CREATIVE BUTTON-CARD TEMPLATES %c  ".concat(v.v, " %c ", cbcJS.update ? `Update Available (${v.cv})` : ''),
                 "color: black; background: #1bccac; font-weight: 700;",
                 "color: #1bccac; background: black; font-weight: 700;",
                 "color: #D58C25FF; background: black; font-weight: 700;"
