@@ -145,7 +145,7 @@ This is the code used to create the examples in the gif above. Some entity names
             type: brightness
             show:
               icon: false
-              value: true
+              step_value: true
           entity: light.sample
         - type: custom:button-card #         ####| Brightness Strip |####>
           template:
@@ -155,7 +155,7 @@ This is the code used to create the examples in the gif above. Some entity names
             al_area_id: den
             show:
               icon: true
-              value: true
+              step_value: true
         - type: custom:button-card #         ####| Brightness Strip |####>
           template:
             - value_strip
@@ -165,7 +165,7 @@ This is the code used to create the examples in the gif above. Some entity names
             al_area_id: den
             show:
               icon: true
-              value: false
+              step_value: false
         - type: custom:button-card #             ####| Blinds Strip |####>
           template:
             - value_strip
@@ -174,23 +174,23 @@ This is the code used to create the examples in the gif above. Some entity names
             type: cover
             show:
               icon: true
-              value: true
+              step_value: true
               fade: false
             items:
-            - value: 0
+            - step_value: 0
               icon: mdi:blinds
               units: '%'
               label: close
-            - value: 25
+            - step_value: 25
               icon: mdi:blinds
               units: '%'
-            - value: 50
+            - step_value: 50
               icon: mdi:blinds-open
               units: '%'
-            - value: 75
+            - step_value: 75
               icon: mdi:blinds-open
               units: '%'
-            - value: 100
+            - step_value: 100
               icon: mdi:blinds-open
               units: '%'
               label: open
@@ -786,19 +786,19 @@ There are two pre-built options, `brightness` and `cover`, for you to use which 
 
   ```yaml
   items:
-    - value: 10
+    - step_value: 10
       units: '%'
       icon: mdi:brightness-3
-    - value: 25
+    - step_value: 25
       units: '%'
       icon: mdi:brightness-4
-    - value: 50
+    - step_value: 50
       units: '%'
       icon: mdi:brightness-5
-    - value: 75
+    - step_value: 75
       units: '%'
       icon: mdi:brightness-6
-    - value: 100
+    - step_value: 100
       units: '%'
       icon: mdi:brightness-7
   ```
@@ -809,21 +809,21 @@ There are two pre-built options, `brightness` and `cover`, for you to use which 
 
   ```yaml
   items:
-    - value: 0
+    - step_value: 0
       icon: mdi:blinds
       prefix: ''
       units: '%'
       label: close
-    - value: 25
+    - step_value: 25
       icon: mdi:blinds
       units: '%'
-    - value: 50
+    - step_value: 50
       icon: mdi:blinds-open
       units: '%'
-    - value: 75
+    - step_value: 75
       icon: mdi:blinds-open
       units: '%'
-    - value: 100
+    - step_value: 100
       icon: mdi:blinds-open
       units: '%'
       prefix: ''
@@ -861,7 +861,7 @@ _These aren't the same as the example images, no need to include too much YAML!_
     al_area_id: den
     show:
       icon: true
-      value: false
+      step_value: false
 - type: custom:button-card #   ####| Custom Cover Strip, Icons and Value, No Fade |####>
   template: value_strip
   entity: cover.den_blinds
@@ -869,23 +869,23 @@ _These aren't the same as the example images, no need to include too much YAML!_
     type: cover
     show:
       icon: true
-      value: true
+      step_value: true
       fade: false
     items:
-    - value: 0
+    - step_value: 0
       icon: mdi:blinds
       units: '%'
       label: close
-    - value: 25
+    - step_value: 25
       icon: mdi:blinds
       units: '%'
-    - value: 50
+    - step_value: 50
       icon: mdi:blinds-open
       units: '%'
-    - value: 75
+    - step_value: 75
       icon: mdi:blinds-open
       units: '%'
-    - value: 100
+    - step_value: 100
       icon: mdi:blinds-open
       units: '%'
       label: open

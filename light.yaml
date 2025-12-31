@@ -41,7 +41,7 @@ light:
       effect_selector: false
     strip_show:
       icon: true
-      value: false
+      step_value: false
       fade: true
     strip_items: []
   color: auto
