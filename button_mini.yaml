@@ -141,19 +141,16 @@ button_mini_power:
     action: call-service
     service: light.toggle
     service_data:
-        area_id: "[[[ return variables.area ]]]"
+        area_id: "[[[[ return variables.area ]]]]"
   double_tap_action:
     action: call-service
     service: light.turn_on
     service_data:
-        area_id: "[[[ return variables.area ]]]"
+        area_id: "[[[[ return variables.area ]]]]"
   hold_action:
     action: call-service
     service: light.turn_off
     service_data:
-        area_id: "[[[ return variables.area ]]]"
-  # state:
-  #   - id: cbc_on
-  #     value:
+        area_id: "[[[[ return variables.area ]]]]"
 
 #########################################################################/

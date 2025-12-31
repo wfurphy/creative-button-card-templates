@@ -70,6 +70,7 @@ light_motion:
         - display: "[[[ return variables.__pauseState(variables.timer_entity, entity).display.timer ]]]"
   custom_fields:
     motion:
+      force_recreate: true
       card:
         type: custom:button-card
         template: transparent
@@ -91,9 +92,6 @@ light_motion:
             operator: template
             value: >
               [[[ 
-                // const mstate = variables.active_entity ? states[variables.active_entity].state : 'none'
-                // console.log(variables.active_entity, mstate, variables.active_entity && states[variables.active_entity].state == 'off', { bc: this })
-                
                 return variables.active_entity && states[variables.active_entity].state == 'off'
               ]]]
             icon: mdi:motion-sensor-off
@@ -188,6 +186,7 @@ light_motion:
               align-self: center;
             }
     timer:
+      force_recreate: true
       card:
         type: custom:button-card
         template: transparent

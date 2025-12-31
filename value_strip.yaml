@@ -1,5 +1,6 @@
 #################( Value Strip Item )################################>
 # :: @Changes v0.3::> Added ability to have different types on the same strip, Added fan, fan mode, air purifier and climate types
+# :: @Changes v0.3 BREAKING ::> Due to button-card v7+ using 'value' as a reserved variable name, the value strip templates now use 'step_value' instead of 'value' for the item variable.
 value_strip_item:
   template:
   - cbcjs
@@ -12,14 +13,14 @@ value_strip_item:
       mode: null
       prefix:
       units: ''
-      value: 100
+      step_value: 100
       icon: mdi:bomb
       label:
       active_color: var(--button-card-light-color, var(--accent-color))
       color: 'var(--paper-item-icon-color)'
     show:
       icon: true
-      value: true
+      step_value: true
       fade: true
     __css: >
       [[[
@@ -38,21 +39,21 @@ value_strip_item:
       ]]]
   name: >
     [[[
-      variables.__opc = variables.item.opacity ?? (variables.item.value / 100) + 0.07
-      variables.__both = variables.show.icon && variables.show.value
+      variables.__opc = variables.item.opacity ?? (variables.item.step_value / 100) + 0.07
+      variables.__both = variables.show.icon && variables.show.step_value
 
       if (variables.item.label) {
         return `${variables.__css}<span class="cbc-units item-prefix">${variables.item.prefix}</span><span class="cbc-item-value label">${variables.item.label}</span>`
       }
 
-      return `${variables.__css}<span class="cbc-item-value">${variables.item.value}</span><span class="cbc-units item-units">${variables.item.units}</span>`
+      return `${variables.__css}<span class="cbc-item-value">${variables.item.step_value}</span><span class="cbc-units item-units">${variables.item.units}</span>`
     ]]]
   state:
     - id: cbc_active
       operator: template
-      value: >
+      step_value: >
         [[[
-          return Boolean(entity.state == variables.item.value)
+          return Boolean(entity.state == variables.item.step_value)
         ]]]
       styles:
         icon:
@@ -74,7 +75,7 @@ value_strip_item:
       - justify-items: center
       - align-items: center
     name:
-      - display: "[[[ return variables.__both || variables.show.value ? 'block' : 'none' ]]]"
+      - display: "[[[ return variables.__both || variables.show.step_value ? 'block' : 'none' ]]]"
       - opacity: >
           [[[
             if (variables.__lock) return 0.1;
@@ -102,7 +103,7 @@ value_strip_item:
       - display: "[[[ return variables.__both || variables.show.icon ? 'block' : 'none' ]]]"
       - width: auto
       - height: 70%
-      - padding: "[[[ return variables.__both || variables.show.value ? 0 : '5px' ]]]"
+      - padding: "[[[ return variables.__both || variables.show.step_value ? 0 : '5px' ]]]"
       - color: "[[[ return variables.item.color ]]]"
       - opacity: >
           [[[
@@ -121,7 +122,7 @@ adaptive_lighting_strip_item:
   variables:
     al_area_id: main_area
     # item:
-    #   value: 100
+    #   step_value: 100
   color: auto
   custom_fields:
     active_logic: >
@@ -139,14 +140,14 @@ adaptive_lighting_strip_item:
     service: script.al_set
     service_data:
       area_id: "[[[ return variables.al_area_id ]]]"
-      brightness: "[[[ return variables.item.value ]]]"
+      brightness: "[[[ return variables.item.step_value ]]]"
     haptic: success
   state:
     - id: cbc_active
       operator: template
-      value: >
+      step_value: >
         [[[
-          return Boolean(variables.item.value == states['input_number.brightness_' + variables.al_area_id].state)
+          return Boolean(variables.item.step_value == states['input_number.brightness_' + variables.al_area_id].state)
         ]]]
 
 #################( Brightness Strip Item )################################>
@@ -154,21 +155,21 @@ brightness_strip_item:
   template: value_strip_item
   # variables:
   #   item:
-  #     value: 100
+  #     step_value: 100
   color: auto
   tap_action:
     action: call-service
     service: light.turn_on
     service_data:
       entity_id: "[[[ return entity?.entity_id ]]]"
-      brightness_pct: "[[[ return variables.item.value ]]]"
+      brightness_pct: "[[[ return variables.item.step_value ]]]"
     haptic: success
   state:
     - id: cbc_active
       operator: template
-      value: >
+      step_value: >
         [[[
-          return Boolean(Math.round(entity.attributes.brightness / 2.55) == variables.item.value)
+          return Boolean(Math.round(entity.attributes.brightness / 2.55) == variables.item.step_value)
         ]]]
 
 #################( Cover Strip Item )################################>
@@ -176,20 +177,20 @@ cover_strip_item:
   template: value_strip_item
   # variables:
   #   item:
-  #     value: 100
+  #     step_value: 100
   state:
     - id: cbc_active
       operator: template
-      value: >
+      step_value: >
         [[[
-          return Boolean(entity.attributes.current_position == variables.item.value)
+          return Boolean(entity.attributes.current_position == variables.item.step_value)
         ]]]
   tap_action:
     action: call-service
     service: cover.set_cover_position
     service_data:
       entity_id: "[[[ return entity?.entity_id ]]]"
-      position: "[[[ return variables.item.value ]]]"
+      position: "[[[ return variables.item.step_value ]]]"
     haptic: success
 
 
@@ -201,14 +202,14 @@ climate_strip_item:
     service: climate.set_temperature
     service_data:
       entity_id: "[[[ return entity?.entity_id ]]]"
-      temperature: "[[[ return variables.item.value ]]]"
+      temperature: "[[[ return variables.item.step_value ]]]"
     haptic: success
   state:
     - id: cbc_active
       operator: template
-      value: >
+      step_value: >
         [[[
-          return Boolean(variables.item.value == entity.attributes.temperature)
+          return Boolean(variables.item.step_value == entity.attributes.temperature)
         ]]]
 
 #################( Fan Strip Item )################################>
@@ -216,20 +217,20 @@ fan_strip_item:
   template: value_strip_item
   # variables:
   #   item:
-  #     value: 100
+  #     step_value: 100
   state:
     - id: cbc_active
       operator: template
-      value: >
+      step_value: >
         [[[
-          return Boolean(entity.attributes.percentage == variables.item.value)
+          return Boolean(entity.attributes.percentage == variables.item.step_value)
         ]]]
   tap_action:
     action: call-service
     service: fan.set_percentage
     service_data:
       entity_id: "[[[ return entity?.entity_id ]]]"
-      percentage: "[[[ return variables.item.value ]]]"
+      percentage: "[[[ return variables.item.step_value ]]]"
     haptic: success
 
 #################( Fan Mode Strip Item )################################>
@@ -237,12 +238,12 @@ fan_mode_strip_item:
   template: value_strip_item
   # variables:
     # item:
-    #   value: 100
+    #   step_value: 100
     #   mode: Auto
   state:
     - id: cbc_active
       operator: template
-      value: >
+      step_value: >
         [[[
           return Boolean(entity.attributes.preset_mode == variables.item.mode)
         ]]]
@@ -256,33 +257,33 @@ fan_mode_strip_item:
 
 #################( Air Purifier Strip Item )################################>
 air_purifier_strip_item:
-  template: 
+  template:
     - value_strip_item
     - style_helper
     - state_helper
   variables:
     level_entity: "[[[ return `${entity.entity_id.replace('fan.', 'number.')}_fan_level` ]]]"
     # item:
-    #   value: 100
+    #   step_value: 100
   state:
     - id: cbc_active
       operator: template
-      value: >
+      step_value: >
         [[[
-          return Boolean(entity.attributes.preset_mode == 'Fan' && states[variables.level_entity].state == variables.item.value)
+          return Boolean(entity.attributes.preset_mode == 'Fan' && states[variables.level_entity].state == variables.item.step_value)
         ]]]
   tap_action:
     action: call-service
     service: number.set_value
     service_data:
       entity_id: "[[[ return variables.level_entity ]]]"
-      value: "[[[ return variables.item.value ]]]"
+      step_value: "[[[ return variables.item.step_value ]]]"
     haptic: success
 
 #################( Value Strip )################################>
 value_strip:
   show_icon: false
-  show_value: false
+  show_step_value: false
   show_state: false
   show_name: false
   # template: css
@@ -300,7 +301,7 @@ value_strip:
     items: []
     show:
       icon: true
-      value: true
+      step_value: true
       fade: true
     __has: >
         [[[
@@ -319,7 +320,7 @@ value_strip:
     __merge:
       type: null
       entity: null
-      value: 0
+      step_value: 0
       active: false
       prefix: ''
       units: ''
@@ -332,77 +333,77 @@ value_strip:
     __defaults: []
     _defaults:
       brightness:
-        - value: 10
+        - step_value: 10
           units: '%'
           icon: mdi:brightness-3
-        - value: 25
+        - step_value: 25
           units: '%'
           icon: mdi:brightness-4
-        - value: 50
+        - step_value: 50
           units: '%'
           icon: mdi:brightness-5
-        - value: 75
+        - step_value: 75
           units: '%'
           icon: mdi:brightness-6
-        - value: 100
+        - step_value: 100
           units: '%'
           icon: mdi:brightness-7
       cover:
-        - value: 0
+        - step_value: 0
           icon: mdi:blinds
           prefix: ''
           units: '%'
           label: close
-        - value: 25
+        - step_value: 25
           icon: mdi:blinds
           units: '%'
-        - value: 50
+        - step_value: 50
           icon: mdi:blinds-open
           units: '%'
-        - value: 75
+        - step_value: 75
           icon: mdi:blinds-open
           units: '%'
-        - value: 100
+        - step_value: 100
           icon: mdi:blinds-open
           units: '%'
           prefix: ''
           label: open
       fan:
-        - value: 10
+        - step_value: 10
           icon: mdi:circle-slice-1
           prefix: ''
           units: '%'
-        - value: 25
+        - step_value: 25
           icon: mdi:circle-slice-2
           units: '%'
-        - value: 50
+        - step_value: 50
           icon: mdi:circle-slice-4
           units: '%'
-        - value: 75
+        - step_value: 75
           icon: mdi:circle-slice-6
           units: '%'
-        - value: 100
+        - step_value: 100
           icon: mdi:circle-slice-8
           units: '%'
           prefix: ''
       climate:
-        - value: 18
+        - step_value: 18
           units: '℃'
           icon: mdi:thermometer-low
           opacity: 0.3
-        - value: 19
+        - step_value: 19
           units: '℃'
           icon: mdi:thermometer
           opacity: 0.45
-        - value: 20
+        - step_value: 20
           units: '℃'
           icon: mdi:thermometer
           opacity: 0.6
-        - value: 21
+        - step_value: 21
           units: '℃'
           icon: mdi:thermometer
           opacity: 0.75
-        - value: 22
+        - step_value: 22
           units: '℃'
           icon: mdi:thermometer-high
           opacity: 0.9
@@ -464,6 +465,7 @@ value_strip:
         - align-self: center
   custom_fields:
     c1:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return `${variables.__has(variables.items[0], 'type', variables.type)}_strip_item` ]]]"
@@ -475,6 +477,7 @@ value_strip:
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
     c2:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return `${variables.__has(variables.items[1], 'type', variables.type)}_strip_item` ]]]"
@@ -486,6 +489,7 @@ value_strip:
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
     c3:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return `${variables.__has(variables.items[2], 'type', variables.type)}_strip_item` ]]]"
@@ -497,6 +501,7 @@ value_strip:
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
     c4:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return `${variables.__has(variables.items[3], 'type', variables.type)}_strip_item` ]]]"
@@ -508,6 +513,7 @@ value_strip:
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
     c5:
+      force_recreate: true
       card:
         type: custom:button-card
         template: "[[[ return `${variables.__has(variables.items[4], 'type', variables.type)}_strip_item` ]]]"

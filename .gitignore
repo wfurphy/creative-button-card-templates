@@ -13,6 +13,8 @@ custom/*
 !custom/example.yaml
 cbc.yml
 cbc_master.yml
+.history
+.codex
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

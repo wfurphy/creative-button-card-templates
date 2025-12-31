@@ -41,7 +41,7 @@ light:
       effect_selector: false
     strip_show:
       icon: true
-      value: false
+      step_value: false
       fade: true
     strip_items: []
   color: auto
@@ -163,6 +163,7 @@ light:
     ]]]
   custom_fields:
     bc:
+      force_recreate: true
       card:
         type: custom:button-card
         template: 
@@ -178,6 +179,7 @@ light:
             - max-height: 25px
             - max-width: 200px
     es: 
+      force_recreate: true
       card:
         type: custom:button-card
         template:

@@ -16,5 +16,7 @@ title_blue:
     name:
       - opactiy: 0.7
 
-####>> WARNING: DO NOT REMOVE THE FOLLOWING 2 LINES (even empty) <<#####/
-############################################################################/
+####>> WARNING: DO NOT REMOVE THE FOLLOWING: Add to other custom templates. <<####
+#### You must leave at least one empty line or a comment like this
+#### at the end of any yaml file you include.
+#################################################################################/

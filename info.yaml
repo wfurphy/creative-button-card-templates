@@ -1,6 +1,8 @@
 ####{ CreativeBC }####| Info |####[ github.com/wfurphy/creative-button-card-templates ]####>
 # :: @Changes v0.3::> Fixed z-index, state position, icon_opacity > transparency, add item.name
 info_helper:
+  template:
+    - bc_config
   variables:
     __item: >
       [[[
@@ -60,7 +62,8 @@ info_mini:
     group: false
     item: {}
     __type: mini
-    spin: false
+    rotate: false
+    spin: false # :: @Deprecated v0.3
     ####/ layout: {string} stack|inline  / default: stack /####>
     layout: stack
     icon_color: var(--state-icon-color, var(--paper-item-icon-color))
@@ -96,10 +99,10 @@ info_mini:
     - id: cbc_spin
       operator: template
       value: "[[[ return variables.__item(variables).spin ]]]"
-      spin: true
+      rotate: "[[[ return variables.spin || variables.rotate ]]]" # Account for deprecated "spin"
   state_display: >
     [[[
-      return variables.__css + variables.__makeHtml(variables, true, this.___config.name)
+      return variables.__css + variables.__makeHtml(variables, true, variables.__config.name)
     ]]]
   styles:
     grid:
@@ -113,7 +116,7 @@ info_mini:
           [[[
             if (variables.__item(variables).icon_opactiy > 0) { return variables.__item(variables).icon_opactiy }
             if (variables.__item(variables).style.opacity.icon > 0) { return variables.__item(variables).style.opacity.icon }
-            return this.___config.template.includes('transparent') ? 1 : 0.4
+            return variables.__config.template.includes('transparent') ? 1 : 0.4
           ]]]
       - justify-self: start
       - align-self: start
@@ -132,7 +135,7 @@ info_mini:
           [[[
             if(variables.__item(variables).color) { return variables.__item(variables).color } else
             if(variables.__item(variables).icon_color && variables.__item(variables).icon_color !== 'var(--state-icon-color, var(--paper-item-icon-color))') { return variables.__item(variables).icon_color }
-            return this.___config.template.includes('transparent') ? 'var( --ha-card-background, var(--card-background-color, white) )' : 'var(--state-icon-color)'
+            return variables.__config.template.includes('transparent') ? 'var( --ha-card-background, var(--card-background-color, white) )' : 'var(--state-icon-color)'
           ]]]
     state:
       - position: absolute #:::: Update 0.3 ::::>
@@ -144,6 +147,7 @@ info_mini:
       - overflow: visible
       - text-align: right
       - z-index: 3
+      - text-shadow: 1px 1px 2px var(--view-background,var(--lovelace-background,var(--primary-background-color)));
 
 #################( Info Item )################################>
 # :: @Changes v0.3 added `font_size`
@@ -204,13 +208,12 @@ info_item:
       - overflow: visible
     icon:
       - position: absolute
-      # - margin-left: -10%
       - opacity: 0.3
       - justify-self: center 
       - align-self: center
       - min-width: 50px
       - min-height: 50px
-      - overflow: visible
+      - overflow: visible !important
       - color: "[[[ return variables.__item(variables).color || variables.icon_color ]]]"
       - z-index: 1
     name:
@@ -237,6 +240,7 @@ info_icon:
 #################( Info Card )################################>
 info:
   template:
+    - cbcjs
     - no_actions
   variables:
     items: []
@@ -307,6 +311,7 @@ info:
     }
   custom_fields:
     dts1:
+      force_recreate: true
       card:
         type: custom:button-card
         template:
@@ -320,6 +325,7 @@ info:
         entity: "[[[ return variables.__qty >= 1 ? variables.items[0].entity_id : null ]]]"
 
     dts2:
+      force_recreate: true
       card:
         type: custom:button-card
         template:
@@ -333,6 +339,7 @@ info:
         entity: "[[[ return variables.__qty >= 2 ? variables.items[1].entity_id : null ]]]"
 
     dts3:
+      force_recreate: true
       card:
         type: custom:button-card
         template:
@@ -346,6 +353,7 @@ info:
         entity: "[[[ return variables.__qty >= 3 ? variables.items[2].entity_id : null ]]]"
 
     dts4:
+      force_recreate: true
       card:
         type: custom:button-card
         template:
