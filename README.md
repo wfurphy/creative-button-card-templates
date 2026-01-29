@@ -1,4 +1,4 @@
-# Creative Button Card Templates
+# Creative Button-Card Templates
 
 ![release](https://img.shields.io/github/v/release/wfurphy/creative-button-card-templates)
 ![license](https://img.shields.io/github/license/wfurphy/creative-button-card-templates)
@@ -30,7 +30,7 @@ This is the code used to create the examples in the gif above. Some entity names
   cards:
     - type: custom:button-card #                   ####| Title - Tab & Icon |####>
       template: title
-      name: Creative Button Card Templates
+      name: Creative Button-Card Templates
       icon: mdi:cards-outline
     - type: grid
       square: false
@@ -321,7 +321,7 @@ If you are using your lovelace dashboards in [yaml mode](https://www.home-assist
  3. Include the following snippet **before the other contents** of your `ui-lovelace.yaml`. _If you've used a custom directory then obviously replace `creative-button-card-templates/` with a relative path to your chosen installation directory._
 
      ```yaml
-     ############| Creative Button Card Templates |#################################################>
+     ############| Creative Button-Card Templates |#################################################>
      ##| Will Furphy | https://github.com/wfurphy/creative-button-card-templates
      button_card_templates: !include_dir_merge_named creative-button-card-templates/
      #################################################################################/

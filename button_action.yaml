@@ -1,4 +1,5 @@
 ####{ CreativeBC }####| Action Button |####[ github.com/wfurphy/creative-button-card-templates ]####>
+# @ignore Changes v0.3.0 `(mix|max)-(height|width)` style changes
 button_action:
   template:
     - cbcjs
@@ -13,7 +14,8 @@ button_action:
     icon_on: mdi:stop
     name_on: "Cancel"
     timer:
-    name_timer: 
+    name_timer:
+    min_height: 40px
   show_state: true
   show_name: true
   show_label: true
@@ -91,7 +93,6 @@ button_action:
       - justify-items: start
       - align-items: center
     card:
-      - min-height: 40px
       - border: none
       - padding: 2px
       - align-items: center

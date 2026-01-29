@@ -1,6 +1,7 @@
 #################( Value Strip Item )################################>
 # :: @Changes v0.3::> Added ability to have different types on the same strip, Added fan, fan mode, air purifier and climate types
 # :: @Changes v0.3 BREAKING ::> Due to button-card v7+ using 'value' as a reserved variable name, the value strip templates now use 'step_value' instead of 'value' for the item variable.
+# :: @TODO: Give items IDs so they can be deduped on merge, allowing partial use of defaults.
 value_strip_item:
   template:
   - cbcjs
@@ -11,11 +12,11 @@ value_strip_item:
       active: false
       max: 3
       mode: null
-      prefix:
+      prefix: null
       units: ''
       step_value: 100
       icon: mdi:bomb
-      label:
+      label: null
       active_color: var(--button-card-light-color, var(--accent-color))
       color: 'var(--paper-item-icon-color)'
     show:
@@ -35,18 +36,18 @@ value_strip_item:
           display: inline-block;
           font-size: 75%;
         }
-      </style>`
+      </style>`;
       ]]]
   name: >
     [[[
-      variables.__opc = variables.item.opacity ?? (variables.item.step_value / 100) + 0.07
-      variables.__both = variables.show.icon && variables.show.step_value
+      variables.__opc = variables.item.opacity ?? (variables.item.step_value / 100) + 0.07;
+      variables.__both = variables.show.icon && variables.show.step_value;
 
       if (variables.item.label) {
-        return `${variables.__css}<span class="cbc-units item-prefix">${variables.item.prefix}</span><span class="cbc-item-value label">${variables.item.label}</span>`
+        return `${variables.__css}<span class="cbc-units item-prefix">${variables.item.prefix}</span><span class="cbc-item-value label">${variables.item.label}</span>`;
       }
 
-      return `${variables.__css}<span class="cbc-item-value">${variables.item.step_value}</span><span class="cbc-units item-units">${variables.item.units}</span>`
+      return `${variables.__css}<span class="cbc-item-value">${variables.item.step_value}</span><span class="cbc-units item-units">${variables.item.units}</span>`;
     ]]]
   state:
     - id: cbc_active
@@ -80,7 +81,7 @@ value_strip_item:
           [[[
             if (variables.__lock) return 0.1;
             if (variables.item.opacity) return variables.item.opacity;
-            return (!variables.show.fade || variables.__opc >= 1) ? 0.9 : variables.__opc
+            return (!variables.show.fade || variables.__opc >= 1) ? 0.8 : variables.__opc
           ]]]
       - color: "[[[ return variables.item.color ]]]"
       - font-size: "[[[ return variables.__both ? '12px' : '16px' ]]]"
@@ -89,7 +90,7 @@ value_strip_item:
     card:
       - height: "[[[ return variables.height ]]]"
       - min-height: 40px
-      - border-radius: 40%
+      - border-radius: 5%
       - padding: 0
     lock:
       - opacity: 0
@@ -274,10 +275,11 @@ air_purifier_strip_item:
         ]]]
   tap_action:
     action: call-service
-    service: number.set_value
+    service: fan.set_percentage
     service_data:
-      entity_id: "[[[ return variables.level_entity ]]]"
-      step_value: "[[[ return variables.item.step_value ]]]"
+      entity_id: "[[[ return entity.entity_id ]]]"
+      percentage: "[[[ return variables.item.step_value ]]]"
+      # step_value: "[[[ return variables.item.step_value ]]]"
     haptic: success
 
 #################( Value Strip )################################>
@@ -411,27 +413,31 @@ value_strip:
     card:
       - clear: >
           [[[
-            if (variables.type === 'domain') {
-              const domain = entity.entity_id.toString().substring(0, entity.entity_id.indexOf('.'))
-
-              variables.type = domain === 'light' ? 'brightness' : domain
+            // ::> Changes 0.3 Updated logic for automatic domain/type choice.
+            if (!variables.type || variables.type === 'domain') {
+              const domain = entity.entity_id.toString().substring(0, entity.entity_id.indexOf('.'));
+              if (variables.__domains.includes(domain)) {
+                variables.type = domain === 'light' ? 'brightness' : domain;
+              } else {
+                variables.type = 'value';
+              }
             }
 
             switch (variables.type) {
               case 'adaptive_lighting':
-                variables.__defaults = variables._defaults.brightness
-                variables.__entity_id = 'light.al_group_' + variables.al_area_id
-                variables.triggers = ['switch.adaptive_lighting_' + variables.al_area_id, 'switch.adaptive_lighting_adapt_brightness_' + variables.al_area_id]
-                break
+                variables.__defaults = variables._defaults.brightness;
+                variables.__entity_id = 'light.al_group_' + variables.al_area_id;
+                variables.triggers = ['switch.adaptive_lighting_' + variables.al_area_id, 'switch.adaptive_lighting_adapt_brightness_' + variables.al_area_id];
+                break;
               case 'cover':
               case 'fan':
               case 'brightness':
               case 'value':
               case 'climate':
               default:
-                variables.__defaults = variables._defaults[variables.type.trim()] ?? variables._defaults.brightness
-                variables.__entity_id = entity.entity_id
-                break
+                variables.__defaults = variables._defaults[variables.type] ?? variables._defaults.brightness;
+                variables.__entity_id = entity.entity_id;
+                break;
             }
 
             return 'none'

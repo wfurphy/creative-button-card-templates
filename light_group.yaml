@@ -20,8 +20,6 @@ light_group:
       symbol_margin_top: -10%
       display: none
   styles:
-    # card:
-      # - max-height: 120px
     grid:
       - grid-template-areas: >
           [[[
@@ -163,12 +161,7 @@ light_group:
           item: "[[[ return variables.items[0] ]]]"
           icon_min_size: 40px
           icon_max_size: 45px
-        # styles:
-          card:
-            - max-height: 45px
-          # icon:
-            # - max-height: 40px
-            # - max-width: 40px
+
     li2:
       force_recreate: true
       card:
@@ -181,12 +174,7 @@ light_group:
           item: "[[[ return variables.items[1] ]]]"
           icon_min_size: 40px
           icon_max_size: 45px
-        # styles:
-          card:
-            - max-height: 45px
-          # icon:
-            # - max-height: 40px
-            # - max-width: 40px
+
     li3:
       force_recreate: true
       card:
@@ -199,12 +187,7 @@ light_group:
           item: "[[[ return variables.items[2] ]]]"
           icon_min_size: 40px
           icon_max_size: 45px
-        # styles:
-          card:
-            - max-height: 45px
-          # icon:
-            # - max-height: 40px
-            # - max-width: 40px
+
     li4:
       force_recreate: true
       card:
@@ -217,12 +200,7 @@ light_group:
           item: "[[[ return variables.items[3] ]]]"
           icon_min_size: 40px
           icon_max_size: 45px
-        # styles:
-          card:
-            - max-height: 45px
-          # icon:
-            # - max-height: 40px
-            # - max-width: 40px
+
     li5:
       force_recreate: true
       card:
@@ -235,12 +213,7 @@ light_group:
           item: "[[[ return variables.items[4] ]]]"
           icon_min_size: 40px
           icon_max_size: 45px
-        # styles:
-          card:
-            - max-height: 45px
-          # icon:
-            # - max-height: 40px
-            # - max-width: 40px
+
     li6:
       force_recreate: true
       card:
@@ -253,12 +226,6 @@ light_group:
           item: "[[[ return variables.items[5] ]]]"
           icon_min_size: 40px
           icon_max_size: 45px
-        # styles:
-          card:
-            - max-height: 45px
-          # icon:
-            # - max-height: 40px
-            # - max-width: 40px
 
 
 #########################################################################/

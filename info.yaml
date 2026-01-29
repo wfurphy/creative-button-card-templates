@@ -248,19 +248,19 @@ info:
     icon_color: "var(--state-icon-color, var(--paper-item-icon-color))"
   show_icon: false
   show_name: false
-  card_size: 1
+  # card_size: 1
   styles:
     grid:
       - grid-template-areas: >
           [[[
-            variables.__qty = variables.items.length
-            let areas = '\"dts1'
+            variables.__qty = variables.items.length;
+            let areas = '\"dts1';
 
             for(let i = 1; i < variables.__qty; i++) {
-              areas += ` dts${i+1}`
+              areas += ` dts${i+1}`;
             }
 
-            return areas += '\"'
+            return areas += '\"';
           ]]]
       - grid-template-columns: "[[[ return `repeat(${variables.__qty}, 1fr)` ]]]"
       - grid-template-rows: 1fr

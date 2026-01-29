@@ -8,6 +8,7 @@ button_landscape:
     - interactive
   variables:
     off_hide_info: true
+    min_height: 80px
   size: 50px
   show_icon: true
   show_name: true
@@ -25,7 +26,6 @@ button_landscape:
       - align-items: center
       - padding: 4px
     card:
-      - min-height: 80px
       - padding: 0
       - margin: 0
     icon:

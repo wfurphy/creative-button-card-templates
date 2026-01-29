@@ -3,6 +3,7 @@
 # :: @Changes v0.3::> Remove all color settings
 # :: @Changes v0.3::> Replaced `icon_width` with `icon_size` and `icon_min_size`. Changed minimum sizes of cards and icons
 button_mini:
+  # aspect_ratio: none
   template:
     - cbcjs
     - style_helper
@@ -21,6 +22,13 @@ button_mini:
           return vars.item[prop] || vars[prop] || sub
         }
       ]]]
+    __getItem: >
+      [[[
+        return function(prop, sub = undefined) {
+          if (!variables.item) return variables[prop] || sub
+          return variables.item[prop] || variables[prop] || sub
+        }
+      ]]]
     item: {}
     icon_max_size:
     icon_min_size: 35px
@@ -35,9 +43,9 @@ button_mini:
   custom_fields:
     symbol: >
       [[[
-        if (!variables.__get('symbol', variables)) return '';
+        if (!variables.__get('symbol', variables)) { return '' }
 
-        if (variables.__get('symbol', variables) == '$state') return entity.state
+        if (variables.__get('symbol', variables) == '$state') { return entity.state }
         
         const css = 'width: 100%; height: 100%; margin: auto; text-align: center;'
         let sym = String(variables.__get('symbol', variables))
@@ -46,8 +54,8 @@ button_mini:
           return `<ha-icon icon="${sym}" style="${css}"/>`
         }
         
-        sym = sym.substring(0,2)
-        return `<span style="${css}">${sym}</span>`
+        sym = sym.substring(0,2);
+        return `<span style="${css}">${sym}</span>`;
       ]]]
   styles:
     icon:
@@ -62,14 +70,14 @@ button_mini:
     custom_fields:
       symbol:
         - z-index: 3
-        - width: "[[[ return variables.__get('symbol', variables) == '$state' ? 'auto' : variables.__get('symbol_width', variables) ]]]"
+        - width: "[[[ return variables.__get('symbol', variables) == '$state' ? 'auto' : variables.__get('symbol_width', variables); ]]]"
         - position: absolute
-        - justify-self: "[[[ return variables.__get('symbol', variables) == '$state' ? 'end' : 'center' ]]]"
-        - align-self: "[[[ return variables.__get('symbol', variables) == '$state' ? 'end' : 'center' ]]]"
-        - margin-top: "[[[ return variables.__get('symbol', variables) == '$state' ? 'none' : variables.__get('symbol_margin_top', variables) ]]]"
-        - padding: "[[[ return variables.__get('symbol', variables) == '$state' ? 'none' : variables.__get('symbol_padding', variables) ]]]"
+        - justify-self: "[[[ return variables.__get('symbol', variables) == '$state' ? 'end' : 'center'; ]]]"
+        - align-self: "[[[ return variables.__get('symbol', variables) == '$state' ? 'end' : 'center'; ]]]"
+        - margin-top: "[[[ return variables.__get('symbol', variables) == '$state' ? 'none' : variables.__get('symbol_margin_top', variables); ]]]"
+        - padding: "[[[ return variables.__get('symbol', variables) == '$state' ? 'none' : variables.__get('symbol_padding', variables); ]]]"
         - color: >
-            [[[ 
+            [[[
               const col = variables.__get('symbol_color', variables)
 
               if (
@@ -81,7 +89,7 @@ button_mini:
 
                 return col
             ]]]
-        - font-size: "[[[ return variables.__get('symbol_font_size', variables)  ]]]"
+        - font-size: "[[[ return variables.__get('symbol_font_size', variables);  ]]]"
         - font-weight: bold
         - text-align: center
         - opacity: 0.9 # :: @Breaking v0.3::> Changed the Opacity of Symbol to 0.9
@@ -97,7 +105,6 @@ button_mini_embed:
   color: auto
   styles:
     card:
-      # - min-width: "[[[ return variables.icon_width ]]]"
       - background: none
       - box-shadow: none
       - border: 0
@@ -127,12 +134,12 @@ button_mini_state:
 
 #########################################################################/
 
-############| Button Mini Power |###########################>
+############| Button Mini Area Power |###########################>
 button_mini_power:
   type: custom:button-card
   template: button_mini
   variables:
-    area: 
+    area:
     width: 45px
   icon: mdi:power
   color_type: card
@@ -141,16 +148,19 @@ button_mini_power:
     action: call-service
     service: light.toggle
     service_data:
-        area_id: "[[[[ return variables.area ]]]]"
+        area_id: "[[[[ return entity?.entity_id ? null : variables.area ]]]]"
+        entity_id: "[[[[ return entity?.entity_id ?? null ]]]]"
   double_tap_action:
     action: call-service
     service: light.turn_on
     service_data:
-        area_id: "[[[[ return variables.area ]]]]"
+        area_id: "[[[[ return entity?.entity_id ? null : variables.area ]]]]"
+        entity_id: "[[[[ return entity?.entity_id ?? null ]]]]"
   hold_action:
     action: call-service
     service: light.turn_off
     service_data:
-        area_id: "[[[[ return variables.area ]]]]"
+        area_id: "[[[[ return entity?.entity_id ? null : variables.area ]]]]"
+        entity_id: "[[[[ return entity?.entity_id ?? null ]]]]"
 
 #########################################################################/
