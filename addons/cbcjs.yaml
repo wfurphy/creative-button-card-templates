@@ -1,112 +1,500 @@
-############| +Addon > Creative Button Card Javascript Object (cbcjs) |###########################>
+############| +Addon > Creative Button-Card Javascript Object (cbcjs) |###########################>
 ##> v1 Rebuild as class
 cbcjs:
+  template:
+    - _cbc_settings
+    - cbcm
+    - bc_config
   variables:
+    debug: true
+    __cbcjsError: >
+      [[[
+        return class CBCJSError extends Error {
+          constructor (message, extra) {
+            super(message);
+            this.extra = extra;
+          }
+        }
+      ]]]
+    __cbcjsClass: >
+      [[[
+        return class CreateiveButtonCardsJS {
+                /**
+                * Creative Button-Card Templates Version
+                * @type {string}
+                */
+                version = 'v0.3.0';
+
+                /**
+                * LocalStorage operations.
+                * @type {object}
+                */
+                LS = {
+                  DEFAULT: 0,
+                  SET: 10,
+                  ADD: 20,
+                  MERGE: 30,
+                  MAP: 40,
+                  DELETE: 90,
+                };
+
+                /**
+                * Create a new CBCJS instance.
+                * @param {object} hass Home Assistant object
+                */
+                constructor(hass) {
+                  this.update = false;
+                  this.globals = {};
+                  this.css = {};
+                  this.hass = hass;
+                  this.updatedAt = new Date().getTime();
+                  this.cards = new Map();
+                  this.dashboard = window.location.pathname;
+                  this.installId = this.ensureInstallId();
+                  this.debug = variables.debug ?? false;
+
+                  // Local Storage
+                  this.checkUpdates = this.ls(
+                    'cbc_check_version',
+                    variables.__cbc_check_updates ?? true,
+                    this.LS.SET,
+                  );
+                  this.checkFrequency = this.ls(
+                    'cbc_check_frequency',
+                    variables.__cbc_check_frequency ?? 28,
+                    this.LS.SET,
+                  );
+                  this.checkSendData = this.ls(
+                    'cbc_send_data',
+                    variables.__cbc_check_send_data ?? true,
+                    this.LS.SET,
+                  );
+                  this.lovelaceMethod = this.ls('cbc_lovelace_method', variables.__cbclm ?? 'yaml', this.LS.SET);
+
+                  /// Version Info
+                  this.availableVersion = this.ls('cbc_available_version', null);
+                  this.lastUpdate = this.ls('cbc_last_update', null);
+                  this.version = this.ls('cbc_version', this.version);
+                }
+
+                /**
+                * Parse stored values if they are JSON strings.
+                * @param {any} value Stored value
+                * @returns {any} Parsed value or original
+                */
+                valHydrate(value) {
+                  if (typeof value !== 'string') return value;
+
+                  try {
+                    return JSON.parse(value);
+                  } catch (e) {
+                    return value;
+                  }
+                }
+
+                /**
+                * Convert values to JSON for storage if they are objects or arrays.
+                * @param {any} value Stored value
+                * @returns {any} Parsed value or original
+                */
+                valToStore(value) {
+                  if (typeof value !== 'object') return value;
+
+                  try {
+                    return value instanceof Map ? this.mapToStore(value) : JSON.stringify(value);
+                  } catch (error) {
+                    console.error('::CBC::ERROR::> Value could not be stringified for storage', { value, error });
+                    return value;
+                  }
+                }
+
+                /**
+                * Convert a Map to a JSON string for storage.
+                * @param {Map} value Map to store
+                * @returns {string} Stringified map entries
+                */
+                mapToStore(value) {
+                  return JSON.stringify(Object.fromEntries(value));
+                }
+
+                /**
+                * LocalStorage helper with common operations.
+                * @param {string} name Storage key
+                * @param {any} value Value to set/merge (default: null)
+                * @param {number} proc Operation flag from LS (default: LS.DEFAULT) @see CreateiveButtonCardsJS.LS
+                * @returns {any} Retreived/Stored value
+                */
+                ls(name, value = null, proc = this.LS.DEFAULT) {
+                  const procName = Object.keys(this.LS).find((key) => this.LS[key] === proc);
+                  let out = value;
+
+                  try {
+                    let val = localStorage.getItem(name) ?? undefined;
+
+                    if (proc === this.LS.DEFAULT && val && (!value || val === this.valToStore(value))) {
+                      return this.valHydrate(val); // LS.DEFAULT (Found)
+                    }
+
+                    if (value === null || value === undefined) {
+                      throw new Error(`Value must be provided for LS.${procName} operation`);
+                    } // UNDEFINED (no value)
+
+                    switch (proc) {
+                      case this.LS.DELETE:
+                        localStorage.removeItem(name);
+                        return undefined;
+                      case this.LS.ADD:
+                        out = val ? Number(val) + Number(value) : Number(value); // LS.ADD
+                        break;
+                      case this.LS.MERGE:
+                        if (!val) {
+                          break;
+                        }
+                        if (typeof val === 'string') {
+                          try {
+                            val = JSON.parse(val);
+                          } catch (error) {
+                            throw new Error(
+                              'Existing LS.MERGE value is not valid JSON for Array or Object merge',
+                            );
+                          }
+                        }
+                        if (Array.isArray(val)) {
+                          if (!Array.isArray(value)) {
+                            throw new Error('Value must be an Array for LS.MERGE array merge');
+                          }
+                          out = [...val, ...value];
+                          break;
+                        }
+                        if (val && typeof val === 'object') {
+                          if (!value || typeof value !== 'object' || Array.isArray(value)) {
+                            throw new Error('Value must be an Object for LS.MERGE object merge');
+                          }
+                          out = { ...val, ...value };
+                          break;
+                        }
+                        throw new Error('Existing LS.MERGE value is not an Array or Object');
+                      case this.LS.MAP:
+                        if (!(value instanceof Map)) {
+                          throw new Error('Value must be a Map for LS.MAP operation');
+                        }
+                        if (val) {
+                          if (typeof val === 'string') {
+                            try {
+                              val = new Map(Object.entries(JSON.parse(val)));
+                            } catch (error) {
+                              throw new Error('Existing LS.MAP value is not valid JSON');
+                            }
+                          }
+
+                          val = val instanceof Map ? val : new Map();
+                          out = new Map([...val, ...value]);
+                          out = this.mapToStore(out); // LS.MAP
+                          break;
+                        }
+                        out = this.mapToStore(value); // LS.MAP
+                        break;
+                      case this.LS.DEFAULT:
+                        if (val === this.valToStore(value)) {
+                          return this.valHydrate(val); // LS.DEFAULT (No change)
+                        }
+                      case this.LS.SET:
+                      default:
+                        break;
+                    }
+
+                    out = this.valToStore(out);
+                    localStorage.setItem(name, out);
+                  } catch (error) {
+                    console.error(`::CBC::ERROR::> LocalStorage LS.${procName} Error`, { out, error });
+                    return undefined;
+                  }
+
+                  return this.valHydrate(out);
+                }
+
+                /**
+                * Generate a new install identifier.
+                * @returns {string} Install identifier
+                */
+                createInstallId() {
+                  if (window.crypto?.randomUUID) {
+                    return window.crypto.randomUUID();
+                  }
+
+                  return `cbc-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+                }
+
+                /**
+                * Ensure a stable install identifier is available.
+                * @returns {string} Install identifier
+                */
+                ensureInstallId() {
+                  const existing = this.ls('cbc_install_id');
+                  if (existing) return existing;
+
+                  const installId = this.createInstallId();
+                  this.ls('cbc_install_id', installId, this.LS.SET);
+                  return installId;
+                }
+
+                /**
+                * Run a light effect on a target entity.
+                * @param {string} ef Effect name
+                * @param {string} entity Entity id
+                */
+                runLightEffect(ef, entity) {
+                  const data = {
+                    entity_id: entity,
+                    effect: ef,
+                  };
+
+                  let theme = this.hass.states[`select.${entity.replace('light.')}_theme`]?.state;
+                  if (theme && theme !== 'unknown') data.theme = theme;
+                  this.hass.callService('light', 'turn_on', data);
+                }
+
+                /**
+                * Select an option on a select entity.
+                * @param {string} val Option name
+                * @param {string} entity Entity id
+                */
+                selectOption(val, entity) {
+                  this.hass.callService('select', 'select_option', {
+                    entity_id: entity,
+                    option: val,
+                  });
+                }
+
+                /**
+                * Call a Home Assistant service action.
+                * @param {string} domain Service domain
+                * @param {string} action Service action
+                * @param {object} data Service payload
+                * @returns {CreateiveButtonCardsJS} Chainable instance
+                */
+                action(domain, action, data) {
+                  this.hass.callService(domain, action, data);
+
+                  return this;
+                }
+
+                /**
+                * Execute a list of service actions.
+                * @param {Array} list List of [domain, action, data]
+                * @returns {CreateiveButtonCardsJS} Chainable instance
+                */
+                actionList(list = []) {
+                  list.forEach((l) => this.action(...l));
+                  return this;
+                }
+
+                /**
+                * Add CSS variables for templates.
+                * @param {object} css CSS variable map
+                * @returns {CreateiveButtonCardsJS} Chainable instance
+                */
+                addCss(css = {}) {
+                  this.css = { ...this.css, ...css };
+                  return this;
+                }
+
+                /**
+                * Set the current view path.
+                * @param {string} path View path
+                * @returns {CreateiveButtonCardsJS} Chainable instance
+                */
+                setView(path) {
+                  path = path ?? window.location.pathname;
+                  this.view = path.substring(1);
+                  return this;
+                }
+
+                /**
+                * Insert CSS variables into the page when view changes.
+                * @returns {CreateiveButtonCardsJS} Chainable instance
+                */
+                insertStyles() {
+                  const html = document.getElementsByTagName('html')[0];
+
+                  if (!variables.css || html.getAttribute('data-cbc-view') === this.view) {
+                    return this;
+                  }
+
+                  for (let prop in variables.css) {
+                    html.style.setProperty(`--cbc-${prop.replace('_', '-')}`, this.css[prop]);
+                  }
+
+                  html.setAttribute('data-cbc-view', this.view);
+                  return this;
+                }
+
+                /**
+                * Check for the latest available version.
+                * @returns {Promise<string | null>} Version info
+                */
+                async getVersion() {
+                  let out;
+                  // TODO: Implement update available notification cards/first card?
+                  if (!this.checkUpdates) {
+                    return null;
+                  }
+
+                  const req = {
+                    version: this.version,
+                    installId: this.installId,
+                    checkFrequency: this.checkFrequency,
+                    thisUpdate: new Date().getTime(),
+                    lastUpdate: this.ls('cbc_last_update', this.lastUpdate),
+                  };
+
+                  if (this.checkSendData) {
+                    req.stats = this.ls('cbc_stats');
+                  }
+
+                  console.log('::req::>', req); // DEBUG
+
+                  try {
+                    const response = await fetch('https://api.cbc.willfurphy.com/version', {
+                      method: 'POST',
+                      headers: {
+                        authorization: 'y2xdfcth5T1WeS2uhp3s2FEjNBxzEgs75pAG0s0M9y',
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify(req),
+                    });
+
+                    const responseBody = await response.json();
+
+                    console.log('::CBC::(response)::>', responseBody); // DEBUG
+
+                    if (!response.ok) {
+                      throw new variables.__cbcjsError(`HTTP ERROR ${response.status}`, responseBody);
+                    }
+
+                    out = responseBody?.data?.version ?? null;
+
+                    if (!out || typeof out !== 'string' || !out.startsWith('v')) {
+                      throw new variables.__cbcjsError('Empty or incorrect version information received', responseBody);
+                    }
+
+                    this.availableVersion = this.ls('cbc_available_version', out);
+                    this.ls('cbc_last_update', req.thisUpdate, this.LS.SET);
+                  } catch (error) {
+                    console.warn('::CBC::WARNING::> Could not check Creative Button-Card Templates Version', {
+                      error,
+                    });
+                  }
+
+                  return out;
+                }
+
+                /**
+                * Register a card
+                * @param {object} config Card configuration
+                * @returns {CreateiveButtonCardsJS} Chainable instance
+                */
+                addCard(config) {
+                  this.cards.set(config, this.dashboard);
+                  return this;
+                }
+
+                /**
+                * Aggregate card stats and store them in localStorage.
+                * @returns {Promise<CreateiveButtonCardsJS>} Chainable instance
+                */
+                async setStats() {
+                  const cards = new Map();
+
+                  this.cards.forEach((card) => {
+                    const out = {
+                      count: 0,
+                      with: [],
+                    }
+
+                    if (Array.isArray(card.template)) {
+                      out.with = card.template;
+                      card.template.forEach(t => {
+                        out.count = cards.get(t) ?? 0;
+                        out.count + 1;
+                        cards.set(card.template, out);
+                      });
+                    } else {
+                      out.count = cards.get(card.template) ?? 0;
+                      out.count + 1;
+                      cards.set(card.template, out);
+                    }
+                  });
+
+                  const stats = new Map();
+                  stats.set(this.dashboard, cards);
+
+                  this.ls('cbc_stats', stats, this.LS.MAP);
+
+                  console.log('::CBCJS::(setStats)::>', stats); // DEBUG
+
+                  return this;
+                }
+
+                /**
+                * Initialize the Creative Button-Card runtime.
+                * @returns {Promise<CreateiveButtonCardsJS>} CBCJS instance
+                */
+                async init() {
+                  const checkWindowMs = this.checkFrequency * 24 * 60 * 60 * 1000;
+                  const shouldCheck = !this.lastUpdate || Date.now() - Number(this.lastUpdate) >= Number(checkWindowMs);
+
+                  if (shouldCheck || !this.availableVersion || this.debug) {
+                    await this.getVersion();
+                  }
+
+                  if (this.version !== this.availableVersion) {
+                    this.update = true;
+                  }
+
+                  return this;
+                }
+              }
+      ]]]
     __cbcjs:
       force_eval: true
       value: >
         [[[
-          class CreateiveButtonCardsJS {
-            constructor(hass) {
-              this.version = "0.3.0";
-              this.update = false;
-              this.globals = {};
-              this.css = {};
-              this.count = 0;
-              this.hass = hass;
-              this.ct = new Date().getTime();
-            }
-
-            runLightEffect(ef, entity) {
-              const data = {
-                entity_id: entity,
-                effect: ef,
-              };
-
-              let theme =
-                this.hass.states[`select.${entity.replace("light.")}_theme`]?.state;
-              if (theme && theme !== "unknown") data.theme = theme;
-              this.hass.callService("light", "turn_on", data);
-            }
-
-            selectOption(val, entity) {
-              this.hass.callService("select", "select_option", {
-                entity_id: entity,
-                option: val,
-              });
-            }
-
-            action(domain, action, data) {
-              this.hass.callService(domain, action, data);
-
-              return this;
-            }
-
-            actionList(list = []) {
-              list.forEach((l) => this.action(...l));
-              return this;
-            }
-
-            addCss(css = {}) {
-              this.css = { ...this.css, ...css };
-              return this;
-            }
-
-            setView(path) {
-              path = path ?? window.location.pathname;
-              this.view = path.substring(1);
-              return this;
-            }
-
-            insertStyles() {
-              const html = document.getElementsByTagName("html")[0];
-
-              if (!variables.css || html.getAttribute("data-cbc-view") === this.view)
-                return this;
-
-              for (let prop in variables.css) {
-                html.style.setProperty(`--cbc-${prop.replace("_", "-")}`, this.css[prop]);
-              }
-
-              html.setAttribute("data-cbc-view", this.view);
-              return this;
-            }
-
-            async getVersion() {
-              // TODO: Update to production link and implement update available notification
-              const out = {
-                v: this.version,
-                cv: '',
-              };
-
-              try {
-                const response = await fetch(
-                  "https://raw.githubusercontent.com/wfurphy/creative-button-card-templates/refs/heads/develop/.cbcv"
-                );
-                out.cv = await response.text();
-
-                if (parseFloat(out.v) < parseFloat(out.cv)) {
-                  this.update = true;
-                }
-              } catch (e) {
-                console.warn('::::WARNING::::> Could not check CBC Version', e);
-              }
-
-              return out;
-            }
-          }
-
+          // console.log('::CBCJS::BEFORE::>', cbcJS); //DEBUG
           if (!window.cbcJS) {
-            window.cbcJS = new CreateiveButtonCardsJS(hass);
-            cbcJS.getVersion().then(v => console.info(
-                "%c CREATIVE BUTTON-CARD TEMPLATES %c  ".concat(v.v, " %c ", cbcJS.update ? `Update Available (${v.cv})` : ''),
-                "color: black; background: #1bccac; font-weight: 700;",
-                "color: #1bccac; background: black; font-weight: 700;",
-                "color: #D58C25FF; background: black; font-weight: 700;"
-              ));
-          }
+              window.cbcJS = new variables.__cbcjsClass(hass);
 
-          cbcJS.count++;
+          // TODO: Try inserting this in the <head>
+          // document.addEventListener('DOMContentLoaded', function(event) {
+          //  console.log('::CBCJS::(event)::>', event); //DEBUG
+            window.cbcJS
+              .init()
+              .then((cbcjs) =>
+                console.info(
+                  '%c CREATIVE BUTTON-CARD TEMPLATES %c  '.concat(
+                    cbcjs.version,
+                    '  ',
+                    '\n%c GITHUB: %c  https://github.com/wfurphy/creative-button-card-templates  ',
+                    cbcjs.update
+                      ? `\n%c Update Available (${cbcjs.availableVersion})! %c  Last checked: ${new Date(cbcjs.lastUpdate).toLocaleString()}  `
+                      : '',
+                      
+                  ),
+                  'color: black; background: #1bccac; font-weight: 700;',
+                  'color: #1bccac; background: black; font-weight: 700;',
+                  'color: black; background: #1bccac; font-weight: 700;',
+                  'color: #1bccac; background: black; font-weight: 500;',
+                  'color: black; background: #ff7f50; font-weight: 700;',
+                  'color: #ff7f50; background: black; font-weight: 500;',
+                ),
+              );
+              console.log('::CBCJS::>', cbcJS); //DEBUG
+          }
+          //});
+
+          cbcJS.addCard(variables.__config);
+          // console.log(':::CBCJS::ALWAYS::>', cbcJS); // DEBUG
         ]]]
+
 
 ##

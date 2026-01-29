@@ -1,5 +1,5 @@
 ####{ CreativeBC }####| Title |####[ github.com/wfurphy/creative-button-card-templates ]####>
-# ::{ Update 0.3 }:: Added `resizable`, added info }
+# ::{ Update 0.3 }:: Added `resizable` addon, add `{bool} uppercase` variable to control text-transform }
 
 ###################[ title_info ]#######################################################>
 title_info:
@@ -9,14 +9,15 @@ title_info:
     - transparent
   variables:
     width: 45px
-    styles:
-      icon:
-        - opacity: "[[[ return variables._item.opacity ?? '0.2' ]]]"
-        - color: "[[[ return variables._item.color ?? 'var(--accent-color)' ]]]"
+  styles:
+    icon:
+      - opacity: "[[[ return variables._item.opacity ?? '0.2' ]]]"
+      - color: "[[[ return variables._item.color ?? 'var(--accent-color)' ]]]"
 
 title:
   icon: 'mdi:'
   template:
+    - cbcjs
     - style_helper
     - no_actions
     - resizable
@@ -25,10 +26,11 @@ title:
     color: var(--cbc-title-color, var(--primary-background-color))
     background_color: var(--cbc-title-background-color, var(--accent-color))
     text_color: var(--cbc-title-text-color, var(--cbc-title-color, '#ffffff'))
+    uppercase: true # v0.3 Added ability to control uppercase
     show_tab: false
     offset: 0
     opacity: var(--cbc-title-opacity, 0.4) # v0.3 Changed to background color opactiy not whole card ###>
-    info: []
+    info: [] # ::>
   custom_fields:
     i1:
       force_recreate: true
@@ -79,7 +81,6 @@ title:
     card:
       - cursor: default
       - --mdc-ripple-press-opacity: 0
-      # - opacity: "[[[ return variables.opacity ]]]"
       - min-height: 40px
       - height: "[[[ return variables.height ?? '45px' ]]]"
       - margin-left: "[[[ return variables.offset ]]]"
@@ -100,7 +101,7 @@ title:
     name:
       - opactiy: 1
       - justify-self: "[[[ return variables.mirror ? 'end' : 'start' ]]]"
-      - text-transform: uppercase
+      - text-transform: "[[[ return variables.uppercase ? 'uppercase' : 'none' ]]]"
       - margin-left: 10px
       - letter-spacing: 2px
       - line-height: 18px

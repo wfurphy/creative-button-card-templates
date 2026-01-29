@@ -29,6 +29,8 @@ climate:
       value: >
         [[[ return variables.switch_entity ? states[variables.switch_entity].state == 'on' : !(['standby', 'off'].includes(entity.state)) ]]]
       icon: "[[[ return variables.icon_on ]]]"
+      rotate: true
+      spin: true
   tap_action:
     action: call-service
     service: "[[[ return variables.switch_entity ? 'switch.toggle' : 'climate.set_hvac_mode' ]]]"
@@ -79,7 +81,7 @@ climate:
       - grid-template-columns: 1fr 1fr 4fr
     icon:
       - color: >
-          [[[ return (variables.switch_entity && states[variables.switch_entity].state == 'off') || ['standby', 'off'].includes(entity.state) ? 'var(--primary-text-color)' : 'var(--state-active-color)' ]]]
+          [[[ return (variables.switch_entity && states[variables.switch_entity].state == 'off') || ['standby', 'off'].includes(entity.state) ? 'var(--primary-text-color)' : 'var(--accent-color)' ]]]
     custom_fields:
       c:
         - width: 100%
