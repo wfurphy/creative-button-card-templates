@@ -3,10 +3,10 @@
 cbcjs:
   template:
     - _cbc_settings
-    - cbcm
     - bc_config
   variables:
     debug: true
+    __cbc_lovelace_method: "[[[ return hass?.panels?.[hass.panelUrl]?.config?.mode ?? 'yaml' ]]]"
     __cbcjsError: >
       [[[
         return class CBCJSError extends Error {
@@ -49,7 +49,7 @@ cbcjs:
                   this.hass = hass;
                   this.updatedAt = new Date().getTime();
                   this.cards = new Map();
-                  this.dashboard = window.location.pathname;
+                  this.panel = hass.panelUrl;
                   this.installId = this.ensureInstallId();
                   this.debug = variables.debug ?? false;
 
@@ -69,7 +69,11 @@ cbcjs:
                     variables.__cbc_check_send_data ?? true,
                     this.LS.SET,
                   );
-                  this.lovelaceMethod = this.ls('cbc_lovelace_method', variables.__cbclm ?? 'yaml', this.LS.SET);
+                  this.lovelaceMode = this.ls(
+                    'cbc_lovelace_method', 
+                    hass?.panels?.[hass.panelUrl]?.config?.mode ?? 'yaml', 
+                    this.LS.SET
+                  );
 
                   /// Version Info
                   this.availableVersion = this.ls('cbc_available_version', null);
@@ -187,7 +191,7 @@ cbcjs:
                             }
                           }
 
-                          val = val instanceof Map ? val : new Map();
+                          val = val instanceof Map ? val : new Map(val);
                           out = new Map([...val, ...value]);
                           out = this.mapToStore(out); // LS.MAP
                           break;
@@ -349,7 +353,9 @@ cbcjs:
                   };
 
                   if (this.checkSendData) {
-                    req.stats = this.ls('cbc_stats');
+                    req.panel = this.panel;
+                    req.mode = this.lovelaceMode;
+                    req.stats = this.ls('cbc_stats')
                   }
 
                   console.log('::req::>', req); // DEBUG
@@ -364,13 +370,13 @@ cbcjs:
                       body: JSON.stringify(req),
                     });
 
-                    const responseBody = await response.json();
-
-                    console.log('::CBC::(response)::>', responseBody); // DEBUG
-
                     if (!response.ok) {
                       throw new variables.__cbcjsError(`HTTP ERROR ${response.status}`, responseBody);
                     }
+
+                    const responseBody = await response.json();
+
+                    console.log('::CBC::(response)::>', responseBody); // DEBUG
 
                     out = responseBody?.data?.version ?? null;
 
@@ -395,8 +401,10 @@ cbcjs:
                 * @returns {CreateiveButtonCardsJS} Chainable instance
                 */
                 addCard(config) {
-                  this.cards.set(config, this.dashboard);
-                  return this;
+                  this.prevCardsQty = this.cards.size;
+                  this.cards.set(config, this.panel);
+
+                  return (this.prevCardsQty < this.cards.size) ? this.setStats() : this;
                 }
 
                 /**
@@ -404,34 +412,38 @@ cbcjs:
                 * @returns {Promise<CreateiveButtonCardsJS>} Chainable instance
                 */
                 async setStats() {
-                  const cards = new Map();
+                  const outCards = {};
 
-                  this.cards.forEach((card) => {
+                  this.cards.forEach((dash, card) => {
+                    // console.log(':::CBCJS:::(card):::>', card); // DEBUG
                     const out = {
                       count: 0,
-                      with: [],
+                      with: new Map(),
                     }
 
                     if (Array.isArray(card.template)) {
-                      out.with = card.template;
                       card.template.forEach(t => {
-                        out.count = cards.get(t) ?? 0;
+                        out.with.set(card.template, t);
+                        out.count = outCards[t]?.count ?? 0;
                         out.count + 1;
-                        cards.set(card.template, out);
+                        outCards[t] = out;
                       });
                     } else {
-                      out.count = cards.get(card.template) ?? 0;
+                      out.count = outCards[card.template]?.count ?? 0;
                       out.count + 1;
-                      cards.set(card.template, out);
+                      outCards[card.template] = out;
                     }
+                    
                   });
 
+                  
                   const stats = new Map();
-                  stats.set(this.dashboard, cards);
+                  stats.set(this.panel, outCards);
 
                   this.ls('cbc_stats', stats, this.LS.MAP);
+                  this.stats = this.ls('cbc_stats');
 
-                  console.log('::CBCJS::(setStats)::>', stats); // DEBUG
+                  // console.log('::CBCJS::(setStats)::>', stats, this.stats); // DEBUG
 
                   return this;
                 }
@@ -462,12 +474,8 @@ cbcjs:
         [[[
           // console.log('::CBCJS::BEFORE::>', cbcJS); //DEBUG
           if (!window.cbcJS) {
-              window.cbcJS = new variables.__cbcjsClass(hass);
-
-          // TODO: Try inserting this in the <head>
-          // document.addEventListener('DOMContentLoaded', function(event) {
-          //  console.log('::CBCJS::(event)::>', event); //DEBUG
-            window.cbcJS
+            window.cbcJS = new variables.__cbcjsClass(hass);
+            cbcJS
               .init()
               .then((cbcjs) =>
                 console.info(
@@ -478,7 +486,6 @@ cbcjs:
                     cbcjs.update
                       ? `\n%c Update Available (${cbcjs.availableVersion})! %c  Last checked: ${new Date(cbcjs.lastUpdate).toLocaleString()}  `
                       : '',
-                      
                   ),
                   'color: black; background: #1bccac; font-weight: 700;',
                   'color: #1bccac; background: black; font-weight: 700;',
@@ -489,11 +496,11 @@ cbcjs:
                 ),
               );
               console.log('::CBCJS::>', cbcJS); //DEBUG
-          }
-          //});
+            }
 
           cbcJS.addCard(variables.__config);
-          // console.log(':::CBCJS::ALWAYS::>', cbcJS); // DEBUG
+          
+          return cbcJS;
         ]]]
 
 
