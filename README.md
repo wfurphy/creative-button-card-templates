@@ -298,9 +298,7 @@ You will need to ensure you have the following components installed. They are bo
 
 The very first step is to ensure you have [Button Card](https://github.com/custom-cards/button-card) installed and working in home assistant. These templates are not going to work without it!
 
-> :boom: _Q3 2025: I know I'm a bit slow on this one, but as you may already know, Button Card is back and already releasing new updates!! With Button Card and Home Assistant providing regular updates, please log an issue on GitHub if you notice any complications with your templates. Make a PR if you have a fix already! Stoked to see Button Card brought back to life and looking forward to seeing what they come up with next! Updates have been in the works for CBC Templates too, stay tuned for a release before the year is out._
-
-> :raising_hand_man: _If you plan to further extend these templates or create your own then it is **essential** that you read the [button-card documentation](https://github.com/custom-cards/button-card). In fact, I recommend you read it regardless._
+> :raising_hand_man: _If you plan to further extend these templates or create your own then it is **essential** that you read the [button-card documentation](https://custom-cards.github.io/button-card/stable/). In fact, I recommend you read it regardless._
 
 ### [thomasloven/lovelace-card-mod](https://github.com/thomasloven/lovelace-card-mod)
 
@@ -312,7 +310,7 @@ I've used card-mod for a few tweaks here and there. It's required for most decen
 
 If you are using your lovelace dashboards in [yaml mode](https://www.home-assistant.io/dashboards/dashboards/) (Recommended):
 
- 1. Open a terminal on your Home Assistant host and navigate to the config directory where you keep your `ui-lovelace.yaml`, in hassOS this is usually `/config`.
+ 1. Open a terminal on your Home Assistant host and navigate to the config directory where you keep your `ui-lovelace.yaml`, in Home Assistant OS this is usually `/config`.
 
  2. Clone this repository:
 
@@ -320,7 +318,7 @@ If you are using your lovelace dashboards in [yaml mode](https://www.home-assist
      git clone https://github.com/wfurphy/creative-button-card-templates.git
     ```
 
- 3. Include the following snippet **before the other contents** of your `ui-lovelace.yaml`. _If you've used a custom directory then obviously replace `creative-button-card-templates/` with a relative path to your chosen installation directory._
+ 3. Include the following snippet **before any other content** in your `ui-lovelace.yaml`. _If you've used a custom directory then obviously replace `creative-button-card-templates/` with a relative path to your chosen installation directory._
 
      ```yaml
      ############| Creative Button-Card Templates |#################################################>
@@ -333,24 +331,25 @@ If you are using your lovelace dashboards in [yaml mode](https://www.home-assist
 
 If you're using storage mode (or editing your dashboards using the UI):
 
-1. Open a Terminal window and navigate to anywhere you'd like to keep the files then run the following 3 lines:
+1. Open a Terminal window and navigate to anywhere you'd like to keep the files then run the following command:
 
      ```sh
-     git clone https://github.com/wfurphy/creative-button-card-templates.git
-     cd creative-button-card-templates
-     echo 'button_card_templates:' > cbc.yml && cat */*.yaml *.yaml | sed -n '/^ *#/!p' | sed -n '/^ *$/!p' | sed 's/^/  /' >> cbc.yml
+     bin/export
     ```
+
+  > :raising_hand_man: _There are some advanced options like excluding custom templates, use `bin/export --help` to see them._
 
 2. Open `cbc.yml` in your chosen text editor, **select all** and **copy** the entire contents to the clipboard.
 3. Open a browser and navigate to your Home Assistant dashboard.
 4. Click the three dots in the top right corner and choose `Edit Dashboard`.
 5. Click three dots again and choose `Raw Configuration Editor`.
-6. On the first line before any other content, **paste** the copied text from `cbc.yml`.
-7. Click **Save** and close the raw configuration editor.
+6. Put your curser on the very first line before any content that is there and hit return so the first line is now blank.
+7. On the blank first line before any other content, **paste** the copied text from `cbc.yml`. 
+8. Click **Save** and close the raw configuration editor.
 
 ## Using the Templates
 
-> :raising_hand_man: _This is all going to make much more sense to you if you have read the [button-card documentation](https://github.com/custom-cards/button-card)._
+> :raising_hand_man: _This is all going to make much more sense to you if you have read the [button-card documentation](https://custom-cards.github.io/button-card/stable/)._
 
 To use the templates simply specify the `template` property in your button-card yaml. For most you'll need to specify your `entity` (although some don't need it, like `title`). This is all you need for a light card:
 
@@ -639,7 +638,7 @@ variables:
 
 ![plug](images/plug.png)
 
-Intended for use with smart plugs which have energy metering attributes. Add the smart plug `entity` and you're good to go.
+Intended for use with smart plugs which have energy metering attributes. Add the smart plug `entity` and you're good to go. You can also override the default attribute items and source those values from separate entities.
 
 #### Plug Inherits
 
@@ -649,6 +648,7 @@ Intended for use with smart plugs which have energy metering attributes. Add the
 
 - **Current:** The current being used currently (lol) from the `current` attribute.
 - **Voltage:** The voltage from the `voltage` attribute.
+- **Separate attribute sources:** Each attribute item can define its own `entity`, so current/voltage can come from different sensors or helper entities.
 
 #### Plug Example YAML
 
@@ -660,6 +660,12 @@ type: custom:button-card
 template: plug
 entity: switch.smart_plug
 name: Smart Plug
+variables:
+  attributes:
+    - id: current
+      entity: sensor.smart_plug_current
+    - id: voltage
+      entity: sensor.smart_plug_voltage
 ```
 
 </p>
@@ -686,27 +692,27 @@ When there is not an effect running:
 - **Brightness:** The brightness percentage will be displayed calculated from the `brightness` attribute.
 - **Color:** When the entity's attribute `color_mode` is set to `color_temp` the color temperature in degrees Kelvin will be displayed otherwise the `rgb_color` attribute will be displayed.
 
-### Light Mini (`light_mini`)
-
-![light_mini](images/light-mini.png)
-
-A compact light tile that still shows brightness, effect name, and color/temperature details in a stacked layout. Great for dense grids where you still want key light telemetry.
-
-#### Light Mini Inherits
-
-- cbcjs
-- state_helper
-- [`actions`](#actions-actions)
-- [`resizable`](#resizable-resizable)
-- interactive
-
-#### Light Mini Variables
+#### Light Variables
 
 | Variable | Values | Default | Description |
 | - | - | - | - |
-| `show.info` | Boolean | `true` | Show the info line (brightness/effect/color). |
-| `icon_min_size` | String (CSS) | `35px` | Minimum icon size. |
-| `icon_max_size` | String (CSS) |  | Maximum icon size (optional). |
+| `show.effect_selector` | Boolean | `false` | Show the effects dropdown. |
+| `show.brightness_strip` | Boolean | `false` | Show the embedded brightness `value_strip`. |
+
+To display the effect selector and (if available) theme selector:
+
+```yaml
+type: custom:button-card
+template: light
+entity: light.lounge
+variables:
+  show:
+    effect_selector: true
+```
+
+When `show.effect_selector` is enabled, the card will render:
+- an **Effects** dropdown if `light.<name>` has an `effect_list`
+- a **Theme** dropdown automatically when `select.<light_object_id>_theme` exists.
 
 ### Light with Motion Sensor (`light_motion`)
 
@@ -846,14 +852,14 @@ variables:
 
 Value strips can be used to control anything which has a gradual, numeric value. The most obvious examples are brightness / color of lights, covers position (like blinds and garage doors) or temperature for environmental controls. Let your imagination run wild though, they can be customised and used for anything you like. They give you quick tap access to 5 pre-set values and if the value of an item matches the value of the target then they are set to active and highlighted.
 
-There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`, `fan_mode`, `air_purifier`, `climate`, or a custom `value`. You can also mix item types in a single strip by setting `type` on individual items.
+There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`, `climate`, or a custom `value`. You can also mix item types in a single strip by setting `type` on individual items.
 
 
 #### Value Strip Variables
 
 | Variable | Property | Values | Default | Description |
 | - | - | - | - | - |
-| `type` | | `value` \| `brightness` \| `cover` \| `adaptive_lighting` \| `fan` \| `fan_mode` \| `air_purifier` \| `climate` | `value` | The type of value strip. See [Value Strip Types](#value-strip-types) below for descriptions of the available values. |
+| `type` | | `value` \| `brightness` \| `cover` \| `adaptive_lighting` \| `fan` \| `climate` | `value` | The type of value strip. See [Value Strip Types](#value-strip-types) below for descriptions of the available values. |
 | `show`: | ... | Object | | The following properties allow you to enable / disable some of the design features. There's an example of all the options in the image above. |
 | | `icon` | Boolean | `true` | Show the icon for each value |
 | | `value` | Boolean | `true` | Show the value text and units for each value |
@@ -913,11 +919,54 @@ There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`
 
 </p></details>
 - **`adaptive_lighting`:** Targets adaptive lighting area switches. Highlights the active brightness target for the area and sends updates via `script.al_set`.
-- **`fan`:** Uses `fan.set_percentage` with percentage-based icons (default slice icons).
-- **`fan_mode`:** Uses `fan.set_preset_mode` and matches against `preset_mode` values.
-- **`air_purifier`:** Drives a paired number entity (e.g. `_fan_level`) while in `Fan` preset mode.
-- **`climate`:** Provides temperature setpoints for climate entities via `climate.set_temperature`.
-- **Mixed:** Any item may override `type` and `entity` to mix different domains on one strip.
+
+- **`fan`:** Uses `fan.set_percentage` and matches against `entity.attributes.percentage`. <details><summary>Default items...</summary><p>
+
+  ```yaml
+  items:
+    - value: 10
+      icon: mdi:circle-slice-1
+      units: '%'
+    - value: 25
+      icon: mdi:circle-slice-2
+      units: '%'
+    - value: 50
+      icon: mdi:circle-slice-4
+      units: '%'
+    - value: 75
+      icon: mdi:circle-slice-6
+      units: '%'
+    - value: 100
+      icon: mdi:circle-slice-8
+      units: '%'
+  ```
+
+</p></details>
+
+- **`climate`:** Provides temperature setpoints for climate entities via `climate.set_temperature`. <details><summary>Default items...</summary><p>
+
+  ```yaml
+  items:
+    - value: 18
+      units: '℃'
+      icon: mdi:thermometer-low
+    - value: 19
+      units: '℃'
+      icon: mdi:thermometer
+    - value: 20
+      units: '℃'
+      icon: mdi:thermometer
+    - value: 21
+      units: '℃'
+      icon: mdi:thermometer
+    - value: 22
+      units: '℃'
+      icon: mdi:thermometer-high
+  ```
+
+</p></details>
+
+- **Mixed:** Any item may override `type` and `entity` to mix different domains on one strip (including item types like `fan_mode`).
 
 #### Value Strip Item
 
@@ -1162,17 +1211,9 @@ Displays the icon and state of an entity only. Good for displaying information n
 
 You can use any addon by including it after your template in a list as shown in the example above. Addons with a star (*) are included in _most_ button templates already.
 
-### CBC JS (`cbcjs`)*
-
-Shared client-side helper that powers effect/theme dropdowns, select option calls, and version checking. Included by default on most templates that need in-card scripting.
-
-### Button Config (`bc_config`)
-
-Exposes the resolved button-card config object to templates, enabling icon opacity and other per-card logic that depends on the current config.
-
 ### Date Time (`datetime`)
 
-Adds a shared `__dateString(date, format)` helper function for formatting dates in templates and addons. Supports `full`, `short`, `next`, `relative`, `day`, and `month` output modes.
+Adds a shared `__dateString(date, format)` helper function for formatting dates in templates and addons. Supports `full`, `short`, `next`, `relative`, `day`, and `month` output modes. _This is obsolete now that button-card have their own helper functions and may be deprecated and removed in future versions!_
 
 ### Actions (`actions`)*
 
@@ -1219,13 +1260,19 @@ The `transparent` addon will make the background of your card transparent, remov
 
 ## Advanced Usage
 
-If you've poked around the files or read any of the **Inherits** lists you will notice . They were ones that I used in creation of the templates but you won't need them unless you're making your own templates or advanced changes. I'll document them soon but in the interest of actually getting this release out I'm going to assume if you're doing advanced stuff you can check them out and use them accordingly.
+There are some addons and cards which are really only going to be of interest to you if you want to customise cards or are having some issues you don't understand.
 
-_A special mention for `debug` and `entity_detail` which are included below._
+### CBC JS (`cbcjs`)*
+
+Shared client-side helper that powers effect/theme dropdowns, select option calls, and version checking. Included by default on most templates that need in-card scripting.
+
+### Button Config (`bc_config`)
+
+Exposes the resolved button-card config object to templates as variabe `__config`, per-card logic that depends on the current config rather than variables.
 
 ### Debug
 
-When added to a card's `template` list `debug` will write a `console.debug()` containing objects that can help you figure out what's happening. So in your browser inspector console you can see the button-card (`this`), the `variables` and the `entity` objects. It comes in handy if things aren't working. If you're going to submit a issue on GitHub you'll need to be able to get this info. Remember to set the level of your browser console to All so you can see the debug messages. `debug_hass` now defaults to `true` and can be disabled via variables if needed._
+When added to a card's `template` list `debug` will write a `console.debug()` containing objects that can help you figure out what's happening. So in your browser inspector console you can see the button-card (`this`), the `variables`, `entity` objects and more. It comes in handy if things aren't working. If you're going to submit a issue on GitHub you'll need to be able to get this info. Remember to set the level of your browser console to All so you can see the debug messages. `debug_hass` now defaults to `true` and can be disabled via variables if needed._
 
 ### Detailed Entity Information (`entity_detail`)
 
