@@ -4,8 +4,8 @@ cbcjs:
     - _cbc_settings
     - bc_config
   variables:
-    debug: true
-    __cbc_version: v0.3.1
+    debug: false
+    __cbc_version: v0.3.0
     __cbc_lovelace_method: "[[[ return hass?.panels?.[hass.panelUrl]?.config?.mode ?? 'unknown' ]]]"
     __cbc_error: >
       [[[
@@ -191,7 +191,7 @@ cbcjs:
           }
 
           handler(error, extra, cType = this.C.ERROR) {
-            if (cType === 'debug' && variables.debug) {
+            if (cType === this.C.DEBUG && variables.debug) {
               let message = error instanceof Error ? error.message : error;
               message = typeof message === 'string' ? `| ${message} |::>` : '>';
               console.debug(`::CBC::Debug::${message}`, { error, extra });
@@ -262,6 +262,30 @@ cbcjs:
             this.panel = hass.panelUrl;
             this.lovelaceMode = hass?.panels?.[hass.panelUrl]?.config?.mode ?? 'unknown';
             this.addCard(variables.__config, hass);
+          }
+
+          /**
+          * Initialize the Creative Button-Card runtime.
+          * @param {boolean} mustCheck Must check for updates
+          * @returns {Promise<CreateiveButtonCardsJS>} CBCJS instance
+          */
+          async init(mustCheck = false) {
+            try {
+              const checkWindowMs = this.__dToMs(this.checkFrequency);
+              const shouldCheck = mustCheck
+                || !this.lastCheck
+                || !this.availableVersion
+                || (this.firstCheck && (Date.now() - Number(this.firstCheck) >= this.__dToMs(7)))
+                || (Date.now() - Number(this.lastCheck) >= Number(checkWindowMs));
+              if (shouldCheck || this.debug) await this.__getVersion(mustCheck);
+              if (this.availableVersion && this.version !== this.availableVersion) {
+                this.update = true;
+                this.__notifyUpdate();
+              }
+            } catch (e) {
+              this.handler(e);
+            }
+            return this;
           }
 
           /**
@@ -444,8 +468,6 @@ cbcjs:
 
               const responseBody = await response.json();
 
-              console.log('::CBC::(response)::>', responseBody); // DEBUG
-
               out = responseBody?.data?.version ?? null;
 
               if (!out || typeof out !== 'string' || !out.startsWith('v')) {
@@ -457,7 +479,8 @@ cbcjs:
               if (!this.firstCheck) {
                 this.firstCheck = this.__ls('cbc_first_check', thisCheck, this.LS.SET);
                 const nd = new Date(thisCheck);
-                this.nextCheck = this.__ls('cbc_next_check', nd.setDate(nd.getDate() + 7).getTime(), this.LS.SET);
+                nd.setDate(nd.getDate() + 7);
+                this.nextCheck = this.__ls('cbc_next_check', nd.getTime(), this.LS.SET);
               }
             } catch (error) {
               this.handler(error);
@@ -555,30 +578,6 @@ cbcjs:
            */
           __dToMs(d) {
             return Number(d) * 24 * 60 * 60 * 1000;
-          }
-
-          /**
-          * Initialize the Creative Button-Card runtime.
-          * @param {boolean} mustCheck Must check for updates
-          * @returns {Promise<CreateiveButtonCardsJS>} CBCJS instance
-          */
-          async init(mustCheck = false) {
-            try {
-              const checkWindowMs = this.__dToMs(this.checkFrequency);
-              const shouldCheck = mustCheck
-                || !this.lastCheck
-                || !this.availableVersion
-                || (this.firstCheck && (Date.now() - Number(this.firstCheck) >= this.__dToMs(7)));
-                || (Date.now() - Number(this.lastCheck) >= Number(checkWindowMs));
-              if (shouldCheck || this.debug) await this.__getVersion(mustCheck);
-              if (this.availableVersion && this.version !== this.availableVersion) {
-                this.update = true;
-                this.__notifyUpdate();
-              }
-            } catch (e) {
-              this.handler(e);
-            }
-            return this;
           }
         }
       ]]]
