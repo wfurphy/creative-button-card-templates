@@ -134,12 +134,11 @@ button_mini_state:
 
 #########################################################################/
 
-############| Button Mini Area Power |###########################>
+############| Button Mini - Power |###########################>
 button_mini_power:
   type: custom:button-card
   template: button_mini
   variables:
-    area:
     width: 45px
   icon: mdi:power
   color_type: card
@@ -148,19 +147,52 @@ button_mini_power:
     action: call-service
     service: light.toggle
     service_data:
-        area_id: "[[[[ return entity?.entity_id ? null : variables.area ]]]]"
-        entity_id: "[[[[ return entity?.entity_id ?? null ]]]]"
+      entity_id: "[[[[ return entity?.entity_id ?? null ]]]]"
   double_tap_action:
     action: call-service
     service: light.turn_on
     service_data:
-        area_id: "[[[[ return entity?.entity_id ? null : variables.area ]]]]"
-        entity_id: "[[[[ return entity?.entity_id ?? null ]]]]"
+      entity_id: "[[[[ return entity?.entity_id ?? null ]]]]"
   hold_action:
     action: call-service
     service: light.turn_off
     service_data:
-        area_id: "[[[[ return entity?.entity_id ? null : variables.area ]]]]"
-        entity_id: "[[[[ return entity?.entity_id ?? null ]]]]"
+      entity_id: "[[[[ return entity?.entity_id ?? null ]]]]"
+
+#########################################################################/
+
+############| Button Mini - Area Power |###########################>
+button_mini_power_area:
+  type: custom:button-card
+  template: button_mini
+  variables:
+    area:
+    width: 45px
+  # state:
+  #   - id: cbc_on
+  #     value: >
+  #       [[[
+  #         const ents = area_entities(variables.area);  // HA helper
+  #         console.log('::CBC::ButtonMiniPowerArea::(ents)::>', ents); // DEBUG
+  #         return ents.filter(e => e.split('.')[0] === 'light');
+  #       ]]]
+  icon: mdi:power
+  color_type: card
+  color: var(--accent-color)
+  tap_action:
+    action: call-service
+    service: light.toggle
+    service_data:
+      area_id: "[[[ return variables.area ]]]"
+  double_tap_action:
+    action: call-service
+    service: light.turn_on
+    service_data:
+      area_id: "[[[ return variables.area ]]]"
+  hold_action:
+    action: call-service
+    service: light.turn_off
+    service_data:
+      area_id: "[[[ return variables.area ]]]"
 
 #########################################################################/

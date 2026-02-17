@@ -5,17 +5,15 @@ debug:
   variables:
     debug: true
     debug_hass: true
-    debug_extras:
-    __title:
-      force_eval: true 
-      value: >
-        [[[
-          if (entity?.entity_id) {
-            return `::CBC::DEBUG::| ${entity.entity_id} |::>` 
-          }
-          
-          return `::CBC::DEBUG::>`
-        ]]]
+    debug_extras: {}
+    __title: >
+      [[[
+        if (entity?.entity_id) {
+          return `::CBC::DEBUG::| ${entity.entity_id} |::>`;
+        }
+        
+        return '::CBC::DEBUG::>';
+      ]]]
   custom_fields:
     debugger: >
       [[[

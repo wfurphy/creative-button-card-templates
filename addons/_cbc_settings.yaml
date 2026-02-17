@@ -1,13 +1,24 @@
 # ::::SETTINGS:::::::::::( Creative Button-Card Templates )::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::>
 _cbc_settings:
   variables:
-    # :: Enable Checking for Updates ::> true|false (Default: true)
-    __cbc_check_updates: true
-    # :: Check Frequency (in days) ::> 7-90 (Default: 28)
-    # :: This is reset if you clear your browser local storage for your Home Assistant domain.
-    __cbc_check_frequency: 28
-    # :: Send anonymous usage data with the update check. ::> true|false (Default: true)
-    # :: Sends if you used the UI or yaml and 2 numbers, times CBCT was loaded and number of templates it was loaded for.
-    # :: NO Personally identifing Information is used or stored.
-    __cbc_check_send_data: true
+    __cbc_check:
+      # :: Enable Checking for Updates ::> true|false (Default: true)
+      updates: true
+
+      # Check Frequncy
+      # This is reset if you clear your browser local storage for your Home Assistant domain.
+      # Check is performed once on first run, 7 days after and then according to the check frequency.
+      # :: Check Frequency (in days) ::> 7-90 (Default: 28)
+      frequency: 28
+
+      # :: Update Available Notification ::> true|false (default: true)
+      notify: true
+
+      # Anonymous Usage Data
+      # Data sent: The lovelace mode (yaml|storage) and the number times each template is used per dashboard.
+      # To see exactly, type `cbcJS.stats` into your web browser console on any lovelace dashboard running CBC.
+      # NO Personally identifing information is ever sent!
+      # This is optional, of course, but it will really help me to plan and improve the cards, thanks.
+      # :: Send anonymous usage data with the update check. ::> true|false (Default: true)
+      send_data: true
 # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::/

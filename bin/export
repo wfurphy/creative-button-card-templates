@@ -26,10 +26,11 @@ for arg in "$@"; do
 done
 
 if [ -z "$comments" ]; then
-  echo 'button_card_templates:' > cbc.yml && cat addons/*.yaml $ic *.yaml addons/cbcms.yml | sed -nr '/^ *#+[^\w]/!p' | sed -n '/^ *\/\/ /!p' | sed -n '/^ *$/!p' | sed 's/^/  /' | sed 's/\(__cbclm: \)yaml/\1storage/' >> cbc.yml
+  echo 'button_card_templates:' > cbc.yml && cat addons/*.yaml *.yaml $ic | sed -nr '/^ *#+[^\w]/!p' | sed -n '/^ *\/\/ /!p' | sed -n '/^ *$/!p' | sed 's/^/  /' | sed 's/\(__cbclm: \)yaml/\1storage/' >> cbc.yml
 else
-  echo 'button_card_templates:' > cbc.yml && cat addons/*.yaml $ic *.yaml addons/cbcms.yml | sed -n '/^ *$/!p' | sed 's/^/  /' | sed 's/\(__cbclm: \)yaml/\1storage/' >> cbc.yml
+  echo 'button_card_templates:' > cbc.yml && cat addons/*.yaml *.yaml $ic | sed -n '/^ *$/!p' | sed 's/^/  /' | sed 's/\(__cbclm: \)yaml/\1storage/' >> cbc.yml
 fi
+echo "  __END_CBC_TEMPLATES__: {}" >> cbc.yml
 
 echo "::> Creative Button-Card Templates${sc} exported to cbc.yaml"
 echo "::> You can now copy the contents of cbc.yaml into your dashbaord's Raw Editor in Home Assistant"

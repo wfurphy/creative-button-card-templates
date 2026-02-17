@@ -5,6 +5,8 @@
 
 A collection of [Button Card](https://github.com/custom-cards/button-card) templates to improve the build speed and quality of your Home Assistant lovelace dashboards.
 
+## TODO: Update Image and Code
+
 ![Template Samples using Noctis theme](images/cbc-samples-animated.gif)
 
 _Examples above are shown in the default dark theme however they should work for most themes. They might require a couple of tweaks here and there. I prefer the excellent [Noctis theme](https://github.com/aFFekopp/noctis) (Check the "See Noctis example..." section below)_
@@ -288,7 +290,19 @@ This is the code used to create the examples in the gif above. Some entity names
 
  > "What card are you using for that? I want to use that on mine!"
 
-I made this repo for my friends who were asking me the above question. If you're someone else who's managed to stumble accross them then hello and you're welcome to use them. I'll try to keep them maintained for a little while but I am planning on making a proper frontend integration with UI configuration in the future. If you like them then please send your kudos to [@RomRider](https://github.com/RomRider) and everyone who contributed to [Button Card](https://github.com/custom-cards/button-card) which is the only reason these templates were possible.
+I made this repo for my friends who were asking me the above question. If you're someone else who's managed to stumble accross them then hello and you're welcome to use them. If you like them then please send your kudos to [@RomRider](https://github.com/RomRider) and everyone who contributed to [Button Card](https://github.com/custom-cards/button-card) which is the only reason these templates were possible.
+
+## v0.3.0+
+
+It's been a long time coming! I'll _try_ to make the updates more frequent, I've got some ideas brewing...
+
+ - Now compatible with Button-Card 7!
+ - New templates, new features on existing cards and ALL the bug fixes!
+ - There are a few little breaking changes which I've tried to call out here in the docs.
+ - There's a much easier way to install for Storage (UI) mode.
+ - There's an update checker so you'll know when there's an update available.
+ - It's still home-ware so expect some glitches, log issues here and I will try my best.
+ - Feature suggestions are welcome and please show me what you're building with them!
 
 ## Prerequisites
 
@@ -331,9 +345,15 @@ If you are using your lovelace dashboards in [yaml mode](https://www.home-assist
 
 If you're using storage mode (or editing your dashboards using the UI):
 
-1. Open a Terminal window and navigate to anywhere you'd like to keep the files then run the following command:
+1. a. Open the `cbc.yml` file from the [latest release](releases/latest) and copy the contents.
+
+    OR
+
+   b. Clone this repository to wherever you would like to keep the files and then run `bin/export` script to create `cbc.yml`. (If you plan to create custom templates then this is the way for you!):
 
      ```sh
+     git clone https://github.com/wfurphy/creative-button-card-templates.git && \
+     cd creative-button-card-templates && \
      bin/export
     ```
 
@@ -344,7 +364,7 @@ If you're using storage mode (or editing your dashboards using the UI):
 4. Click the three dots in the top right corner and choose `Edit Dashboard`.
 5. Click three dots again and choose `Raw Configuration Editor`.
 6. Put your curser on the very first line before any content that is there and hit return so the first line is now blank.
-7. On the blank first line before any other content, **paste** the copied text from `cbc.yml`. 
+7. On that blank first line, **paste** the copied text from `cbc.yml`.
 8. Click **Save** and close the raw configuration editor.
 
 ## Using the Templates
@@ -1264,7 +1284,7 @@ There are some addons and cards which are really only going to be of interest to
 
 ### CBC JS (`cbcjs`)*
 
-Shared client-side helper that powers effect/theme dropdowns, select option calls, and version checking. Included by default on most templates that need in-card scripting.
+Shared client-side helper that powers effect/theme dropdowns, select option calls, and version checking. Included by default on most templates that need in-card scripting. Essential for most cards to work as expected.
 
 ### Button Config (`bc_config`)
 
@@ -1280,6 +1300,62 @@ Mostly used for creating and debugging the templates this card displays the full
 
 ![entity_detail card](images/entity-detail.png)
 
+## Changes and Custom Cards
+
+> :warning: DO NOT MAKE CHANGES TO THE ORIGINAL TEMPLATES. There's no support for that, your changes will be lost if you update and everyone will be unhappy campers. There's a better way...
+
+If you wish to change or expand on one of the templates you can create a new file under `custom/yourcardname.yaml` and it will be picked up and loaded with the rest or in Storage mode (UI) it will be exported with `bin/export` into `cbc.yml` ready to COPY-PASTE with the rest. Obviously, replace _yourcardname_ with your card name and make it unique. __It cannot be the same as an existing template name, that WILL end in tears!__ :sob:
+
+Let's say I wanted to make a transparent light card which always has the brightness strip showing with certain settings so I don't have to put them in each time. I could make the following `custom/showy_light.yaml`:
+
+```yaml
+showy_light:
+  template:
+    - light
+    - transparent
+  variables:
+   show:
+      brightness_strip: true
+    strip_show:
+      icon: true
+      step_value: false
+      fade: true
+```
+
+Then when I'm placing the lights in the dashboard:
+
+```yaml
+- type: custom:button-card
+  template: showy_light
+  entity: light.lamp
+  # ..
+```
+
+Youu're not limited to `variables` you can override any other property from the template with your own. If you wanted to get really advanced you can copy properties or the entire contents from `light.yaml` and copy it to `custom/showy_light.yaml` and then change the appropriate ones. 
+
+> :raising_hand_man: __If you do this make sure you change the first line that says `light:` to `showy_light:` or whatever the _template_ and _yourcardname_ are or else the :sob: again!__
+
+My **strong** suggestion is to use the method of loading the template and overriding only what you need to change though because they can get a tad complicated especially when you consider the inherited templates. If you're comfortable with YAML and (poorly-written, buttoncardworkaroundesque) Javascript then you should be fine with whatever you find.
+
+Include any templates and addons you want in your customs or make them from scratch! Just have fun and be CREATIVE with them!
+
+## Version Check
+
+As of version 0.3^ there is a automated check so you can know if there are updates available in the future. This is optional and you can set the check frequency, notification and data options in `addons/_cbc_settings.yaml`.
+
+#### Settings `variables.__cbc_settings:`
+
+| Variable | Values | Default | Description |
+| - | - | - | - |
+| `updates` | Boolean (true/false) | `true` | Should CBC Check for updates. |
+| `frequency` | Number (7 - 90) | `28` | How often to check for updates (in days). This is reset if you clear your browser's local storage for your Home Assistant domain. Check is performed once on first run, 7 days after and then according to the check frequency.|
+| `notify` | Boolean (true/false) | `true` | If an update is available show a 5 sec notification at the bottom of the dashboard on first load. |
+| `send_data` | Boolean (true/false) | `true` | Send anonymous Usage Data. Data sent: The lovelace mode (`yaml`/`storage`) and the number times each template is used per dashboard. __NO Personally identifing information is ever sent!__ |
+
+> :raising_hand_man: _To see exactly what data will be sent, type `cbcJS.stats` into your web browser console on any lovelace dashboard running CBC. I have made and effort to ensure that there is no personally identifying info sent and it will really help me to plan and improve the cards, thanks._
+
 ## Thanks
 
  Massive thanks to [@RomRider](https://github.com/RomRider) and everyone who contributed to [Button Card](https://github.com/custom-cards/button-card) which is the only reason these templates were possible.
+
+ And thanks to all of you for your patience while it's been too long between updates! I'd love to see what you're building with the templates. Post some images of your dashboards on the [Home Assistant Forum thread](https://community.home-assistant.io/t/creative-button-card-templates-for-lovelace-dashboards/515667). 
