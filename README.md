@@ -294,7 +294,7 @@ I made this repo for my friends who were asking me the above question. If you're
 
 ## v0.3.0+
 
-It's been a long time coming! I'll _try_ to make the updates more frequent, I've got some ideas brewing...
+It's been a long time coming! I'll _try_ to make the updates more frequent, plenty in this release to keep you busy though...
 
  - Now compatible with Button-Card 7!
  - New templates, new features on existing cards and ALL the bug fixes!
@@ -303,6 +303,8 @@ It's been a long time coming! I'll _try_ to make the updates more frequent, I've
  - There's an update checker so you'll know when there's an update available.
  - It's still home-ware so expect some glitches, log issues here and I will try my best.
  - Feature suggestions are welcome and please show me what you're building with them!
+
+If you're updating from a previous version, checkout the [Updating](#updating) section below for instructions. Also keep an eye 
 
 ## Prerequisites
 
@@ -345,7 +347,7 @@ If you are using your lovelace dashboards in [yaml mode](https://www.home-assist
 
 If you're using storage mode (or editing your dashboards using the UI):
 
-1. a. Open the `cbc.yml` file from the [latest release](releases/latest) and copy the contents.
+1. a. Open the [`cbc.yml` file from the latest release](https://github.com/wfurphy/creative-button-card-templates/releases/latest/download/cbc.yml) and copy the contents.
 
     OR
 
@@ -363,9 +365,29 @@ If you're using storage mode (or editing your dashboards using the UI):
 3. Open a browser and navigate to your Home Assistant dashboard.
 4. Click the three dots in the top right corner and choose `Edit Dashboard`.
 5. Click three dots again and choose `Raw Configuration Editor`.
-6. Put your curser on the very first line before any content that is there and hit return so the first line is now blank.
+6. Put your curser on the very first line before any content (usually `views:`) and hit return to move it down so the first line is now blank.
 7. On that blank first line, **paste** the copied text from `cbc.yml`.
 8. Click **Save** and close the raw configuration editor.
+
+## Updating
+
+### YAML Mode
+
+1. Open a terminal on your HA install.
+2. Navigate to where you installed Creative Button-Card Templates (eg. `/config/creative-button-card-templates/`)
+3. Run `git pull` to get the latest files OR download the source from the [latest release](releases/latest) and replace the entire contents of the folder (unless you have created your own templates in the `custom` folder, make sure you don't replace those).
+
+### Storage (UI) Mode
+
+1. a. Copy the contents of [`cbc.yml` from the latest release](https://github.com/wfurphy/creative-button-card-templates/releases/latest/download/cbc.yml)
+    OR
+   b. If you originally cloned this repository and/or created custom templates, follow steps 1-3 above and then run `bin/export` and copy the contents of the resulting `cbc.yml`.
+2. Open a browser and navigate to your Home Assistant dashboard.
+3. Click the three dots in the top right corner and choose `Edit Dashboard`.
+4. Click three dots again and choose `Raw Configuration Editor`.
+5. Highight all of the existing content of `button_card_templates:`. This will probably be from the first line to just above `views:`.
+6. Replace the highlighted text with the copied text. 
+7. click **Save** and close the raw configuration editor.
 
 ## Using the Templates
 
@@ -440,7 +462,10 @@ It's what it says on the tin. Title is created from the `name` property and supp
 | `text_color` | String (CSS) | `var(--cbc-title-text-color, var(--cbc-title-color, '#ffffff'))` | The color of the title text. |
 | `background_color` | String (CSS) | `var(--cbc-title-background-color, var(--accent-color))` | The color of the background |
 | `opacity` | Number | `var(--cbc-title-opacity, 0.4)` | Opacity applied to the background color (text remains at full opacity). |
+| `uppercase` | Boolean | `true` | Transform the title text to uppercase. |
 | `mirror` | Boolean | `false` | Run right-to-left instead of left-to-right |
+| `show_tab` | Boolean | `false` | Show a colored tab edge on the card. |
+| `offset` | String/Number | `0` | Horizontal offset for the card. |
 | `info` | Array | `[]` | Up to three `title_info` mini chips to display inline (leave empty to hide). |
 
 #### Title Example YAML
@@ -504,6 +529,7 @@ This template serves as the base template for the `device` and `light` templates
 | `timer` | `timer.*` | | A timer entity that is started by your script. Not required if your `entity` is already a timer.
 | `icon_on` | `mdi:*` | `mdi:stop` | Set a custom icon for while the script/timer is running. Inherited from `dynamic_icons`. You can use the card `icon` property to change the default icon (`mdi:play`). |
 | `name_on` | String | `Cancel` | Set a custom name for while the script/timer is running. You can use the card `name` property to change the default name (`Start`). |
+| `min_height` | String (CSS) | `40px` | Minimum height of the card. |
 
 #### Action Button Example YAML
 
@@ -572,6 +598,8 @@ This is a little button which only displays an icon with the option of defining 
 | `symbol_width` | String (CSS) | `50%` | Only applies if the `symbol` is an icon (`mdi:*`). Adjust if the symbol doesn't fit |
 | `symbol_font_size` | String (CSS) | `auto` | Only applies if the `symbol` is a string. Adjust if the symbol doesn't fit |
 | `symbol_color` | String (CSS) | `var( --ha-card-background, var(--card-background-color, white) )` | Set a custom symbol color |
+| `symbol_margin_top` | String (CSS) | `0` | Adjust vertical positioning for the symbol. |
+| `symbol_padding` | String (CSS) |  | Add padding around the symbol. |
 
 #### Mini Button Example YAML
 
@@ -601,21 +629,21 @@ _See examples of symbol usage in the [`light_group` section](#light-group-light_
 
 </p></details>
 
-### Device (`device`)
+### Entity (`entity`) _previously Device (`device`)_
 
-![device](images/device.png)
+![entity](images/device.png)
 
-For any `entity` which has on/off state. It can optionally display up to 2 `attributes` from the entity with custom icons, values and units.
+For any `entity` which has on/off state. It can optionally display up to 2 `attributes` from the entity or other entities with custom icons, values and units.
 
-> 🧨 _Breaking:_ `device` is now deprecated in favour of `entity` and is planned for removal in a future `1.x` release.
+> 🧨 _Breaking:_ `device` still works for now but is deprecated in favour of `entity` and is planned for removal in a future `1.x` release.
 
 > :raising_hand_man: _If you don't know what attributes are available on your entity you can use the more-info dialogue or check out the [`entity_details` template](#detailed-entity-information-entity_detail)_
 
-#### Device Inherits
+#### Entity Inherits
 
 - `button_landscape`
 
-#### Device Variables
+#### Entity Variables
 
 | Variable | Value Type | Default | Description |
 | - | - | - | - |
@@ -626,11 +654,12 @@ For any `entity` which has on/off state. It can optionally display up to 2 `attr
 
 | Property | Value Type | Default | Description |
 | - | - | - | - |
-| `id` | `entity.attributes.*` |  | The id of the attribute to display eg. `friendly_name`. |
-| `entity` | `entity_id` |  | Optional source entity for this attribute/state. Defaults to the main entity. |
+| `id` | `entity.attributes.*` | - | The id of the attribute to display eg. `friendly_name`. |
+| `entity` | `entity_id` | `entity.entity_id` | Optional source entity for this attribute/state. Defaults to the main entity. |
 | `use_state` | Boolean | `true` when `entity` is provided, otherwise `false` | Show the entity state instead of an attribute. |
-| `icon` | `mdi:*` |  | The icon to use for the attribute. |
-| `units` | String |  | The unit of measurement (if required) for the attribute value. |
+| `icon` | `mdi:*` | - | The icon to use for the attribute. |
+| `state` | String | - | Override the displayed value with a custom string. |
+| `units` | String | - | The unit of measurement (if required) for the attribute value. |
 | `prefix_units` | Boolean | `false` | When `true` units will appear before the value. |
 
 > 🧨 _Breaking:_ Attribute rows now deduplicate by `id`, render in a flex row, and `id: state` is replaced by `use_state: true` for showing the main entity state.
@@ -716,8 +745,19 @@ When there is not an effect running:
 
 | Variable | Values | Default | Description |
 | - | - | - | - |
-| `show.effect_selector` | Boolean | `false` | Show the effects dropdown. |
-| `show.brightness_strip` | Boolean | `false` | Show the embedded brightness `value_strip`. |
+| `show` | Object |  | Display settings for the light. See [Light Show Options](#light-show-options) below. |
+| `attribute_icon_color` | String (CSS) | `var(--state-icon-color)` | Icon color used in the extra information row. |
+| `rgb_symbols` | Array of 3 strings | `['R','G','B']` | Override the letters used for RGB display. |
+| `strip_show` | Object |  | Show options for the embedded brightness strip. See [Value Strip Show Options](#value-strip-show-options) below. |
+| `strip_items` | Array of [Value Strip Items](#value-strip-item) | `[]` | Custom items for the embedded brightness strip. |
+
+#### Light Show Options
+
+| Property | Values | Default | Description |
+| - | - | - | - |
+| `info` | Boolean | `true` | Show the extra info row (effects / brightness / color). |
+| `brightness_strip` | Boolean | `false` | Show the embedded brightness `value_strip`. |
+| `effect_selector` | Boolean | `false` | Show the effects dropdown (and theme picker if available). |
 
 To display the effect selector and (if available) theme selector:
 
@@ -783,6 +823,7 @@ If you're feeling lazy then just specify the light group `entity` and up to the 
 | Variable | Values | Default | Description |
 | - | - | - | - |
 | `items` | Array of [Light Items](#light-item) | `[]` | A list of up to 6 lights to display. See the [Light Item](#light-item) table below for available properties. |
+| `item_template` | String (template name) | `button_mini_embed` | Override the template used for each embedded light button. |
 
 #### Light Item
 
@@ -846,6 +887,7 @@ Climate control card that combines the standard entity view with an embedded til
 | Variable | Values | Default | Description |
 | - | - | - | - |
 | `switch_entity` | `switch.*` | `false` | Optional switch entity to handle on/off outside of the climate domain. |
+| `attributes` | Array of [Attribute Items](#attribute-item) | `current_temperature`, `state` | Attribute rows to display under the title. |
 | `features` | Array | `target-temperature`, `climate-hvac-modes (icons)` | Tile features to render inside the embedded control. |
 
 #### Climate Example YAML
@@ -880,11 +922,16 @@ There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`
 | Variable | Property | Values | Default | Description |
 | - | - | - | - | - |
 | `type` | | `value` \| `brightness` \| `cover` \| `adaptive_lighting` \| `fan` \| `climate` | `value` | The type of value strip. See [Value Strip Types](#value-strip-types) below for descriptions of the available values. |
-| `show`: | ... | Object | | The following properties allow you to enable / disable some of the design features. There's an example of all the options in the image above. |
-| | `icon` | Boolean | `true` | Show the icon for each value |
-| | `value` | Boolean | `true` | Show the value text and units for each value |
-| | `fade` | Boolean | `true` | Fade the items according to their value (best with `brightness`) |
+| `show` | | Object | | Display settings. See [Value Strip Show Options](#value-strip-show-options) below. |
 | `items` | | Array of [value strip items](#value-strip-item) | See [Value Strip Types](#value-strip-types) | Define the items in your `value_strip`. See [value strip item](#value-strip-item) below for available properties.
+
+#### Value Strip Show Options
+
+| Property | Values | Default | Description |
+| - | - | - | - |
+| `icon` | Boolean | `true` | Show the icon for each value. |
+| `step_value` | Boolean | `true` | Show the value text and units for each value. |
+| `fade` | Boolean | `true` | Fade the items according to their value (best with `brightness`). |
 
 #### Value Strip Types
 
@@ -944,19 +991,19 @@ There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`
 
   ```yaml
   items:
-    - value: 10
+    - step_value: 10
       icon: mdi:circle-slice-1
       units: '%'
-    - value: 25
+    - step_value: 25
       icon: mdi:circle-slice-2
       units: '%'
-    - value: 50
+    - step_value: 50
       icon: mdi:circle-slice-4
       units: '%'
-    - value: 75
+    - step_value: 75
       icon: mdi:circle-slice-6
       units: '%'
-    - value: 100
+    - step_value: 100
       icon: mdi:circle-slice-8
       units: '%'
   ```
@@ -967,19 +1014,19 @@ There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`
 
   ```yaml
   items:
-    - value: 18
+    - step_value: 18
       units: '℃'
       icon: mdi:thermometer-low
-    - value: 19
+    - step_value: 19
       units: '℃'
       icon: mdi:thermometer
-    - value: 20
+    - step_value: 20
       units: '℃'
       icon: mdi:thermometer
-    - value: 21
+    - step_value: 21
       units: '℃'
       icon: mdi:thermometer
-    - value: 22
+    - step_value: 22
       units: '℃'
       icon: mdi:thermometer-high
   ```
@@ -990,13 +1037,18 @@ There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`
 
 #### Value Strip Item
 
+> 🧨 _Breaking:_ `step_value` replaces `value` for item values.
+
 | Property | Values | Default | Description |
 | - | - | - | - |
-| `value` | Number | | The value to of this item. Used for the action and for display. _Required_ |
+| `step_value` | Number | | The value of this item. Used for the action and for display. _Required_ |
+| `entity` | `entity_id` |  | Optional source entity for this item. Defaults to the main entity. |
+| `type` | `value` \| `brightness` \| `cover` \| `adaptive_lighting` \| `fan` \| `climate` |  | Override the item type for mixed strips. |
 | `icon` | `mdi:*` | | The icon for this item |
 | `units` | String | | The unit of measurement for the item |
 | `prefix` | String | | Any text you would like to prefix before the value. |
 | `label` | String | | If provided the label will be displayed instead of the value |
+| `opacity` | Number |  | Custom opacity for the item. |
 | `color` | String (CSS) | `var(--paper-item-icon-color)` | The color of the item |
 | `active_color` | String (CSS) | `var(--button-card-light-color, var(--accent-color))` | The color of the item when it is active (it matches the target value) |
 
@@ -1065,6 +1117,7 @@ A slim control for Home Assistant select entities, embedding the native dropdown
 
 | Variable | Values | Default | Description |
 | - | - | - | - |
+| `name` | String | `Select` | Default label shown next to the dropdown. |
 | `secondary_info` | `none` \| `last-changed` \| `last-updated` \| ... | `none` | Secondary info mode to pass to the embedded entity row. |
 | `color` | String (CSS) |  | Optional icon color override. |
 | `state` | Array | `[]` | Standard button-card state array to set icon/color per select option. |
@@ -1253,8 +1306,8 @@ The `dynamic_icons` addon will add functionality to the card which will change t
 
 | Variable | Values | Default | Description |
 | - | - | - | - |
-| `icon` | `mdi:*` | `mdi:wifi` | The icon to display when the entity is off. |
-| `icon_on` | `mdi:*` | `mdi:wifi-star` | The icon to display when the entity is on. |
+| `icon` | `mdi:*` | `mdi:toggle-switch-off` | The icon to display when the entity is off. |
+| `icon_on` | `mdi:*` | `mdi:toggle-switch` | The icon to display when the entity is on. |
 | `icon_unavailable` | `mdi:*` | `mdi:wifi-cancel` | The icon to display when the entity is unavailable. |
 
 ### Effect Selector (`effect_selector`)
@@ -1273,6 +1326,8 @@ The `resizable` addon allows you to use `height` and `width` variables to define
 | `width` | String (CSS) | _per card_ | The width of the card in any CSS accepted value. Eg `40px` or `90%` |
 | `min_height` | String (CSS) | _per card_ | The minimum height of the card in any CSS accepted value. |
 | `min_width` | String (CSS) | _per card_ | The minimum width of the card in any CSS accepted value. |
+| `max_height` | String (CSS) | _per card_ | The maximum height of the card in any CSS accepted value. |
+| `max_width` | String (CSS) | _per card_ | The maximum width of the card in any CSS accepted value. |
 
 ### Transparent (`transparent`)
 
@@ -1294,11 +1349,24 @@ Exposes the resolved button-card config object to templates as variabe `__config
 
 When added to a card's `template` list `debug` will write a `console.debug()` containing objects that can help you figure out what's happening. So in your browser inspector console you can see the button-card (`this`), the `variables`, `entity` objects and more. It comes in handy if things aren't working. If you're going to submit a issue on GitHub you'll need to be able to get this info. Remember to set the level of your browser console to All so you can see the debug messages. `debug_hass` now defaults to `true` and can be disabled via variables if needed._
 
+#### Debug Variables
+
+| Variable | Values | Default | Description |
+| - | - | - | - |
+| `debug_hass` | Boolean | `true` | Include the full `hass` object in the console output. |
+| `debug_extras` | Object | `{}` | Extra data to include in the debug output. |
+
 ### Detailed Entity Information (`entity_detail`)
 
 Mostly used for creating and debugging the templates this card displays the full properties and attributes of an entity in a table.
 
 ![entity_detail card](images/entity-detail.png)
+
+#### Entity Detail Variables
+
+| Variable | Values | Default | Description |
+| - | - | - | - |
+| `do_not_split` | Array of attribute names | `[]` | Attributes to keep as a single value (prevents splitting on `,` or `|`). |
 
 ## Changes and Custom Cards
 
@@ -1331,7 +1399,7 @@ Then when I'm placing the lights in the dashboard:
   # ..
 ```
 
-Youu're not limited to `variables` you can override any other property from the template with your own. If you wanted to get really advanced you can copy properties or the entire contents from `light.yaml` and copy it to `custom/showy_light.yaml` and then change the appropriate ones. 
+Youu're not limited to `variables` you can override any other property from the template with your own. If you wanted to get really advanced you can copy properties or the entire contents from `light.yaml` and copy it to `custom/showy_light.yaml` and then change the appropriate ones.
 
 > :raising_hand_man: __If you do this make sure you change the first line that says `light:` to `showy_light:` or whatever the _template_ and _yourcardname_ are or else the :sob: again!__
 
@@ -1358,4 +1426,4 @@ As of version 0.3^ there is a automated check so you can know if there are updat
 
  Massive thanks to [@RomRider](https://github.com/RomRider) and everyone who contributed to [Button Card](https://github.com/custom-cards/button-card) which is the only reason these templates were possible.
 
- And thanks to all of you for your patience while it's been too long between updates! I'd love to see what you're building with the templates. Post some images of your dashboards on the [Home Assistant Forum thread](https://community.home-assistant.io/t/creative-button-card-templates-for-lovelace-dashboards/515667). 
+ And thanks to all of you for your patience while it's been too long between updates! I'd love to see what you're building with the templates. Post some images of your dashboards on the [Home Assistant Forum thread](https://community.home-assistant.io/t/creative-button-card-templates-for-lovelace-dashboards/515667).
