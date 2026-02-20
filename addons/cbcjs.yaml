@@ -4,7 +4,7 @@ cbcjs:
     - _cbc_settings
     - bc_config
   variables:
-    debug: false
+    __cbcjs_debug: true
     __cbc_version: v0.3.0
     __cbc_lovelace_method: "[[[ return hass?.panels?.[hass.panelUrl]?.config?.mode ?? 'unknown' ]]]"
     __cbc_error: >
@@ -67,7 +67,7 @@ cbcjs:
             this.hass = hass;
             this.updatedAt = new Date().getTime();
             this.browserId = this.__ensureBrowserId();
-            this.debug = variables?.debug ?? false;
+            this.debug = variables?.__cbcjs_debug ?? false;
             this.totalCardCalls = 0;
             this.__setNewPanel(hass);
             // ::> Local Storage
@@ -232,7 +232,7 @@ cbcjs:
           * @returns {CreateiveButtonCardsJS} Chainable instance
           */
           addCard(config, hass) {
-            hass = hass ?? this.hass;
+            hass ??= this.hass;
             try {
               if (this.panel !== hass.panelUrl) {
                 this.__setNewPanel(hass);
@@ -270,6 +270,7 @@ cbcjs:
           * @returns {Promise<CreateiveButtonCardsJS>} CBCJS instance
           */
           async init(mustCheck = false) {
+            mustCheck = this.debug || mustCheck;
             try {
               const checkWindowMs = this.__dToMs(this.checkFrequency);
               const shouldCheck = mustCheck
