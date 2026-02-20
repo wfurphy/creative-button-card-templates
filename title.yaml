@@ -26,6 +26,7 @@ title:
     color: var(--cbc-title-color, var(--primary-background-color))
     background_color: var(--cbc-title-background-color, var(--accent-color))
     text_color: var(--cbc-title-text-color, var(--cbc-title-color, '#ffffff'))
+    icon_size: 155% # v.03 Added ability to set icon_size
     uppercase: true # v0.3 Added ability to control uppercase
     show_tab: false
     offset: 0
@@ -116,8 +117,8 @@ title:
       - justify-self: "[[[ return variables.mirror ? 'start' : 'end' ]]]"
       - text-align: "[[[ return variables.mirror ? 'left' : 'right' ]]]"
       - overflow: visible
-      - height: 155%
-      - width: 155%
+      - height: "[[[ return variables.icon_size ]]]"
+      - width: "[[[ return variables.icon_size ]]]"
       - max-height: 500%
     custom_fields:
       i1:

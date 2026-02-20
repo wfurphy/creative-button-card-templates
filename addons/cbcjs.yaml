@@ -277,7 +277,7 @@ cbcjs:
                 || !this.availableVersion
                 || (this.firstCheck && (Date.now() - Number(this.firstCheck) >= this.__dToMs(7)))
                 || (Date.now() - Number(this.lastCheck) >= Number(checkWindowMs));
-              if (shouldCheck || this.debug) await this.__getVersion(mustCheck);
+              if (shouldCheck) await this.__getVersion(mustCheck);
               if (this.availableVersion && this.version !== this.availableVersion) {
                 this.update = true;
                 this.__notifyUpdate();

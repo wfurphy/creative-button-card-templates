@@ -46,13 +46,13 @@ state_helper:
     #   operator: template
     #   value: false
     - id: cbc_unavailable
-      value: "unavailable"
+      operator: regex
+      value: 'unavailable|unknown'
       label: Unavailable
       icon: mdi:wifi-alert
       styles:
         card:
           - min-height: 40px
-          # - height: 50px
           - opacity: 0.2
           - box-shadow: none;
         label:
@@ -63,6 +63,7 @@ state_helper:
             - display: none
           es:
             - display: none
+            
 
 ################################################################################/
 
