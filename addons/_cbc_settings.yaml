@@ -6,10 +6,10 @@ _cbc_settings:
       updates: true
 
       # Check Frequncy
-      # This is reset if you clear your browser local storage for your Home Assistant domain.
-      # Check is performed once on first run, 7 days after and then according to the check frequency.
-      # :: Check Frequency (in days) ::> 7-90 (Default: 28)
-      frequency: 28
+      # Check is performed once on first run, once 7 days after and then according to the check frequency.
+      # This is reset if you clear your browser's local storage or use a new browser/device.
+      # :: Check Frequency (in days) ::> 7-90 (Default: 14)
+      frequency: 14
 
       # :: Update Available Notification ::> true|false (default: true)
       notify: true

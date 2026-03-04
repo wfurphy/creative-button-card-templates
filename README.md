@@ -304,7 +304,9 @@ It's been a long time coming! I'll _try_ to make the updates more frequent, plen
  - It's still home-ware so expect some glitches, log issues here and I will try my best.
  - Feature suggestions are welcome and please show me what you're building with them!
 
-If you're updating from a previous version, checkout the [Updating](#updating) section below for instructions. Also keep an eye 
+If you're updating from a previous version, checkout the [Updating](#updating) section below for instructions.
+
+> :raising_hand_man: If you're updating then make sure to keep an eye out for the breaking changes which are highlighted throughout the docs like this: 🧨 _Breaking Change:_ 
 
 ## Prerequisites
 
@@ -584,7 +586,7 @@ This is a little button which only displays an icon with the option of defining 
 - [`resizable`](#resizable-resizable)
 - interactive
 
-> 🧨 _Breaking:_ `icon_width` has been replaced with `icon_min_size` / `icon_max_size`, and the default minimum card/icon sizes are now 45px/35px.
+> 🧨 _Breaking Change:_ `icon_width` has been replaced with `icon_min_size` / `icon_max_size`, and the default minimum card/icon sizes are now 45px/35px.
 
 #### Mini Button Variables
 
@@ -635,7 +637,7 @@ _See examples of symbol usage in the [`light_group` section](#light-group-light_
 
 For any `entity` which has on/off state. It can optionally display up to 2 `attributes` from the entity or other entities with custom icons, values and units.
 
-> 🧨 _Breaking:_ `device` still works for now but is deprecated in favour of `entity` and is planned for removal in a future `1.x` release.
+> 🧨 _Breaking Change:_ `device` still works for now but is deprecated in favour of `entity` and is planned for removal in a future `1.x` release.
 
 > :raising_hand_man: _If you don't know what attributes are available on your entity you can use the more-info dialogue or check out the [`entity_details` template](#detailed-entity-information-entity_detail)_
 
@@ -662,7 +664,7 @@ For any `entity` which has on/off state. It can optionally display up to 2 `attr
 | `units` | String | - | The unit of measurement (if required) for the attribute value. |
 | `prefix_units` | Boolean | `false` | When `true` units will appear before the value. |
 
-> 🧨 _Breaking:_ Attribute rows now deduplicate by `id`, render in a flex row, and `id: state` is replaced by `use_state: true` for showing the main entity state.
+> 🧨 _Breaking Change:_ Attribute rows now deduplicate by `id`, render in a flex row, and `id: state` is replaced by `use_state: true` for showing the main entity state.
 
 #### Device Example YAML
 
@@ -985,7 +987,6 @@ There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`
   ```
 
 </p></details>
-- **`adaptive_lighting`:** Targets adaptive lighting area switches. Highlights the active brightness target for the area and sends updates via `script.al_set`.
 
 - **`fan`:** Uses `fan.set_percentage` and matches against `entity.attributes.percentage`. <details><summary>Default items...</summary><p>
 
@@ -1037,7 +1038,7 @@ There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`
 
 #### Value Strip Item
 
-> 🧨 _Breaking:_ `step_value` replaces `value` for item values.
+> 🧨 _Breaking Change:_ `step_value` replaces `value` for item values.
 
 | Property | Values | Default | Description |
 | - | - | - | - |
@@ -1341,9 +1342,9 @@ There are some addons and cards which are really only going to be of interest to
 
 Shared client-side helper that powers effect/theme dropdowns, select option calls, and version checking. Included by default on most templates that need in-card scripting. Essential for most cards to work as expected.
 
-### Button Config (`bc_config`)
+### Button-Card Config (`bc_config`)
 
-Exposes the resolved button-card config object to templates as variabe `__config`, per-card logic that depends on the current config rather than variables.
+Exposes the resolved button-card config object to templates as variabe `__config`, this gives you access to perform advanced actions in your Javascript based on items other than the variables. If you're not sure what it's for, best to leave it alone!
 
 ### Debug
 

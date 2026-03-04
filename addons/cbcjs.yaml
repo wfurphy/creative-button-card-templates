@@ -4,7 +4,6 @@ cbcjs:
     - _cbc_settings
     - bc_config
   variables:
-    __cbcjs_debug: true
     __cbc_version: v0.3.0
     __cbc_lovelace_method: "[[[ return hass?.panels?.[hass.panelUrl]?.config?.mode ?? 'unknown' ]]]"
     __cbc_error: >
@@ -29,7 +28,7 @@ cbcjs:
           *   DEFAULT: Retreive and only overwrite if udefined or empty
           *   SET: Override any existing value and return new value
           *   UPDATE: Retreive and only overwrite if different
-          *   INCREMENT: Numbers addition and return new value
+          *   INCREMENT: Incrememnt stored number by provided value (or 1)
           *   MAP: Merge a new MAP with the stored MAP and return merged
           *   DELETE: Remove item from storage
           * @type {object}
@@ -54,7 +53,7 @@ cbcjs:
             LOG: 'log',
             INFO: 'info',
             DEBUG: 'debug',
-          }
+          };
 
           /**
           * Create a new CBCJS instance.
@@ -70,7 +69,6 @@ cbcjs:
             this.debug = variables?.__cbcjs_debug ?? false;
             this.totalCardCalls = 0;
             this.__setNewPanel(hass);
-            // ::> Local Storage
             this.checkUpdates = this.__ls(
               'cbc_check_version',
               variables?.__cbc_check?.updates ?? true,
@@ -92,11 +90,12 @@ cbcjs:
               this.LS.SET,
             );
             this.stats = this.__ls('cbc_stats', null, this.LS.MAP);
-            // ::> Version Info
             this.version = this.__ls('cbc_version', variables?.__cbc_version || 'v0.0.0', this.LS.UPDATE);
             this.availableVersion = this.__ls('cbc_available_version');
             this.firstCheck = this.__ls('cbc_first_check');
             this.lastCheck = this.__ls('cbc_last_check');
+            this.lastFail = this.__ls('cbc_check_last_fail');
+            this.failQty = this.__ls('cbc_check_fail_qty', 0);
           }
 
           /**
@@ -190,11 +189,17 @@ cbcjs:
             return this;
           }
 
+          /**
+          *  Centralized handler for errors, warnings, and debug messages.
+          * @param {Error|string} error Error object or message
+          * @param {object} extra Additional context for the error
+          * @param {string} cType Console method to use (default: ERROR)
+          */
           handler(error, extra, cType = this.C.ERROR) {
-            if (cType === this.C.DEBUG && variables.debug) {
-              let message = error instanceof Error ? error.message : error;
-              message = typeof message === 'string' ? `| ${message} |::>` : '>';
-              console.debug(`::CBC::Debug::${message}`, { error, extra });
+            if (cType === this.C.DEBUG) {
+              if (!this.debug) return;
+              const message = String(error instanceof Error ? error.message : error);
+              console.debug(`::CBC::Debug::| ${message} |::>`, typeof error === 'object' ? { error, extra } : extra);
               return;
             }
 
@@ -215,17 +220,17 @@ cbcjs:
           }
 
           /**
-           * Check for Updates
-           */
+          * Check for Updates
+          */
           checkUpdate() {
-            this.init(true).then(cbcjs => {
+            this.init(true).then((cbcjs) => {
               cbcjs.__renderConsole();
             });
 
             return this;
           }
 
-                    /**
+          /**
           * Register a card
           * @param {object} config Card configuration
           * @param {object} hass The latest hass object
@@ -254,17 +259,6 @@ cbcjs:
           }
 
           /**
-          * Setup new panel and card stats
-          * @param {object} hass The hass object to create from
-          */
-          __setNewPanel(hass) {
-            this.cards = new Set();
-            this.panel = hass.panelUrl;
-            this.lovelaceMode = hass?.panels?.[hass.panelUrl]?.config?.mode ?? 'unknown';
-            this.addCard(variables.__config, hass);
-          }
-
-          /**
           * Initialize the Creative Button-Card runtime.
           * @param {boolean} mustCheck Must check for updates
           * @returns {Promise<CreateiveButtonCardsJS>} CBCJS instance
@@ -273,12 +267,15 @@ cbcjs:
             mustCheck = this.debug || mustCheck;
             try {
               const checkWindowMs = this.__dToMs(this.checkFrequency);
-              const shouldCheck = mustCheck
-                || !this.lastCheck
-                || !this.availableVersion
-                || (this.firstCheck && (Date.now() - Number(this.firstCheck) >= this.__dToMs(7)))
-                || (Date.now() - Number(this.lastCheck) >= Number(checkWindowMs));
-              if (shouldCheck) await this.__getVersion(mustCheck);
+              const shouldCheck =
+                mustCheck ||
+                !this.lastCheck ||
+                !this.availableVersion ||
+                (this.firstCheck && Date.now() - Number(this.firstCheck.getTime()) >= this.__dToMs(7)) ||
+                (this.failQty > 0 && this.failQty <= 5) ||
+                (this.failQty > 5 && Date.now() - Number(this.lastFail.getTime()) >= this.__dToMs(1)) ||
+                Date.now() - Number(this.lastCheck.getTime()) >= Number(checkWindowMs);
+              if (shouldCheck) await this.__setVersion(mustCheck);
               if (this.availableVersion && this.version !== this.availableVersion) {
                 this.update = true;
                 this.__notifyUpdate();
@@ -290,20 +287,34 @@ cbcjs:
           }
 
           /**
+          * Setup new panel and card stats
+          * @param {object} hass The hass object to create from
+          */
+          __setNewPanel(hass) {
+            this.cards = new Set();
+            this.panel = hass.panelUrl;
+            this.lovelaceMode = hass?.panels?.[hass.panelUrl]?.config?.mode ?? 'unknown';
+            this.addCard(variables.__config, hass);
+          }
+
+          /**
           * Parse stored values if they are JSON strings.
           * @param {any} value Stored value
-          * @param {LS} proc LS.MAP will hydrate as Map() @see LS
+          * @param {LS} proc LS.MAP will hydrate as Map() @see this.LS
           * @returns {any} Parsed value or original
           */
           __lsHydrate(value, proc = this.LS.DEFAULT) {
-            if (typeof value !== 'string') return value;
-
             try {
+              if (typeof value !== 'string' || value.startsWith('cbc-') || /^v\d+((\.\d+)+)?$/g.test(value)) return value;
+              if (value === 'true' || value === 'false') return Boolean(value);
+              if (value === 'null' || value === 'undefined' || value === '') return null;
+              if (/^\d{13,}$/.test(value)) return new Date(Number(value));
+              if (/^\d+$/.test(value)) return Number(value);
               const out = JSON.parse(value);
               return proc === this.LS.MAP ? new Map(Object.entries(out)) : out;
             } catch (error) {
-              this.handler(error, value, this.C.DEBUG);
-              return proc === this.LS.MAP ? undefined : value;
+              this.handler(error, { value }, this.C.DEBUG);
+              return value;
             }
           }
 
@@ -316,20 +327,14 @@ cbcjs:
             if (typeof value !== 'object') return value;
 
             try {
-              return value instanceof Map ? this.__mapToStore(value) : JSON.stringify(value);
+              if (value instanceof Date) return value.getTime();
+              return value instanceof Map
+                ? JSON.stringify(Object.fromEntries(value)) 
+                : JSON.stringify(value);
             } catch (error) {
               this.handler('Value could not be stringified for storage', { value, error });
               return value;
             }
-          }
-
-          /**
-          * Convert a Map to a JSON string for storage.
-          * @param {Map} value Map to store
-          * @returns {string} Stringified map entries
-          */
-          __mapToStore(value) {
-            return JSON.stringify(Object.fromEntries(value));
           }
 
           /**
@@ -343,26 +348,29 @@ cbcjs:
             const procName = 'LS.' + Object.keys(this.LS).find((key) => this.LS[key] === proc);
             if (!value && proc === this.LS.INCREMENT) value = 1;
             let out;
+            let val;
 
             try {
-              let val = localStorage.getItem(name) ?? undefined;
+              val = localStorage.getItem(name) ?? undefined;
 
-              if (!val && !value) {
-                throw new CBCWarn(`No value found in storage and none provided`);
+              if (val === undefined && value === null) {
+                this.handler(`No value found in storage and none provided for ${procName} operation: ${name}`, {val, value}, this.C.DEBUG);
+                return undefined;
               }
 
-              out = value;
+              out = this.__lsHydrate(val, proc);
+
+              this.handler(`__ls::| ${name} |::[${procName}]::(val, out)`, { val, out }, this.C.DEBUG); // DEBUG
 
               switch (proc) {
-                case this.LS.DEFAULT:
-                  if (val) {
-                    return this.__lsHydrate(val);
-                  }
+                case this.LS.SET:
+                  out = value;
                   break;
                 case this.LS.UPDATE:
                   if (!value || (val && val === this.__lsToStore(value))) {
-                    return this.__lsHydrate(val, proc);
+                    return out;
                   }
+                  out = value;
                   break;
                 case this.LS.DELETE:
                   localStorage.removeItem(name);
@@ -371,26 +379,27 @@ cbcjs:
                   out = val ? Number(val) + Number(value) : Number(value);
                   break;
                 case this.LS.MAP:
-                  if (val) {
-                    val = this.__lsHydrate(val, proc);
-                    if (!(val instanceof Map)) {
-                      throw new CBCWarn(`Stored value is not a Map`,{ procName, val, value });
-                    } else if (!value) {
-                      return val;
-                    } else if (!(value instanceof Map)) {
-                      throw new CBCWarn(`Provided value is not a Map`, { procName, val, value });
-                    }
-                    out = new Map([...val, ...value]);
+                  if (out && !(out instanceof Map)) {
+                    throw new CBCWarn(`Stored value is not a Map`, { procName, val, value });
+                  } else if (out && !value) {
+                    return out;
+                  } else if (!(value instanceof Map)) {
+                    throw new CBCWarn(`Provided value is not a Map`, { procName, val, value });
                   }
+                  out = out ? new Map([...out, ...value]) : value;
                   break;
-                case this.LS.SET:
+                case this.LS.DEFAULT:
                 default:
+                  if (out) {
+                    return out;
+                  }
+                  out = value;
                   break;
               }
 
               localStorage.setItem(name, this.__lsToStore(out));
             } catch (error) {
-              error.message += ` for ${procName} operation: ${name}`
+              error.message += ` for ${procName} operation: ${name}`;
               this.handler(error);
               return undefined;
             }
@@ -399,7 +408,7 @@ cbcjs:
           }
 
           /**
-          * Generate a new install identifier.
+          * Generate a unique identifier for this browser instance.
           * @returns {string} Install identifier
           */
           __createBrowserId() {
@@ -426,11 +435,11 @@ cbcjs:
           /**
           * Check for the latest available version.
           * @param {boolean} manual Is a manual request to check (default: false)
-          * @returns {Promise<string | null>} Version info
+          * @returns {CreateiveButtonCardsJS} this for chaining
           */
-          async __getVersion(manual = false) {
+          async __setVersion(manual = false) {
             if (!this.checkUpdates && !manual) {
-              return null;
+              return this;
             }
 
             let out;
@@ -450,11 +459,14 @@ cbcjs:
               const stats = this.__getStats();
               this.stats = this.__ls('cbc_stats', stats, this.LS.MAP);
               req.stats = Object.fromEntries(this.stats);
-             // this.handler('__getVersion: stats, this.stats, req', { stats, thisStats: this.stats, req }, this.C.DEBUG); // DEBUG
             }
 
             try {
-              const response = await fetch('https://api.cbc.willfurphy.com/version', {
+              const stage =
+                variables?.__cbc_stage && variables.__cbc_stage !== 'prod'
+                  ? `${variables.__cbc_stage}.`
+                  : '';
+              const response = await fetch(`https://${stage}api.cbc.willfurphy.com/version`, {
                 method: 'POST',
                 headers: {
                   authorization: 'y2xdfcth5T1WeS2uhp3s2FEjNBxzEgs75pAG0s0M9y',
@@ -462,13 +474,12 @@ cbcjs:
                 },
                 body: JSON.stringify(req),
               });
-              
+
               if (!response.ok) {
                 throw new CBCError(`HTTP Error ${response.status}: ${response.statusText}`, { response });
               }
 
               const responseBody = await response.json();
-
               out = responseBody?.data?.version ?? null;
 
               if (!out || typeof out !== 'string' || !out.startsWith('v')) {
@@ -476,18 +487,15 @@ cbcjs:
               }
 
               this.availableVersion = this.__ls('cbc_available_version', out, this.LS.UPDATE);
-
-              if (!this.firstCheck) {
-                this.firstCheck = this.__ls('cbc_first_check', thisCheck, this.LS.SET);
-                const nd = new Date(thisCheck);
-                nd.setDate(nd.getDate() + 7);
-                this.nextCheck = this.__ls('cbc_next_check', nd.getTime(), this.LS.SET);
-              }
+              this.firstCheck = this.__ls('cbc_first_check', thisCheck);
+              this.failQty = this.__ls('cbc_check_fail_qty', 0, this.LS.SET);
             } catch (error) {
+              this.lastFail = this.__ls('cbc_check_last_fail', Date.now(), this.LS.SET);
+              this.failQty = this.__ls('cbc_check_fail_qty', 1, this.LS.INCREMENT);
               this.handler(error);
             }
 
-            return out;
+            return this;
           }
 
           /**
@@ -528,18 +536,18 @@ cbcjs:
           }
 
           /**
-           * Render the version information in the console.
-           * @returns {CreativeButtonCardJS} this for chaining
-           */
+          * Render the version information in the console.
+          * @returns {CreativeButtonCardJS} this for chaining
+          */
           __renderConsole() {
             console.info(
               '%c CREATIVE BUTTON-CARD TEMPLATES %c '.concat(
                 this.version,
                 ' ',
                 this.update
-                  ? `\n%c Update Available (${new Date(this.lastCheck).toLocaleDateString()})  %c ${this.availableVersion} `
+                  ? `\n%c Update Available (${this.lastCheck.toLocaleDateString()})  %c ${this.availableVersion} `
                   : '',
-                this.update 
+                this.update
                   ? `\n%chttps://github.com/wfurphy/creative-button-card-templates/releases/tag/${this.availableVersion}`
                   : '\n%chttps://github.com/wfurphy/creative-button-card-templates',
               ),
@@ -553,30 +561,37 @@ cbcjs:
           }
 
           /**
-           * Send Notification if there is an update available
-           * @returns {CreativeButtonCardJS} this for chaining
-           */
+          * Send Notification if there is an update available
+          * @returns {CreativeButtonCardJS} this for chaining
+          */
           __notifyUpdate() {
             if (!this.update || !this.checkNotify) return;
-            
+
             helpers.toast({
-                message: `Creative Button-Card Update Available`,
-                duration: 5000,
-                dismissable: true,
-                action: {
-                  text: `Get ${this.availableVersion}`,
-                  action: () => setTimeout(() => window.open(`https://github.com/wfurphy/creative-button-card-templates/releases/tag/${this.availableVersion}`, '_blank'), 500)
-                }
-              }
-            );
+              message: `Creative Button-Card Update Available`,
+              duration: 5000,
+              dismissable: true,
+              action: {
+                text: `Get ${this.availableVersion}`,
+                action: () =>
+                  setTimeout(
+                    () =>
+                      window.open(
+                        `https://github.com/wfurphy/creative-button-card-templates/releases/tag/${this.availableVersion}`,
+                        '_blank',
+                      ),
+                    500,
+                  ),
+              },
+            });
             return this;
           }
 
           /**
-           * Days to Milliseconds
-           * @param {number} d Days
-           * @returns {number} Milliseconds
-           */
+          * Days to Milliseconds
+          * @param {number} d Days
+          * @returns {number} Milliseconds
+          */
           __dToMs(d) {
             return Number(d) * 24 * 60 * 60 * 1000;
           }
