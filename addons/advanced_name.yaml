@@ -1,0 +1,44 @@
+####{ Creative BC }########| +Advanced Name |########[ github.com/wfurphy ]#####>
+# :: @Changes v0.3::> New Addon for 0.3.0 Allows you to change the name of cards to a title
+advanced_name:
+  template: bc_config
+  variables:
+    # ::::[ advanced name variables ]::::>
+    # ::> name_advanced > turns on advanced name vs simple name (as per other cards)
+    name_advanced: true
+    # ::> All name_* settings only apply if name_advanced = true
+    name_mirror: false
+    name_opacity: 0.2
+    name_uppercase: true
+    name_background_color: '#000'
+    name_text_color: var(--cbc-name-text-color, var(--cbc-name-color, '#ffffff'))
+    __tt:
+      force_eval: true
+      value: >
+        [[[
+          const areas = variables.__config.styles.grid.find(obj => obj['grid-template-areas'])?.['grid-template-areas'];
+          variables.debug_extras = { areas };
+          return areas;
+        ]]]
+  styles:
+    name:
+      - display: "[[[ return variables.title_advanced ? 'none' : 'block' ]]]"
+      - text-align: center
+    custom_fields:
+      an:
+        - display: "[[[ return variables.title_advanced ? 'block' : 'none' ]]]"
+        - margin-left: "[[[ return variables.mirror ? '5px' : 0 ]]]"
+        - margin-right: "[[[ return variables.mirror ? 0 : '5px' ]]]"
+  custom_fields:
+    advanced_name:
+      an:
+        type: custom:button-card #                     ##### name ####>
+        template: title
+        name: "[[[ return variables.__config?.name ]]]"
+        variables:
+          mirror: "[[[ return variables.name_mirror ]]]"
+          background_color: "[[[ return variables.name_background_color ]]]"
+          text_color: "[[[ return variables.name_text_color ]]]"
+          uppercase: "[[[ return variables.name_uppercase ]]]"
+          height: 40px
+          opacity: "[[[ return variables.name_opacity ]]]"

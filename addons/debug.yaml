@@ -18,12 +18,12 @@ debug:
     debugger: >
       [[[
         if (!variables?.debug) return
-
         const o = {
-          variables: variables, 
+          variables: variables,
+          varialbles_eval: this._evaluatedVariables,
           entity: entity ?? undefined,
           bc: this,
-          bcConfig: variables.__config,
+          bcConfig: variables.__config ?? undefined,
           cbcjs: window.cbcJS ?? undefined,
         }
 

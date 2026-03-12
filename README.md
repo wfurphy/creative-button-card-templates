@@ -468,7 +468,6 @@ It's what it says on the tin. Title is created from the `name` property and supp
 | `mirror` | Boolean | `false` | Run right-to-left instead of left-to-right |
 | `show_tab` | Boolean | `false` | Show a colored tab edge on the card. |
 | `offset` | String/Number | `0` | Horizontal offset for the card. |
-| `info` | Array | `[]` | Up to three `title_info` mini chips to display inline (leave empty to hide). |
 
 #### Title Example YAML
 
@@ -596,7 +595,7 @@ This is a little button which only displays an icon with the option of defining 
 | `min_width` | String (CSS) | `45px` | Minimum width of the card. |
 | `icon_min_size` | String (CSS) | `35px` | Minimum icon size. Replaces `icon_width`. |
 | `icon_max_size` | String (CSS) |  | Maximum icon size (optional). |
-| `symbol` | Single Character String OR `mdi:*` |  | A single character of text or an icon to identify the light |
+| `symbol` | 1-2 Character String OR `mdi:*` |  | 1-2 characters of text or an icon to identify the light |
 | `symbol_width` | String (CSS) | `50%` | Only applies if the `symbol` is an icon (`mdi:*`). Adjust if the symbol doesn't fit |
 | `symbol_font_size` | String (CSS) | `auto` | Only applies if the `symbol` is a string. Adjust if the symbol doesn't fit |
 | `symbol_color` | String (CSS) | `var( --ha-card-background, var(--card-background-color, white) )` | Set a custom symbol color |

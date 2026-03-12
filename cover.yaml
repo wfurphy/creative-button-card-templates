@@ -3,7 +3,6 @@ cover:
   type: custom:button-card
   template: 
     - cbcjs
-    - debug
   show_name: true
   show_icon: false
   show_state: false
@@ -41,11 +40,11 @@ cover:
 
   styles:
     card:
-      - padding: 0;
-      - margin: 0;
+      - padding: 0
+      - margin: 0
     grid:
-      - padding: 0;
-      - margin: 0;
+      - padding: 0
+      - margin: 0
       - grid-template-areas: >
           [[[ return variables.mirror ? `"pos ${variables._tt}" "strip strip"` : `"${variables._tt} pos" "strip strip"` ]]]
       - grid-template-columns: >
@@ -94,8 +93,7 @@ cover:
     title:
       card:
         type: custom:button-card #                     ##### Title ####>
-        template:
-          - title
+        template: title
         name: "[[[ return variables.__config?.name ]]]"
         variables:
           mirror: "[[[ return variables.mirror ]]]"

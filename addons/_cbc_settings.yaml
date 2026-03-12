@@ -2,7 +2,7 @@
 _cbc_settings:
   variables:
     __cbc_check:
-      # :: Enable Checking for Updates ::> true|false (Default: true)
+      # :: Enable Checking for Updates ::> true|false (Default: true) This will also disable sending data.
       updates: true
 
       # Check Frequncy

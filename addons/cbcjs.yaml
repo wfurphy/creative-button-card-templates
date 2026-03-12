@@ -3,6 +3,7 @@ cbcjs:
   template:
     - _cbc_settings
     - bc_config
+    - stage ###> Remove for Production
   variables:
     __cbc_version: v0.3.0
     __cbc_lovelace_method: "[[[ return hass?.panels?.[hass.panelUrl]?.config?.mode ?? 'unknown' ]]]"
@@ -24,15 +25,15 @@ cbcjs:
       [[[
         return class CreateiveButtonCardsJS {
           /**
-          * LS.<OP> LocalStorage Operations:
-          *   DEFAULT: Retreive and only overwrite if udefined or empty
-          *   SET: Override any existing value and return new value
-          *   UPDATE: Retreive and only overwrite if different
-          *   INCREMENT: Incrememnt stored number by provided value (or 1)
-          *   MAP: Merge a new MAP with the stored MAP and return merged
-          *   DELETE: Remove item from storage
-          * @type {object}
-          */
+           * LS.<OP> LocalStorage Operations:
+           *   DEFAULT: Retreive and only overwrite if udefined or empty
+           *   SET: Override any existing value and return new value
+           *   UPDATE: Retreive and only overwrite if different
+           *   INCREMENT: Incrememnt stored number by provided value (or 1)
+           *   MAP: Merge a new MAP with the stored MAP and return merged
+           *   DELETE: Remove item from storage
+           * @type {object}
+           */
           LS = {
             DEFAULT: 0,
             SET: 10,
@@ -43,10 +44,10 @@ cbcjs:
           };
 
           /**
-          * C.<TYPE> Console Notice Level
-          *   ERROR, WARN, LOG, INFO, DEBUG
-          * @type {object}
-          */
+           * C.<TYPE> Console Notice Level
+           *   ERROR, WARN, LOG, INFO, DEBUG
+           * @type {object}
+           */
           C = {
             ERROR: 'error',
             WARN: 'warn',
@@ -56,69 +57,73 @@ cbcjs:
           };
 
           /**
-          * Create a new CBCJS instance.
-          * @param {object} hass Home Assistant object
-          */
+           * Create a new CBCJS instance.
+           * @param {object} hass Home Assistant object
+           */
           constructor(hass) {
             this.update = false;
             this.globals = {};
             this.css = {};
             this.hass = hass;
-            this.updatedAt = new Date().getTime();
+            this.updatedAt = new Date();
             this.browserId = this.__ensureBrowserId();
             this.debug = variables?.__cbcjs_debug ?? false;
             this.totalCardCalls = 0;
+            this.statsFlushTimer = null;
+            this.statsFlushDelayMs = 300;
+            this.statsDirty = false;
             this.__setNewPanel(hass);
             this.checkUpdates = this.__ls(
-              'cbc_check_version',
+              'check_version',
               variables?.__cbc_check?.updates ?? true,
               this.LS.SET,
             );
             this.checkFrequency = this.__ls(
-              'cbc_check_frequency',
+              'check_frequency',
               Math.min(Math.max(variables?.__cbc_check?.frequency ?? 28, 7), 90),
               this.LS.SET,
             );
             this.checkNotify = this.__ls(
-              'cbc_check_notify',
+              'check_notify',
               variables?.__cbc_check?.notify ?? true,
               this.LS.SET,
             );
             this.checkSendData = this.__ls(
-              'cbc_send_data',
+              'send_data',
               variables?.__cbc_check.send_data ?? true,
               this.LS.SET,
             );
-            this.stats = this.__ls('cbc_stats', null, this.LS.MAP);
-            this.version = this.__ls('cbc_version', variables?.__cbc_version || 'v0.0.0', this.LS.UPDATE);
-            this.availableVersion = this.__ls('cbc_available_version');
-            this.firstCheck = this.__ls('cbc_first_check');
-            this.lastCheck = this.__ls('cbc_last_check');
-            this.lastFail = this.__ls('cbc_check_last_fail');
-            this.failQty = this.__ls('cbc_check_fail_qty', 0);
+            this.stats = this.__ls('stats', null, this.LS.MAP);
+            this.version = this.__ls('version', variables?.__cbc_version || 'v0.0.0', this.LS.UPDATE);
+            this.availableVersion = this.__ls('available_version');
+            this.firstCheck = this.__ls('first_check', null);
+            this.checkError = this.__ls('check_error');
+            this.lastFail = this.__ls('check_last_fail');
+            this.failQty = this.__ls('check_fail_qty', 0);
+            this.checkQty = this.__ls('check_qty', 0);
           }
 
           /**
-          * Run a light effect on a target entity.
-          * @param {string} ef Effect name
-          * @param {string} entity Entity id
-          */
+           * Run a light effect on a target entity.
+           * @param {string} ef Effect name
+           * @param {string} entity Entity id
+           */
           runLightEffect(ef, entity) {
             const data = {
               entity_id: entity,
               effect: ef,
             };
 
-            let theme = this.hass.states[`select.${entity.replace('light.')}_theme`]?.state;
+            let theme = this.hass.states[`select.${entity.replace('light.', '')}_theme`]?.state;
             if (theme && theme !== 'unknown') data.theme = theme;
             this.hass.callService('light', 'turn_on', data);
           }
 
           /**
-          * Select an option on a select entity.
-          * @param {string} val Option name
-          * @param {string} entity Entity id
-          */
+           * Select an option on a select entity.
+           * @param {string} val Option name
+           * @param {string} entity Entity id
+           */
           selectOption(val, entity) {
             this.hass.callService('select', 'select_option', {
               entity_id: entity,
@@ -127,12 +132,12 @@ cbcjs:
           }
 
           /**
-          * Call a Home Assistant service action.
-          * @param {string} domain Service domain
-          * @param {string} action Service action
-          * @param {object} data Service payload
-          * @returns {CreateiveButtonCardsJS} Chainable instance
-          */
+           * Call a Home Assistant service action.
+           * @param {string} domain Service domain
+           * @param {string} action Service action
+           * @param {object} data Service payload
+           * @returns {CreateiveButtonCardsJS} Chainable instance
+           */
           action(domain, action, data) {
             this.hass.callService(domain, action, data);
 
@@ -140,30 +145,30 @@ cbcjs:
           }
 
           /**
-          * Execute a list of service actions.
-          * @param {Array} list List of [domain, action, data]
-          * @returns {CreateiveButtonCardsJS} Chainable instance
-          */
+           * Execute a list of service actions.
+           * @param {Array} list List of [domain, action, data]
+           * @returns {CreateiveButtonCardsJS} Chainable instance
+           */
           actionList(list = []) {
             list.forEach((l) => this.action(...l));
             return this;
           }
 
           /**
-          * Add CSS variables for templates.
-          * @param {object} css CSS variable map
-          * @returns {CreateiveButtonCardsJS} Chainable instance
-          */
+           * Add CSS variables for templates.
+           * @param {object} css CSS variable map
+           * @returns {CreateiveButtonCardsJS} Chainable instance
+           */
           addCss(css = {}) {
             this.css = { ...this.css, ...css };
             return this;
           }
 
           /**
-          * Set the current view path.
-          * @param {string} path View path
-          * @returns {CreateiveButtonCardsJS} Chainable instance
-          */
+           * Set the current view path.
+           * @param {string} path View path
+           * @returns {CreateiveButtonCardsJS} Chainable instance
+           */
           setView(path) {
             path = path ?? window.location.pathname;
             this.view = path.substring(1);
@@ -171,9 +176,9 @@ cbcjs:
           }
 
           /**
-          * Insert CSS variables into the page when view changes.
-          * @returns {CreateiveButtonCardsJS} Chainable instance
-          */
+           * Insert CSS variables into the page when view changes.
+           * @returns {CreateiveButtonCardsJS} Chainable instance
+           */
           insertStyles() {
             const html = document.getElementsByTagName('html')[0];
 
@@ -190,16 +195,19 @@ cbcjs:
           }
 
           /**
-          *  Centralized handler for errors, warnings, and debug messages.
-          * @param {Error|string} error Error object or message
-          * @param {object} extra Additional context for the error
-          * @param {string} cType Console method to use (default: ERROR)
-          */
+           * Centralized handler for errors, warnings, and debug messages.
+           * @param {Error|string} error Error object or message
+           * @param {object} extra Additional context for the error
+           * @param {string} cType Console method to use (default: ERROR)
+           */
           handler(error, extra, cType = this.C.ERROR) {
             if (cType === this.C.DEBUG) {
               if (!this.debug) return;
               const message = String(error instanceof Error ? error.message : error);
-              console.debug(`::CBC::Debug::| ${message} |::>`, typeof error === 'object' ? { error, extra } : extra);
+              console.debug(
+                `::CBC::Debug::| ${message} |::>`,
+                typeof error === 'object' ? { error, extra } : extra,
+              );
               return;
             }
 
@@ -215,27 +223,29 @@ cbcjs:
               error = new CBCError('Unknown Error', { error, extra });
             }
 
+            if (cType === this.C.ERROR) {
+              this.checkError = this.__ls('check_error', error.message, this.LS.SET);
+            }
+
             cType = Object.values(this.C).includes(cType) ? cType : this.C.LOG;
             console[cType](`::CBC::${cType.toUpperCase()}::| ${error.message} |::>`, { error });
           }
 
           /**
-          * Check for Updates
-          */
-          checkUpdate() {
+           * Check for Updates
+           */
+          checkVersion() {
             this.init(true).then((cbcjs) => {
               cbcjs.__renderConsole();
             });
-
-            return this;
           }
 
           /**
-          * Register a card
-          * @param {object} config Card configuration
-          * @param {object} hass The latest hass object
-          * @returns {CreateiveButtonCardsJS} Chainable instance
-          */
+           * Register a card
+           * @param {object} config Card configuration
+           * @param {object} hass The latest hass object
+           * @returns {CreateiveButtonCardsJS} Chainable instance
+           */
           addCard(config, hass) {
             hass ??= this.hass;
             try {
@@ -246,11 +256,8 @@ cbcjs:
               this.cards.add(config);
               this.totalCardCalls++;
 
-              if (!this.stats || this.prevCardsQty < this.cards.size || !this.stats.get(btoa(this.panel))) {
-                this.stats = this.__ls('cbc_stats', this.__getStats(), this.LS.MAP);
-              }
-
               this.prevCardsQty = this.cards.size;
+              this.__scheduleStatsRefresh();
             } catch (error) {
               this.handler(error, { config }, this.C.WARN);
             }
@@ -259,16 +266,17 @@ cbcjs:
           }
 
           /**
-          * Initialize the Creative Button-Card runtime.
-          * @param {boolean} mustCheck Must check for updates
-          * @returns {Promise<CreateiveButtonCardsJS>} CBCJS instance
-          */
+           * Initialize the Creative Button-Card runtime.
+           * @param {boolean} mustCheck Must check for updates
+           * @returns {Promise<CreateiveButtonCardsJS>} CBCJS instance
+           */
           async init(mustCheck = false) {
             mustCheck = this.debug || mustCheck;
             try {
               const checkWindowMs = this.__dToMs(this.checkFrequency);
               const shouldCheck =
                 mustCheck ||
+                !this.firstCheck ||
                 !this.lastCheck ||
                 !this.availableVersion ||
                 (this.firstCheck && Date.now() - Number(this.firstCheck.getTime()) >= this.__dToMs(7)) ||
@@ -287,9 +295,9 @@ cbcjs:
           }
 
           /**
-          * Setup new panel and card stats
-          * @param {object} hass The hass object to create from
-          */
+           * Setup new panel and card stats
+           * @param {object} hass The hass object to create from
+           */
           __setNewPanel(hass) {
             this.cards = new Set();
             this.panel = hass.panelUrl;
@@ -298,15 +306,44 @@ cbcjs:
           }
 
           /**
-          * Parse stored values if they are JSON strings.
-          * @param {any} value Stored value
-          * @param {LS} proc LS.MAP will hydrate as Map() @see this.LS
-          * @returns {any} Parsed value or original
-          */
+           * Schedule an async panel stats refresh so repeated addCard calls do not
+           * repeatedly recompute all stats while cards are still loading.
+           * @returns {void}
+           */
+          __scheduleStatsRefresh() {
+            this.statsDirty = true;
+            if (this.statsFlushTimer) return;
+
+            this.statsFlushTimer = setTimeout(() => {
+              this.statsFlushTimer = null;
+              if (!this.statsDirty) return;
+              this.__refreshStats().catch((error) =>
+                this.handler(error, { panel: this.panel }, this.C.WARN),
+              );
+            }, this.statsFlushDelayMs);
+          }
+
+          /**
+           * Recompute the current panel snapshot and merge it into persisted stats.
+           * @returns {Promise<void>}
+           */
+          async __refreshStats() {
+            this.statsDirty = false;
+            const stats = await this.__getStats();
+            this.stats = this.__ls('stats', stats, this.LS.MAP);
+          }
+
+          /**
+           * Parse stored values.
+           * @param {any} value Stored value
+           * @param {LS} proc LS.MAP will hydrate as Map() @see this.LS
+           * @returns {any} Parsed value or original
+           */
           __lsHydrate(value, proc = this.LS.DEFAULT) {
             try {
-              if (typeof value !== 'string' || value.startsWith('cbc-') || /^v\d+((\.\d+)+)?$/g.test(value)) return value;
-              if (value === 'true' || value === 'false') return Boolean(value);
+              if (typeof value !== 'string' || value.startsWith('cbc-') || /^v\d+((\.\d+)+)?$/g.test(value))
+                return value;
+              if (value === 'true' || value === 'false') return value === 'true';
               if (value === 'null' || value === 'undefined' || value === '') return null;
               if (/^\d{13,}$/.test(value)) return new Date(Number(value));
               if (/^\d+$/.test(value)) return Number(value);
@@ -319,17 +356,17 @@ cbcjs:
           }
 
           /**
-          * Convert values to JSON for storage if they are objects or arrays.
-          * @param {any} value Stored value
-          * @returns {any} Parsed value or original
-          */
+           * Convert values to JSON for storage if they are objects or arrays.
+           * @param {any} value Stored value
+           * @returns {any} Parsed value or original
+           */
           __lsToStore(value) {
             if (typeof value !== 'object') return value;
 
             try {
               if (value instanceof Date) return value.getTime();
               return value instanceof Map
-                ? JSON.stringify(Object.fromEntries(value)) 
+                ? JSON.stringify(Object.fromEntries(value))
                 : JSON.stringify(value);
             } catch (error) {
               this.handler('Value could not be stringified for storage', { value, error });
@@ -337,30 +374,51 @@ cbcjs:
             }
           }
 
+          __lsDelete(name) {
+            return this.__ls(name, null, this.LS.DELETE);
+          }
+
+          __lsInc(name, amount = 1) {
+            return this.__ls(name, amount, this.LS.INCREMENT);
+          }
+
           /**
-          * LocalStorage helper with common operations.
-          * @param {string} name Storage key
-          * @param {any} value Value to set/merge (default: null)
-          * @param {number} proc Operation flag from LS (default: LS.DEFAULT) @see CreateiveButtonCardsJS.LS
-          * @returns {any} Retreived/Stored value
-          */
+           * LocalStorage helper with common operations.
+           * @param {string} name Storage key
+           * @param {any} value Value to set/merge (default: null)
+           * @param {number} proc Operation flag from LS (default: LS.DEFAULT) @see CreateiveButtonCardsJS.LS
+           * @returns {any} Retreived/Stored value
+           */
           __ls(name, value = null, proc = this.LS.DEFAULT) {
             const procName = 'LS.' + Object.keys(this.LS).find((key) => this.LS[key] === proc);
-            if (!value && proc === this.LS.INCREMENT) value = 1;
             let out;
             let val;
 
             try {
+              if (!name || typeof name !== 'string') {
+                throw new CBCError('You must provide a string for the name of the LocalStorage key');
+              }
+
+              name = name.startsWith('cbc_') ? name : `cbc_${name}`;
+
+              if (proc === this.LS.DELETE) {
+                localStorage.removeItem(name);
+                return undefined;
+              }
+
+              if (!value && proc === this.LS.INCREMENT) value = 1;
               val = localStorage.getItem(name) ?? undefined;
 
               if (val === undefined && value === null) {
-                this.handler(`No value found in storage and none provided for ${procName} operation: ${name}`, {val, value}, this.C.DEBUG);
+                this.handler(
+                  `No value found in storage and none provided for ${procName} operation: ${name}`,
+                  { val, value },
+                  this.C.DEBUG,
+                );
                 return undefined;
               }
 
               out = this.__lsHydrate(val, proc);
-
-              this.handler(`__ls::| ${name} |::[${procName}]::(val, out)`, { val, out }, this.C.DEBUG); // DEBUG
 
               switch (proc) {
                 case this.LS.SET:
@@ -372,9 +430,6 @@ cbcjs:
                   }
                   out = value;
                   break;
-                case this.LS.DELETE:
-                  localStorage.removeItem(name);
-                  return undefined;
                 case this.LS.INCREMENT:
                   out = val ? Number(val) + Number(value) : Number(value);
                   break;
@@ -390,7 +445,7 @@ cbcjs:
                   break;
                 case this.LS.DEFAULT:
                 default:
-                  if (out) {
+                  if (out !== undefined) {
                     return out;
                   }
                   out = value;
@@ -408,56 +463,65 @@ cbcjs:
           }
 
           /**
-          * Generate a unique identifier for this browser instance.
-          * @returns {string} Install identifier
-          */
+           * Generate a unique identifier for this browser instance.
+           * @returns {string} Install identifier
+           */
           __createBrowserId() {
             if (window.crypto?.randomUUID) {
-              return window.crypto.randomUUID();
+              return `cbc-${window.crypto.randomUUID()}`;
             }
 
             return `cbc-${Date.now()}-${Math.random().toString(16).slice(2)}`;
           }
 
           /**
-          * Ensure a stable install identifier is available.
-          * @returns {string} Install identifier
-          */
+           * Ensure a stable install identifier is available.
+           * @returns {string} Install identifier
+           */
           __ensureBrowserId() {
-            const existing = this.__ls('cbc_browser_id');
+            const existing = this.__ls('browser_id');
             if (existing) return existing;
 
             const browserId = this.__createBrowserId();
-            this.__ls('cbc_browser_id', browserId, this.LS.SET);
+            this.__ls('browser_id', browserId, this.LS.SET);
             return browserId;
           }
 
           /**
-          * Check for the latest available version.
-          * @param {boolean} manual Is a manual request to check (default: false)
-          * @returns {CreateiveButtonCardsJS} this for chaining
-          */
+           * Check for the latest available version and set the properties.
+           * @param {boolean} manual Is a manual request to check (default: false)
+           * @returns {CreateiveButtonCardsJS} this for chaining
+           */
           async __setVersion(manual = false) {
             if (!this.checkUpdates && !manual) {
               return this;
             }
 
             let out;
-            const thisCheck = new Date().getTime();
-            this.lastCheck = this.__ls('cbc_last_check', thisCheck);
+            const thisCheck = new Date();
+            this.lastCheck = this.__ls('last_check', thisCheck);
+            this.firstCheck = this.__ls('first_check', thisCheck);
 
             const req = {
               version: this.version,
               installId: this.browserId,
               checkFrequency: this.checkFrequency,
-              thisCheck: thisCheck,
-              lastCheck: this.lastCheck,
+              thisCheck: thisCheck.getTime(),
+              lastCheck: this.lastCheck?.getTime(),
+              firstCheck: this.firstCheck?.getTime(),
+              checkQty: this.checkQty,
               sendData: this.checkSendData,
+              checkError: this.checkError,
+              lastFail: this.lastFail?.getTime(),
+              failQty: this.failQty,
             };
 
             if (this.checkSendData || this.debug) {
-              const stats = this.__getStats();
-              this.stats = this.__ls('cbc_stats', stats, this.LS.MAP);
+              if (this.statsDirty) {
+                await this.__refreshStats();
+              } else {
+                this.stats = this.__ls('stats', null, this.LS.MAP) ?? new Map();
+              }
               req.stats = Object.fromEntries(this.stats);
             }
 
@@ -469,7 +533,6 @@ cbcjs:
               const response = await fetch(`https://${stage}api.cbc.willfurphy.com/version`, {
                 method: 'POST',
                 headers: {
-                  authorization: 'y2xdfcth5T1WeS2uhp3s2FEjNBxzEgs75pAG0s0M9y',
                   'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(req),
@@ -486,12 +549,15 @@ cbcjs:
                 throw new CBCError('Empty or incorrect version information received', responseBody);
               }
 
-              this.availableVersion = this.__ls('cbc_available_version', out, this.LS.UPDATE);
-              this.firstCheck = this.__ls('cbc_first_check', thisCheck);
-              this.failQty = this.__ls('cbc_check_fail_qty', 0, this.LS.SET);
+              this.availableVersion = this.__ls('available_version', out, this.LS.UPDATE);
+              this.lastCheck = this.__ls('last_check', thisCheck, this.LS.SET);
+              this.failQty = this.__ls('check_fail_qty', 0, this.LS.SET);
+              this.checkQty = this.__lsInc('check_qty');
             } catch (error) {
-              this.lastFail = this.__ls('cbc_check_last_fail', Date.now(), this.LS.SET);
-              this.failQty = this.__ls('cbc_check_fail_qty', 1, this.LS.INCREMENT);
+              this.checkError = this.__ls('check_error', error, this.LS.SET);
+              this.lastFail = this.__ls('check_last_fail', Date.now(), this.LS.SET);
+              this.failQty = this.__lsInc('check_fail_qty');
+              if (this.firstCheck?.getTime() === thisCheck.getTime()) this.__lsDelete('first_check');
               this.handler(error);
             }
 
@@ -499,10 +565,10 @@ cbcjs:
           }
 
           /**
-          * Aggregate card stats.
-          * @returns {Map} Map of stats: [ panel => { mode, cardQty, cards: {template: qty}, with: {templatepair: qty} } ]
-          */
-          __getStats() {
+           * Aggregate card stats.
+           * @returns {Map} Map of stats: [ panel => { mode, cardQty, cards: {template: qty}, with: {templatepair: qty} } ]
+           */
+          async __getStats() {
             const outCards = {};
             const withCards = {};
 
@@ -536,16 +602,16 @@ cbcjs:
           }
 
           /**
-          * Render the version information in the console.
-          * @returns {CreativeButtonCardJS} this for chaining
-          */
+           * Render the version information in the console.
+           * @returns {CreativeButtonCardJS} this for chaining
+           */
           __renderConsole() {
             console.info(
               '%c CREATIVE BUTTON-CARD TEMPLATES %c '.concat(
                 this.version,
                 ' ',
                 this.update
-                  ? `\n%c Update Available (${this.lastCheck.toLocaleDateString()})  %c ${this.availableVersion} `
+                  ? `\n%c Update Available (${this.lastCheck?.toLocaleDateString()})  %c ${this.availableVersion} `
                   : '',
                 this.update
                   ? `\n%chttps://github.com/wfurphy/creative-button-card-templates/releases/tag/${this.availableVersion}`
@@ -561,9 +627,9 @@ cbcjs:
           }
 
           /**
-          * Send Notification if there is an update available
-          * @returns {CreativeButtonCardJS} this for chaining
-          */
+           * Send Notification if there is an update available
+           * @returns {CreativeButtonCardJS} this for chaining
+           */
           __notifyUpdate() {
             if (!this.update || !this.checkNotify) return;
 
@@ -588,10 +654,10 @@ cbcjs:
           }
 
           /**
-          * Days to Milliseconds
-          * @param {number} d Days
-          * @returns {number} Milliseconds
-          */
+           * Days to Milliseconds
+           * @param {number} d Days
+           * @returns {number} Milliseconds
+           */
           __dToMs(d) {
             return Number(d) * 24 * 60 * 60 * 1000;
           }
