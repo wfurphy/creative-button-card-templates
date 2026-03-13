@@ -66,12 +66,11 @@ cbcjs:
             this.css = {};
             this.hass = hass;
             this.updatedAt = new Date();
-            this.browserId = this.__ensureBrowserId();
             this.debug = variables?.__cbcjs_debug ?? false;
-            this.totalCardCalls = 0;
-            this.statsFlushTimer = null;
-            this.statsFlushDelayMs = 300;
-            this.statsDirty = false;
+            this.panelTemplateStats = this.__ls('panel_template_stats', {}, this.LS.DEFAULT) ?? {};
+            this.panelStatsDirty = false;
+            this.panelStatsFlushTimer = null;
+            this.panelStatsFlushDelayMs = 1000;
             this.__setNewPanel(hass);
             this.checkUpdates = this.__ls(
               'check_version',
@@ -88,14 +87,9 @@ cbcjs:
               variables?.__cbc_check?.notify ?? true,
               this.LS.SET,
             );
-            this.checkSendData = this.__ls(
-              'send_data',
-              variables?.__cbc_check.send_data ?? true,
-              this.LS.SET,
-            );
-            this.stats = this.__ls('stats', null, this.LS.MAP);
             this.version = this.__ls('version', variables?.__cbc_version || 'v0.0.0', this.LS.UPDATE);
             this.availableVersion = this.__ls('available_version');
+            this.updateLink = this.__ls('update_link');
             this.firstCheck = this.__ls('first_check', null);
             this.checkError = this.__ls('check_error');
             this.lastFail = this.__ls('check_last_fail');
@@ -252,12 +246,7 @@ cbcjs:
               if (this.panel !== hass.panelUrl) {
                 this.__setNewPanel(hass);
               }
-
-              this.cards.add(config);
-              this.totalCardCalls++;
-
-              this.prevCardsQty = this.cards.size;
-              this.__scheduleStatsRefresh();
+              this.__trackPanelTemplates(config);
             } catch (error) {
               this.handler(error, { config }, this.C.WARN);
             }
@@ -295,42 +284,145 @@ cbcjs:
           }
 
           /**
-           * Setup new panel and card stats
+           * Setup a new panel context.
            * @param {object} hass The hass object to create from
            */
           __setNewPanel(hass) {
-            this.cards = new Set();
             this.panel = hass.panelUrl;
-            this.lovelaceMode = hass?.panels?.[hass.panelUrl]?.config?.mode ?? 'unknown';
             this.addCard(variables.__config, hass);
           }
 
           /**
-           * Schedule an async panel stats refresh so repeated addCard calls do not
-           * repeatedly recompute all stats while cards are still loading.
-           * @returns {void}
+           * Collect lightweight per-panel template usage for later manual reporting.
+           * @param {object} config Card configuration
            */
-          __scheduleStatsRefresh() {
-            this.statsDirty = true;
-            if (this.statsFlushTimer) return;
+          __trackPanelTemplates(config = {}) {
+            const templates = this.__extractTemplates(config);
+            if (!templates.length) return;
 
-            this.statsFlushTimer = setTimeout(() => {
-              this.statsFlushTimer = null;
-              if (!this.statsDirty) return;
-              this.__refreshStats().catch((error) =>
-                this.handler(error, { panel: this.panel }, this.C.WARN),
-              );
-            }, this.statsFlushDelayMs);
+            const panelName = this.panel || window.location.pathname || 'unknown';
+            const panelStats = (this.panelTemplateStats[panelName] ??= {
+              templates: {},
+              updatedAt: null,
+            });
+
+            let changed = false;
+            templates.forEach((templateName) => {
+              if (!panelStats.templates[templateName]) {
+                panelStats.templates[templateName] = true;
+                changed = true;
+              }
+            });
+
+            if (!changed) return;
+            panelStats.updatedAt = new Date().toISOString();
+            this.panelStatsDirty = true;
+            this.__schedulePanelStatsFlush();
           }
 
           /**
-           * Recompute the current panel snapshot and merge it into persisted stats.
-           * @returns {Promise<void>}
+           * Debounce localStorage writes for panel template stats.
            */
-          async __refreshStats() {
-            this.statsDirty = false;
-            const stats = await this.__getStats();
-            this.stats = this.__ls('stats', stats, this.LS.MAP);
+          __schedulePanelStatsFlush() {
+            if (this.panelStatsFlushTimer) return;
+            this.panelStatsFlushTimer = setTimeout(() => {
+              this.panelStatsFlushTimer = null;
+              if (!this.panelStatsDirty) return;
+              this.__flushPanelStats();
+            }, this.panelStatsFlushDelayMs);
+          }
+
+          /**
+           * Persist panel template stats to localStorage.
+           */
+          __flushPanelStats() {
+            this.panelStatsDirty = false;
+            this.__ls('panel_template_stats', this.panelTemplateStats, this.LS.SET);
+          }
+
+          /**
+           * Normalize templates from a card config with minimal per-update work.
+           * @param {object} config Card configuration
+           * @returns {string[]} Template names
+           */
+          __extractTemplates(config = {}) {
+            if (!config || typeof config !== 'object') return [];
+            const template = config.template;
+            if (typeof template === 'string' && template.trim()) {
+              return [template.trim()];
+            }
+            if (!Array.isArray(template) || !template.length) {
+              return [];
+            }
+
+            const out = [];
+            for (let i = 0; i < template.length; i += 1) {
+              const name = template[i];
+              if (typeof name !== 'string') continue;
+              const trimmed = name.trim();
+              if (trimmed) out.push(trimmed);
+            }
+
+            return out;
+          }
+
+          /**
+           * Build a manual stats report from persisted panel template stats.
+           * @returns {object} Aggregated statistics
+           */
+          __getStats() {
+            if (this.panelStatsDirty) this.__flushPanelStats();
+
+            const source = this.__ls('panel_template_stats', {}, this.LS.DEFAULT) ?? {};
+            const panels = {};
+            const templatePanels = {};
+            let totalUniqueTemplates = 0;
+
+            Object.entries(source).forEach(([panelName, panelStats]) => {
+              const templates = Object.keys(panelStats?.templates || {}).sort();
+              templates.forEach((templateName) => {
+                templatePanels[templateName] = (templatePanels[templateName] ?? 0) + 1;
+              });
+              totalUniqueTemplates += templates.length;
+              panels[panelName] = {
+                uniqueTemplateQty: templates.length,
+                templates,
+                updatedAt: panelStats?.updatedAt || null,
+              };
+            });
+
+            const uniqueTemplates = Object.keys(templatePanels).sort();
+            const sortedTemplatesByCoverage = Object.entries(templatePanels).sort(
+              (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+            );
+
+            return {
+              generatedAt: new Date().toISOString(),
+              panelQty: Object.keys(panels).length,
+              uniqueTemplatesQty: uniqueTemplates.length,
+              totalPanelUniqueTemplateEntries: totalUniqueTemplates,
+              panels,
+              templates: {
+                all: uniqueTemplates,
+                byPanelCoverage: sortedTemplatesByCoverage.map(([template, panelQty]) => ({
+                  template,
+                  panelQty,
+                })),
+              },
+            };
+          }
+
+          /**
+           * Return aggregated template stats and print a short console summary.
+           * @returns {object} Aggregated statistics
+           */
+          getStats() {
+            const stats = this.__getStats();
+            console.info('::CBC::INFO::| Panel template stats generated |::>', {
+              panelQty: stats.panelQty,
+              uniqueTemplatesQty: stats.uniqueTemplatesQty,
+            });
+            return stats;
           }
 
           /**
@@ -463,31 +555,6 @@ cbcjs:
           }
 
           /**
-           * Generate a unique identifier for this browser instance.
-           * @returns {string} Install identifier
-           */
-          __createBrowserId() {
-            if (window.crypto?.randomUUID) {
-              return `cbc-${window.crypto.randomUUID()}`;
-            }
-
-            return `cbc-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-          }
-
-          /**
-           * Ensure a stable install identifier is available.
-           * @returns {string} Install identifier
-           */
-          __ensureBrowserId() {
-            const existing = this.__ls('browser_id');
-            if (existing) return existing;
-
-            const browserId = this.__createBrowserId();
-            this.__ls('browser_id', browserId, this.LS.SET);
-            return browserId;
-          }
-
-          /**
            * Check for the latest available version and set the properties.
            * @param {boolean} manual Is a manual request to check (default: false)
            * @returns {CreateiveButtonCardsJS} this for chaining
@@ -502,40 +569,13 @@ cbcjs:
             this.lastCheck = this.__ls('last_check', thisCheck);
             this.firstCheck = this.__ls('first_check', thisCheck);
 
-            const req = {
-              version: this.version,
-              installId: this.browserId,
-              checkFrequency: this.checkFrequency,
-              thisCheck: thisCheck.getTime(),
-              lastCheck: this.lastCheck?.getTime(),
-              firstCheck: this.firstCheck?.getTime(),
-              checkQty: this.checkQty,
-              sendData: this.checkSendData,
-              checkError: this.checkError,
-              lastFail: this.lastFail?.getTime(),
-              failQty: this.failQty,
-            };
-
-            if (this.checkSendData || this.debug) {
-              if (this.statsDirty) {
-                await this.__refreshStats();
-              } else {
-                this.stats = this.__ls('stats', null, this.LS.MAP) ?? new Map();
-              }
-              req.stats = Object.fromEntries(this.stats);
-            }
-
             try {
               const stage =
                 variables?.__cbc_stage && variables.__cbc_stage !== 'prod'
                   ? `${variables.__cbc_stage}.`
                   : '';
               const response = await fetch(`https://${stage}api.cbc.willfurphy.com/version`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(req),
+                method: 'GET',
               });
 
               if (!response.ok) {
@@ -550,6 +590,7 @@ cbcjs:
               }
 
               this.availableVersion = this.__ls('available_version', out, this.LS.UPDATE);
+              this.updateLink = this.__ls('update_link', responseBody?.data?.updateLink, this.LS.UPDATE);
               this.lastCheck = this.__ls('last_check', thisCheck, this.LS.SET);
               this.failQty = this.__ls('check_fail_qty', 0, this.LS.SET);
               this.checkQty = this.__lsInc('check_qty');
@@ -565,43 +606,6 @@ cbcjs:
           }
 
           /**
-           * Aggregate card stats.
-           * @returns {Map} Map of stats: [ panel => { mode, cardQty, cards: {template: qty}, with: {templatepair: qty} } ]
-           */
-          async __getStats() {
-            const outCards = {};
-            const withCards = {};
-
-            this.cards.forEach((card) => {
-              if (Array.isArray(card.template)) {
-                card.template.forEach((t, i) => {
-                  for (let j = i + 1; j < card.template.length; j++) {
-                    const [t1, t2] = [card.template[i], card.template[j]].sort();
-                    if (t1 !== t2) {
-                      const key = `${t1}|${t2}`;
-                      withCards[key] = (withCards[key] || 0) + 1;
-                    }
-                  }
-
-                  outCards[t] = (outCards[t] || 0) + 1;
-                });
-              } else {
-                outCards[card.template] = (outCards[card.template] || 0) + 1;
-              }
-            });
-
-            const stats = new Map();
-            stats.set(btoa(this.panel), {
-              mode: this.lovelaceMode,
-              cardQty: this.cards.size,
-              cards: outCards,
-              with: withCards,
-            });
-
-            return stats;
-          }
-
-          /**
            * Render the version information in the console.
            * @returns {CreativeButtonCardJS} this for chaining
            */
@@ -614,7 +618,7 @@ cbcjs:
                   ? `\n%c Update Available (${this.lastCheck?.toLocaleDateString()})  %c ${this.availableVersion} `
                   : '',
                 this.update
-                  ? `\n%chttps://github.com/wfurphy/creative-button-card-templates/releases/tag/${this.availableVersion}`
+                  ? `\n%c${this.updateLink || `https://github.com/wfurphy/creative-button-card-templates/releases/tag/${this.availableVersion}`}`
                   : '\n%chttps://github.com/wfurphy/creative-button-card-templates',
               ),
               'color: black; background: #1bccac; font-weight: 700;',
@@ -643,7 +647,8 @@ cbcjs:
                   setTimeout(
                     () =>
                       window.open(
-                        `https://github.com/wfurphy/creative-button-card-templates/releases/tag/${this.availableVersion}`,
+                        this.updateLink ||
+                          `https://github.com/wfurphy/creative-button-card-templates/releases/tag/${this.availableVersion}`,
                         '_blank',
                       ),
                     500,
