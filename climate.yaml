@@ -24,10 +24,10 @@ climate:
   state:
     - id: cbc_off
       value: >
-        [[[ return variables.switch_entity ? states[variables.switch_entity].state == 'off' : ['standby', 'off'].includes(entity.state) ]]]
+        [[[ return variables.switch_entity ? states[variables.switch_entity].state == 'off' : ['standby', 'off'].includes(entity.state); ]]]
     - id: cbc_on
       value: >
-        [[[ return variables.switch_entity ? states[variables.switch_entity].state == 'on' : !(['standby', 'off'].includes(entity.state)) ]]]
+        [[[ return variables.switch_entity ? states[variables.switch_entity].state == 'on' : !(['standby', 'off'].includes(entity.state)); ]]]
       icon: "[[[ return variables.icon_on ]]]"
       rotate: true
       spin: true
@@ -43,7 +43,7 @@ climate:
         return (entity.state === 'off') ? { ...hvac_mode: 'auto' } : { ...hvac_mode: 'off' }
       ]]]
   icon: >
-    [[[ return (variables.switch_entity && states[variables.switch_entity].state == 'off') || ['standby', 'off'].includes(entity.state) ? 'mdi:radiator-disabled' : 'mdi:radiator' ]]]
+    [[[ return (variables.switch_entity && states[variables.switch_entity].state == 'off') || ['standby', 'off'].includes(entity.state) ? 'mdi:radiator-disabled' : 'mdi:radiator'; ]]]
   custom_fields:
     c:
       force_recreate: true
@@ -81,7 +81,7 @@ climate:
       - grid-template-columns: 1fr 1fr 4fr
     icon:
       - color: >
-          [[[ return (variables.switch_entity && states[variables.switch_entity].state == 'off') || ['standby', 'off'].includes(entity.state) ? 'var(--primary-text-color)' : 'var(--accent-color)' ]]]
+          [[[ return (variables.switch_entity && states[variables.switch_entity].state == 'off') || ['standby', 'off'].includes(entity.state) ? 'var(--primary-text-color)' : 'var(--accent-color)'; ]]]
     custom_fields:
       c:
         - width: 100%
