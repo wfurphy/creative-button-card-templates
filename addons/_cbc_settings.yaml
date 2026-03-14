@@ -1,24 +1,45 @@
 # ::::SETTINGS:::::::::::( Creative Button-Card Templates )::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::>
 _cbc_settings:
   variables:
-    __cbc_check:
-      # :: Enable Checking for Updates ::> true|false (Default: true) This will also disable sending data.
-      updates: true
+    __cbc_settings:
+      # :::::::::::::::::::::::: Version Checking :::::::::::::::::::::::::::::::::::::::::::::::::>
+      check_version:
+        # :: Enable Automatic Checking for Updates ::> true|false (Default: true)
+        auto: true
 
-      # Check Frequncy
-      # Check is performed once on first run, once 7 days after and then according to the check frequency.
-      # This is reset if you clear your browser's local storage or use a new browser/device.
-      # :: Check Frequency (in days) ::> 7-90 (Default: 14)
-      frequency: 14
+        # Check Frequncy
+        # A check for available updates is performed once on first run and then according
+        # to the check frequency. This is reset if you clear your browser's local storage 
+        # or use a new browser/device.
 
-      # :: Update Available Notification ::> true|false (default: true)
-      notify: true
+        # :: Check Frequency (in days) ::> 7-90 (Default: 14)
+        frequency: 14
 
-      # Anonymous Usage Data
-      # Data sent: The lovelace mode (yaml|storage) and the number times each template is used per dashboard.
-      # To see exactly, type `cbcJS.stats` into your web browser console on any lovelace dashboard running CBC.
-      # NO Personally identifing information is ever sent!
-      # This is optional, of course, but it will really help me to plan and improve the cards, thanks.
-      # :: Send anonymous usage data with the update check. ::> true|false (Default: true)
-      send_data: true
+        # Update Available Notification
+        # When an update is available a small notification appears at the bottom of the 
+        # dashboard for 5 seconds on load with a link to the realease on GitHub.
+        # There's also a notification in the browser console which is always shown.
+
+        # :: Show Update Available Notification ::> true|false (default: true)
+        notify: true
+
+      # :::::::::::::::::::::::: Template Usage Stats :::::::::::::::::::::::::::::::::::::::::::::>
+      stats:
+        # Template Usage Stats - FOR YOUR USE ONLY
+        # A series of statistics on how many Creative Button-Card Templates you use will be 
+        # generated and made available by typing `cbcJS.getStats()` in your browser console.
+        # This data is not sent anywhere and is only available for you on your install.
+
+        # :: Generate template usage stats ::> true|false (Default: false)
+        generate: true
+
+        # Anonymise Panel names
+        # If you wish to share the usage data you may not want to include your panel names
+        # Setting this to true will anonymise your panel names in the stats object.
+        # Changing this setting will clear existing data from local storage and refresh it.
+
+        # :: Anonymise dashboard (panel) names ::> true|false (Default: false)
+        hash_panels: true
+
+
 # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::/
