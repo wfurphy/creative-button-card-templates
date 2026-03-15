@@ -301,12 +301,12 @@ It's been a long time coming! I'll _try_ to make the updates more frequent, plen
  - There are a few little breaking changes which I've tried to call out here in the docs.
  - There's a much easier way to install for Storage (UI) mode.
  - There's an update checker so you'll know when there's an update available.
- - It's still home-ware so expect some glitches, log issues here and I will try my best.
- - Feature suggestions are welcome and please show me what you're building with them!
+ - It's still home-ware so expect some glitches, log issues here and I will try my best to fix them.
+ - Feature suggestions are welcome and please show me what you're building with them! I really want to see what you're creating!
 
 If you're updating from a previous version, checkout the [Updating](#updating) section below for instructions.
 
-> :raising_hand_man: If you're updating then make sure to keep an eye out for the breaking changes which are highlighted throughout the docs like this: 🧨 _Breaking Change:_ 
+> :raising_hand_man: If you're updating then make sure to keep an eye out for the breaking changes which are highlighted throughout the docs like this: 🧨 _Breaking Change:_
 
 ## Prerequisites
 
@@ -338,12 +338,12 @@ If you are using your lovelace dashboards in [yaml mode](https://www.home-assist
 
  3. Include the following snippet **before any other content** in your `ui-lovelace.yaml`. _If you've used a custom directory then obviously replace `creative-button-card-templates/` with a relative path to your chosen installation directory._
 
-     ```yaml
-     ############| Creative Button-Card Templates |#################################################>
-     ##| Will Furphy | https://github.com/wfurphy/creative-button-card-templates
-     button_card_templates: !include_dir_merge_named creative-button-card-templates/
-     #################################################################################/
-     ```
+      ```yaml
+      ####| Creative Button-Card Templates |#################################################>
+      ####| Will Furphy | https://github.com/wfurphy/creative-button-card-templates
+      button_card_templates: !include_dir_merge_named creative-button-card-templates/
+      #################################################################################/
+      ```
 
 ### Storage (UI) Mode
 
@@ -388,7 +388,7 @@ If you're using storage mode (or editing your dashboards using the UI):
 3. Click the three dots in the top right corner and choose `Edit Dashboard`.
 4. Click three dots again and choose `Raw Configuration Editor`.
 5. Highight all of the existing content of `button_card_templates:`. This will probably be from the first line to just above `views:`.
-6. Replace the highlighted text with the copied text. 
+6. Replace the highlighted text with the copied text.
 7. click **Save** and close the raw configuration editor.
 
 ## Using the Templates
@@ -409,8 +409,8 @@ You can use multiple templates and/or addons by defining them as a list in the `
 ```yaml
 type: custom:button-card
 template:
- - light
- - transparent
+  - light
+  - transparent
 entity: light.bedside_lamp
 # ...
 ```
@@ -665,15 +665,15 @@ For any `entity` which has on/off state. It can optionally display up to 2 `attr
 
 > 🧨 _Breaking Change:_ Attribute rows now deduplicate by `id`, render in a flex row, and `id: state` is replaced by `use_state: true` for showing the main entity state.
 
-#### Device Example YAML
+#### Entity Example YAML
 
 <details><summary>See the YAML...</summary><p>
 
 ```yaml
 type: custom:button-card
-template: device
+template: entity
 entity: switch.wmd_activate
-name: Device
+name: Entity
 icon: mdi:nuke
 variables:
   attributes:
@@ -1282,7 +1282,7 @@ Displays the icon and state of an entity only. Good for displaying information n
 
 ## Addons
 
-You can use any addon by including it after your template in a list as shown in the example above. Addons with a star (*) are included in _most_ button templates already.
+You can use any addon by including it after your template in a list as shown in the example above. Addons with a star (*) are included in _most_ templates already.
 
 ### Date Time (`datetime`)
 
@@ -1300,7 +1300,7 @@ The `no_actions` addon does the opposite of above. It removes the standard funct
 
 The `dynamic_icons` addon will add functionality to the card which will change the icon dependant on the state of the entity. It works for all entities that have an "on" and "off" state.
 
-> :raising_hand_man: _If you just want to have a static custom icon for your card then it's easiest just to populate the `icon` property._
+> :raising_hand_man: _If you just want to have a static custom icon for your card then it's easiest just to populate the `icon` property of your button-card. You only need to use this addon if you would like different icons for different states._
 
 #### Dynamic Icon Variables
 
@@ -1309,10 +1309,6 @@ The `dynamic_icons` addon will add functionality to the card which will change t
 | `icon` | `mdi:*` | `mdi:toggle-switch-off` | The icon to display when the entity is off. |
 | `icon_on` | `mdi:*` | `mdi:toggle-switch` | The icon to display when the entity is on. |
 | `icon_unavailable` | `mdi:*` | `mdi:wifi-cancel` | The icon to display when the entity is unavailable. |
-
-### Effect Selector (`effect_selector`)
-
-Adds a dropdown to pick from a light's `effect_list`, including an "Effects Off" option. It wires into `cbcJS.runLightEffect` so your selected effect is applied immediately. When combined with a matching `select.<light>_theme`, the main light template will also render a theme picker.
 
 ### Resizable (`resizable`)*
 
@@ -1399,31 +1395,58 @@ Then when I'm placing the lights in the dashboard:
   # ..
 ```
 
-Youu're not limited to `variables` you can override any other property from the template with your own. If you wanted to get really advanced you can copy properties or the entire contents from `light.yaml` and copy it to `custom/showy_light.yaml` and then change the appropriate ones.
+You're not limited to `variables` you can override any other property from the template with your own. If you wanted to get really advanced you can copy properties or the entire contents from `light.yaml` and copy it to `custom/showy_light.yaml` and then change the appropriate ones.
 
-> :raising_hand_man: __If you do this make sure you change the first line that says `light:` to `showy_light:` or whatever the _template_ and _yourcardname_ are or else the :sob: again!__
+> :raising_hand_man: __If you do this, make sure you change the template name (eg. `light:` to `showy_light:`) or else the tears :sob: again!__
 
 My **strong** suggestion is to use the method of loading the template and overriding only what you need to change though because they can get a tad complicated especially when you consider the inherited templates. If you're comfortable with YAML and (poorly-written, buttoncardworkaroundesque) Javascript then you should be fine with whatever you find.
 
 Include any templates and addons you want in your customs or make them from scratch! Just have fun and be CREATIVE with them!
 
+## Settings
+
+Rename `
+
 ## Version Check
 
-As of version 0.3^ there is a automated check so you can know if there are updates available in the future. This is optional and you can set the check frequency, notification and data options in `addons/_cbc_settings.yaml`.
+As of version 0.3^ there is a automated check so you can know if there are updates available in the future. **This feature does not send any data from your instance to any external server.** This is optional and you can set the check frequency and notifications in `addons/_cbc_settings.yaml`.
 
-#### Settings `variables.__cbc_settings:`
+#### Version Check Settings `variables.__cbc_settings.check_version:`
 
 | Variable | Values | Default | Description |
 | - | - | - | - |
-| `updates` | Boolean (true/false) | `true` | Should CBC Check for updates. |
-| `frequency` | Number (7 - 90) | `28` | How often to check for updates (in days). This is reset if you clear your browser's local storage for your Home Assistant domain. Check is performed once on first run, 7 days after and then according to the check frequency.|
-| `notify` | Boolean (true/false) | `true` | If an update is available show a 5 sec notification at the bottom of the dashboard on first load. |
-| `send_data` | Boolean (true/false) | `true` | Send anonymous Usage Data. Data sent: The lovelace mode (`yaml`/`storage`) and the number times each template is used per dashboard. __NO Personally identifing information is ever sent!__ |
+| `auto` | Boolean (true/false) | `true` | Should CBC Check for updates. |
+| `frequency` | Number (7 - 90) | `14` | How often to check for updates (in days). This is reset if you clear your browser's local storage for your Home Assistant domain. Check is performed once on first run, and then according to the check frequency.|
+| `notify` | Boolean (true/false) | `true` | If an update is available show a 5 sec notification at the bottom of the dashboard on first load with a link to get the update. |
 
-> :raising_hand_man: _To see exactly what data will be sent, type `cbcJS.stats` into your web browser console on any lovelace dashboard running CBC. I have made and effort to ensure that there is no personally identifying info sent and it will really help me to plan and improve the cards, thanks._
+> :raising_hand_man: _There is no data from your Home Assistant instance sent to any external server by the version check._
+
+## Usage Stats
+
+You can also track your usage of the templates with the built in Usage Stats. This is completely optional and is not sent to any external server. Once enabled in `addons/_cbc_settings.yaml` by setting `generate` to `true`, you can view stats by opening your web browser console and typing `cbcJS.getStats()`. This will show you the stats object which contains the number of times each card and template has been used in your dashboards. You can reset these stats by clearing your browser's local storage for your Home Assistant domain.
+
+If you wish to share the usage data with others, you may not want to include your dashboard (panel) names. Setting `hash_panels` to `true` will anonymise your dashboard (panel) names in the stats.
+
+### View Usage Stats
+
+Make sure you have set `variables.__cbc_settings.stats.generate` to `true` in `addons/_cbc_settings.yaml` and then you can view the stats with the following command in your browser console:
+
+```javascript
+// From your dashbaord, open your browser console and type:
+cbcJS.getStats()
+```
+
+#### Usage Stats Settings `variables.__cbc_settings.stats:`
+
+| Variable | Values | Default | Description |
+| - | - | - | - |
+| `generate` | Boolean (true/false) | `false` | Generate usage statistics. |
+| `hash_panels` | Boolean (true/false) | `false` | Anonymise dashboard (panel) names. |
+
+> :raising_hand_man: _I'd like to collect anonymous usage data so that I can focus on the most popular cards for improving later versions and ultimately creating a complete dashboard plugin. To see an example of the data I would like to collect, see Usage Stats below. Please [join the discussion]() to give your opinion on this._
 
 ## Thanks
 
- Massive thanks to [@RomRider](https://github.com/RomRider) and everyone who contributed to [Button Card](https://github.com/custom-cards/button-card) which is the only reason these templates were possible.
+Massive thanks to [@RomRider](https://github.com/RomRider) and everyone who contributed to [Button Card](https://github.com/custom-cards/button-card) which is the only reason these templates were possible.
 
- And thanks to all of you for your patience while it's been too long between updates! I'd love to see what you're building with the templates. Post some images of your dashboards on the [Home Assistant Forum thread](https://community.home-assistant.io/t/creative-button-card-templates-for-lovelace-dashboards/515667).
+And thanks to all of you for your patience while it's been too long between updates! I'd love to see what you're building with the templates. Post some images of your dashboards on the [Home Assistant Forum thread](https://community.home-assistant.io/t/creative-button-card-templates-for-lovelace-dashboards/515667).
