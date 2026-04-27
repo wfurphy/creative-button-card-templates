@@ -1,42 +1,68 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: wfurphy
+name: Bug Report
+description: File a bug report.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees:
+  - wfurphy
+type: bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+      value: ""
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: Version
+      description: What version of our software are you running?
+      options:
+        - 0.2.*
+        - 0.3.*
+      default: 0
+    validations:
+      required: true
 
----
-
-**Describe the bug**
-A clear and concise description of what the bug is.
-
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
-
-**Expected behavior**
-A clear and concise description of what you expected to happen.
-
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Debug Information**
-Add the `debug` template to the problem card and then view the output in your browser console (make sure to set it to view All Levels as the messages are Debug level). Copy the output and paste it here. Omitting any sensitive data like entity names if you wish.
-
-
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
-
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on?
+      multiple: true
+      options:
+        - Firefox Desktop
+        - Firefox Mobile
+        - Chrome/Chromium Desktop
+        - Chrome/Chromium Mobile
+        - Safari Desktop
+        - Safari Mobile
+        - Microsoft Edge
+        - Other Desktop
+        - Other Mobile
+  - type: textarea
+    id: yaml
+    attributes:
+      label: Template YAML
+      description: Please copy and paste the yaml you used to create your template if relevant. Be careful to remove any info that should remain private like `entity_id`'s, usernames, or passwords. This will be automatically formatted into code, so no need for backticks.
+      render: yaml
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log/console output
+      description: Please copy and paste any relevant log/console output. Be careful to remove any info that should remain private like `entity_id`'s, usernames, or passwords. This will be automatically formatted into code, so no need for backticks.
+      render: javascript
+  - type: upload
+    id: screenshots
+    attributes:
+      label: Upload screenshots
+      description: If applicable, add screenshots to help explain your problem.
+    validations:
+      required: false
