@@ -5,6 +5,33 @@ cbcjs:
     - bc_config
     - stage ###> Remove for Production
   variables:
+    $parentId: >
+      [[[
+        /**
+         * Get the Parent ID from the current entity
+         * @param {string} removal - (Optional) Additional string to remove from the entity name
+         * @returns {string|regex} The entity id without the type or removal string
+         */
+        return function(removal = '') {
+          return entity.entity_id.split('.')[1].replace(removal, '');
+        }
+      ]]]
+    $childEntityId: >
+      [[[
+        /**
+         * Get the Child Entity ID from the current parent entity
+         * Eg. from `swith.smart_plug` you may want the current
+         * from 
+         * @param {string} name - the additional name of the child entity
+         * @param {string} domain - the domain of the child entity (default: sensor)
+         * @param {string} removal - (Optional) Additional string to remove from the entity name
+         * @returns {string|regex} The child's entity id
+         */
+        return function(name, domain = 'sensor', removal = '') {
+          if (!name) return '';
+          return `${domain}.${entity.entity_id.split('.')[1].replace(removal, '')}_${name}`;
+        }
+      ]]]
     __cbc_version: v0.3.0
     __cbc_lovelace_method: "[[[ return hass?.panels?.[hass.panelUrl]?.config?.mode ?? 'unknown' ]]]"
     __cbc_error: >
@@ -21,6 +48,7 @@ cbcjs:
       [[[
         return class CBCWarn extends CBCError {};
       ]]]
+    __cbc_settings: "[[[ return variables.cbc_settings ?? variables._cbc_settings ]]]"
     __cbc_js_class: >
       [[[
         return class CreateiveButtonCardsJS {
@@ -209,7 +237,7 @@ cbcjs:
            */
           handler(error, extra, cType = this.C.ERROR) {
             if (cType === this.C.DEBUG) {
-              if (!this.debug) return;
+              // if (!this.debug && !variables.debug) return;
               const message = String(error instanceof Error ? error.message : error);
               console.debug(
                 `::CBCJS::DEBUG::| ${message} |::>`,
@@ -239,7 +267,7 @@ cbcjs:
            * @param {String|Error} message The message
            * @param {any} extra Additional context to display 
            */
-          debug(message, extra) {
+          sendDebug(message, extra) {
             this.handler(message, extra, this.C.DEBUG);
           }
 

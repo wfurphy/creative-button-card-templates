@@ -146,7 +146,7 @@ button_action:
           - no_actions
         entity: "[[[ return variables.timer ]]]"
         icon: mdi:timer-outline
-        label: Double Tap<br>to Cancel
+        label: Double Tap<br>Stop Timer
         show_name: false
         show_state: true
         show_label: true

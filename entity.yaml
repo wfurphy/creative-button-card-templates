@@ -69,8 +69,8 @@ entity:
           const ae = at.entity ? states[at.entity] : entity;
           const t = at.use_state ?? Boolean(at.entity);
           at.display = at.state ?? (t ? ae.state : ae.attributes[at.id]);
-          at.units = a.units ?? ae?.attributes?.unit_of_measurement ?? '';
-          at.icon = a.icon ?? hass.entities[ae.entity_id]?.icon ?? at.icon;
+          at.units = at.units ?? ae?.attributes?.unit_of_measurement ?? '';
+          at.icon = at.icon ?? hass.entities[ae.entity_id]?.icon;
 
           const state = `<span class="cbc-value">${at.display}</span>`;
           const units = `<span class="cbc-units">${at.units}</span>`;

@@ -29,8 +29,6 @@ climate:
       value: >
         [[[ return variables.switch_entity ? states[variables.switch_entity].state == 'on' : !(['standby', 'off'].includes(entity.state)); ]]]
       icon: "[[[ return variables.icon_on ]]]"
-      rotate: true
-      spin: true
   tap_action:
     action: call-service
     service: "[[[ return variables.switch_entity ? 'switch.toggle' : 'climate.set_hvac_mode' ]]]"
@@ -40,7 +38,7 @@ climate:
       [[[
         if (variables.switch_entity) return {};
         
-        return (entity.state === 'off') ? { ...hvac_mode: 'auto' } : { ...hvac_mode: 'off' }
+        return (entity.state === 'off') ? { hvac_mode: 'auto' } : { hvac_mode: 'off' }
       ]]]
   icon: >
     [[[ return (variables.switch_entity && states[variables.switch_entity].state == 'off') || ['standby', 'off'].includes(entity.state) ? 'mdi:radiator-disabled' : 'mdi:radiator'; ]]]
@@ -61,6 +59,10 @@ climate:
               opacity: 0.7;
               width: 100%;
               z-index: 3;
+              margin-top: -22px;
+            }
+            ha-tile-icon, ha-tile-info {
+              display: none;
             }
             .sc-shutter-top {
               display: none !important;
@@ -70,9 +72,6 @@ climate:
             }
             ha-card:hover {
               opacity: 0.9;
-            }
-            :host .content {
-              display: none;
             }
   styles:
     grid:

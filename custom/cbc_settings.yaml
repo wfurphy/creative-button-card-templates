@@ -1,7 +1,7 @@
 # ::::SETTINGS:::::::::::( Creative Button-Card Templates )::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::>
-_cbc_settings:
+cbc_settings:
   variables:
-    _cbc_settings:
+    cbc_settings:
       # :::::::::::::::::::::::: Version Checking :::::::::::::::::::::::::::::::::::::::::::::::::>
       check_version:
         # :: Enable Automatic Checking for Updates ::> true|false (Default: true)
@@ -41,5 +41,5 @@ _cbc_settings:
         # :: Anonymise dashboard (panel) names ::> true|false (Default: false)
         hash_panels: true
 
-
 # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::/
+##U##|  Sun Mar 15 02:10:24 PM AEDT 2026 |##| /config/dashboards/cbc_custom/cbc_settings.yaml |##>
