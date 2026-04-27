@@ -39,7 +39,6 @@ select:
       - grid: relative
       - overflow: visible
     icon:
-      # - background-color: var(--mdc-theme-background)
       - color: "[[[ return variables.__getState('color', 'var(--primary-text-color)') ]]]"
     custom_fields:
       drop:
