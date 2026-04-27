@@ -632,7 +632,7 @@ _See examples of symbol usage in the [`light_group` section](#light-group-light_
 
 ### Entity (`entity`) _previously Device (`device`)_
 
-![entity](images/device.png)
+![entity](images/entity.png)
 
 For any `entity` which has on/off state. It can optionally display up to 2 `attributes` from the entity or other entities with custom icons, values and units.
 

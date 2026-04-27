@@ -48,7 +48,7 @@ state_helper:
     - id: cbc_unavailable
       operator: regex
       value: 'unavailable|unknown'
-      label: Unavailable
+      label: "[[[ return entity.state; ]]]"
       icon: mdi:wifi-alert
       styles:
         card:

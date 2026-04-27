@@ -11,6 +11,7 @@
 *.sln.docstates
 custom/*
 !custom/example.yaml
+!custom/cbc_settings.yaml
 cbc.yml
 cbc_master.yml
 .history
