@@ -19,7 +19,7 @@ cbcjs:
     $childEntityId: >
       [[[
         /**
-         * Get the Child Entity ID from the current parent entity
+         * Get a Child Entity ID from the current parent entity
          * Eg. from `swith.smart_plug` you may want the current
          * from 
          * @param {string} name - the additional name of the child entity

@@ -31,7 +31,7 @@ title:
     show_tab: false
     offset: 0
     opacity: var(--cbc-title-opacity, 0.4) # v0.3 Changed to background color opactiy not whole card ###>
-    info: [] # ::>
+    info: []
   custom_fields:
     i1:
       force_recreate: true

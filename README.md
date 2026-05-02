@@ -448,6 +448,52 @@ variables:
   icon_unavailable: "mdi:wifi-cancel"
 # ...
 ```
+
+#### $pecial Variables
+There are a few unique universal* helper variables available for you to use when making your cards. They always start with a `$`. There are only 2 in this release but the plan is to expand them in the future. You can use them in any* card just like any other variable, using the `variables` object in a javascript template as per the example below:
+
+_*almost_
+
+##### Example in a YAML card definition
+```yaml
+type: custom:button-card
+template: entity
+entity: switch.smart_plug
+variables:
+  attributes:
+    - icon: mdi:sine-wave
+      entity: "[[[ return variables.$childEntityId('voltage'); ]]]"
+```
+
+The first two are most useful when you have a standard **Device** which has many **Entities**. For example; a smart plug with the master `switch` entity and then `sensor` entities for current, power and voltage. This takes advantage of the default naming convention which would (in most cases) uses the master entity's name and adds an underscore (`_`) followed by the name of the sensor/control/child.
+eg. `switch.power_plug` that then has a `sensor.power_plug_voltage` and so on...
+
+##### $parentId()
+
+```js
+/**
+ * Get the Parent ID from the current entity
+ * @param {string} removal - (Optional) Additional string to remove from the entity name
+ * @returns {string|regex} The entity id without the type or removal string
+ */
+variables.$parentId(removal);
+```
+
+##### $childEntityId()
+
+```js
+/**
+ * Get a Child Entity ID from the current parent entity
+ * Eg. from `swith.smart_plug` you may want the current
+ * from 
+ * @param {string} name - the additional name of the child entity
+ * @param {string} domain - the domain of the child entity (default: sensor)
+ * @param {string} removal - (Optional) Additional string to remove from the entity name
+ * @returns {string|regex} The child's entity id
+ */
+variables.$childEntityId(name, domain, removal);
+```
+
 ## Templates
 
 ### Title (`title`)
