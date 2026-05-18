@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+if ! command -v git >/dev/null 2>&1; then
+  echo "::ERROR::> This install script requires git. Please install git and try again."
+  exit 1
+fi
+
+echo "::CBC::> Installing Creative Button-Card Templates..."
+git clone https://github.com/wfurphy/creative-button-card-templates.git
+cd creative-button-card-templates
+cp -f custom/cbc_settings.sample custom/cbc_settings.yaml
+
+echo "::CBC::> Installation complete! Please edit custom/cbc_settings.yaml to configure. Include the templates in your lovelace configuration."

@@ -1,7 +1,8 @@
 ############| +Addon > Creative Button-Card Javascript Object (cbcjs) |###########################>
 cbcjs:
   template:
-    - _cbc_settings
+    - cbc_settings
+    - cbc_css
     - bc_config
     - stage ###> Remove for Production
   variables:
@@ -21,7 +22,7 @@ cbcjs:
         /**
          * Get a Child Entity ID from the current parent entity
          * Eg. from `swith.smart_plug` you may want the current
-         * from 
+         * from
          * @param {string} name - the additional name of the child entity
          * @param {string} domain - the domain of the child entity (default: sensor)
          * @param {string} removal - (Optional) Additional string to remove from the entity name
@@ -48,7 +49,7 @@ cbcjs:
       [[[
         return class CBCWarn extends CBCError {};
       ]]]
-    __cbc_settings: "[[[ return variables.cbc_settings ?? variables._cbc_settings ]]]"
+    # __cbc_settings: "[[[ return variables.__cbc_settings ]]]"
     __cbc_js_class: >
       [[[
         return class CreateiveButtonCardsJS {
@@ -120,12 +121,12 @@ cbcjs:
               variables?.__cbc_settings?.stats?.generate ?? false,
               this.LS.SET,
             );
-            this.hashPanels = this.__ls('hash_panels') 
+            this.hashPanels = this.__ls('hash_panels')
             if (this.hashPanels !== variables?.__cbc_settings?.stats?.hash_panels) {
               this.__lsDelete('stats');
               this.hashPanels = this.__ls(
-                'hash_panels', 
-                variables?.__cbc_settings?.stats?.hash_panels, 
+                'hash_panels',
+                variables?.__cbc_settings?.stats?.hash_panels,
                 this.LS.SET
               );
             }
@@ -191,12 +192,28 @@ cbcjs:
 
           /**
            * Add CSS variables for templates.
-           * @param {object} css CSS variable map
+           * @param {object} css CSS variable map * { identifier: [ {property: valuue}, {property, value} ] }
+           * @see {YAML} in /addons/cbc_css.yaml
            * @returns {CreateiveButtonCardsJS} Chainable instance
            */
           addCss(css = {}) {
             this.css = { ...this.css, ...css };
-            return this;
+            return this.insertStyles();
+          }
+
+          /**
+           * Add a single CSS variable for templates.
+           * @param {string} cssId CSS variable name (without --cbc- prefix)
+           * @param {string} value CSS variable value
+           * @returns {CreateiveButtonCardsJS} Chainable instance
+           */
+          addStyle(cssId, value) {
+            if (!cssId || typeof cssId !== 'string') {
+              this.handler('CSS ID must be a non-empty string', { cssId, value });
+              return this;
+            }
+            this.css[cssId] = value;
+            return this.insertStyles();
           }
 
           /**
@@ -206,7 +223,7 @@ cbcjs:
            */
           setView(path) {
             path = path ?? window.location.pathname;
-            this.view = path.substring(1);
+            this.view = path.split('/');
             return this;
           }
 
@@ -215,17 +232,23 @@ cbcjs:
            * @returns {CreateiveButtonCardsJS} Chainable instance
            */
           insertStyles() {
-            const html = document.getElementsByTagName('html')[0];
+            const styles = document.head.querySelector('style#cbc-styles') ?? document.createElement('style');
 
-            if (!variables?.css || html.getAttribute('data-cbc-view') === this.view) {
-              return this;
+            if (styles.id !== 'cbc-styles') {
+              styles.id = 'cbc-styles';
+              styles.setAttribute('data-cbc-view', this.view);
             }
 
-            for (let prop in variables?.css) {
-              html.style.setProperty(`--cbc-${prop.replace('_', '-')}`, this.css[prop]);
+            styles.innerHTML = '';
+
+            for (const [key, value] of Object.entries(this.css)) {
+              key = key === 'root' ? ':root' : key;
+
+              styles.innerHTML += `  ${key.startsWith('--cbc-') ? key : `--cbc-${key}`}: ${value};\n`;
             }
 
-            html.setAttribute('data-cbc-view', this.view);
+            styles.innerHTML += '}';
+            document.head.appendChild(styles);
             return this;
           }
 
@@ -265,7 +288,7 @@ cbcjs:
           /**
            * Send a debug message to the console
            * @param {String|Error} message The message
-           * @param {any} extra Additional context to display 
+           * @param {any} extra Additional context to display
            */
           sendDebug(message, extra) {
             this.handler(message, extra, this.C.DEBUG);
@@ -836,7 +859,7 @@ cbcjs:
           }
         }
       ]]]
-    __cbcjs:
+    cbcjs:
       force_eval: true
       value: >
         [[[
@@ -846,11 +869,15 @@ cbcjs:
             window.cbcJS = new variables.__cbc_js_class(hass);
             cbcJS
               .init()
-              .then((cbcjs) => cbcjs.__renderConsole());
+              .then((cbcjs) => cbcjs.insertStyles().__renderConsole());
           }
 
           cbcJS.addCard(variables?.__config, hass);
-          
+
+          window.addEventListener('popstate', (event) => {
+            cbcJS.setView().insertStyles();
+          });
+
           return cbcJS;
         ]]]
 

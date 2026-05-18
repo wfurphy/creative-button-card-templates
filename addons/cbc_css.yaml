@@ -1,0 +1,7 @@
+cbc_css:
+  variables:
+    __css:
+      ':root':
+        - --cbc-title-color: var(--primary-background-color)
+        - --cbc-title-background-color: var(--accent-color)
+        - --cbc-title-opacity: 0.4

@@ -1,0 +1,70 @@
+#!/bin/bash
+
+set -e
+
+workDir="$(pwd)"
+
+if [[ "$(basename "$workDir")" == "bin" ]]; then
+  cd ..
+  workDir="$(pwd)"
+fi
+
+if ! command -v git >/dev/null 2>&1; then
+  echo "::ERROR::> This update script requires git. Please install git and try again."
+  exit 1
+fi
+
+if [ ! -f 'button_landscape.yaml' ]; then
+  echo "::ERROR::> This command must be run in the directory containing the Creative Button-Card Templates!"
+  exit 1
+fi
+
+if [ ! -d '.git' ]; then
+  echo "::ERROR::> No git repository found. Please run the bin/install script first."
+  exit 1
+fi
+
+if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
+  echo "::WARNING::> You have modified the core files! If you continue with the update, your changes will be lost. Continue? (y/n)"
+  read -r response
+  if [[ "$response" != "y" ]]; then
+    echo "::CBC::> Update cancelled. Please commit or stash your changes before updating."
+    exit 1
+  fi
+fi
+
+branch="$(git branch --show-current)"
+
+if [[ "$1" != '--beta' ]] && [[ "$branch" != "master" ]]; then
+  echo "::WARNING::> You are not on the master branch! If you continue with the update, your changes might be lost. Continue? (y/n)"
+  read -r response
+  if [[ "$response" != "y" ]]; then
+    echo "::CBC::> Update cancelled. Please commit or stash your changes before updating."
+    exit 1
+  fi
+fi
+
+echo "::CBC::> Updating Creative Button-Card Templates..."
+git reset --hard
+
+stashBefore="$(git rev-parse -q --verify refs/stash || true)"
+git stash push -u -m "CBC update backup"
+stashAfter="$(git rev-parse -q --verify refs/stash || true)"
+
+if [ "$1" == '--beta' ]; then
+  echo "::CBC::> You are updating to a beta version from $branch branch. This may include breaking changes and is not recommended for production use."
+else
+  git checkout master
+fi
+
+git pull origin
+if [[ "$stashAfter" != "$stashBefore" ]]; then
+  git stash pop 'stash@{0}'
+fi
+echo "::CBC::> Update complete!"
+
+echo "::CBC::> Would you also like to update cbc.yml? This is the file you can copy and paste in your Home Asssistant dashboard configuration. (y/n)"
+read -r response
+if [[ "$response" == "y" ]]; then
+  bin/export
+fi
