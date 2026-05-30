@@ -18,7 +18,7 @@ EOF
 
 echo "::CBC::💻::> Installing Creative Button-Card Templates..."
 echo ""
-git clone https://github.com/wfurphy/creative-button-card-templates.git &> /dev/null || {
+git clone https://github.com/wfurphy/creative-button-card-templates.git || {
   echo "::CBC::❌::> Failed to clone repository. Please check your internet connection and try again."
   exit 1
 }
