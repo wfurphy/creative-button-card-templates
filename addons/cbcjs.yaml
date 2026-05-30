@@ -21,7 +21,7 @@ cbcjs:
       [[[
         /**
          * Get a Child Entity ID from the current parent entity
-         * Eg. from `swith.smart_plug` you may want the current
+         * Eg. from `switch.smart_plug` you may want the current
          * from
          * @param {string} name - the additional name of the child entity
          * @param {string} domain - the domain of the child entity (default: sensor)
@@ -52,13 +52,13 @@ cbcjs:
     # __cbc_settings: "[[[ return variables.__cbc_settings ]]]"
     __cbc_js_class: >
       [[[
-        return class CreateiveButtonCardsJS {
+        return class CreativeButtonCardsJS {
           /**
            * LS.<OP> LocalStorage Operations:
-           *   DEFAULT: Retreive and only overwrite if udefined or empty
+           *   DEFAULT: Retrieve and only overwrite if undefined or empty
            *   SET: Override any existing value and return new value
-           *   UPDATE: Retreive and only overwrite if different
-           *   INCREMENT: Incrememnt stored number by provided value (or 1)
+           *   UPDATE: Retrieve and only overwrite if different
+           *   INCREMENT: Increment stored number by provided value (or 1)
            *   MAP: Merge a new MAP with the stored MAP and return merged
            *   DELETE: Remove item from storage
            * @type {object}
@@ -92,7 +92,6 @@ cbcjs:
           constructor(hass) {
             this.update = false;
             this.globals = {};
-            this.css = {};
             this.hass = hass;
             this.updatedAt = new Date();
             this.debug = variables?.__cbcjs_debug ?? false;
@@ -101,6 +100,12 @@ cbcjs:
             this.statsTimer = null;
             this.statsDelayMs = 1000;
             this.__setNewPanel(hass);
+            this.css = variables?.__cbc_css ? new Map(Object.entries(variables?.__cbc_css ?? {})) : new Map();
+            this.css = this.__ls(
+              'css',
+              this.css,
+              this.LS.MAP
+            );
             this.checkUpdates = this.__ls(
               'check_version',
               variables?.__cbc_settings?.check_version?.auto ?? true,
@@ -172,7 +177,7 @@ cbcjs:
            * @param {string} domain Service domain
            * @param {string} action Service action
            * @param {object} data Service payload
-           * @returns {CreateiveButtonCardsJS} Chainable instance
+           * @returns {CreativeButtonCardsJS} Chainable instance
            */
           action(domain, action, data) {
             this.hass.callService(domain, action, data);
@@ -183,7 +188,7 @@ cbcjs:
           /**
            * Execute a list of service actions.
            * @param {Array} list List of [domain, action, data]
-           * @returns {CreateiveButtonCardsJS} Chainable instance
+           * @returns {CreativeButtonCardsJS} Chainable instance
            */
           actionList(list = []) {
             list.forEach((l) => this.action(...l));
@@ -192,44 +197,72 @@ cbcjs:
 
           /**
            * Add CSS variables for templates.
-           * @param {object} css CSS variable map * { identifier: [ {property: valuue}, {property, value} ] }
+           * @param {object|Map} css CSS variable Map { identifier => { property: value, ... } ... }
            * @see {YAML} in /addons/cbc_css.yaml
-           * @returns {CreateiveButtonCardsJS} Chainable instance
+           * @returns {CreativeButtonCardsJS} Chainable instance
            */
           addCss(css = {}) {
-            this.css = { ...this.css, ...css };
+            if (css instanceof Map) {
+              this.css = this.__ls(...css, this.LS.MAP);
+            } else if (typeof css === 'object') {
+              this.css = this.__ls(...Object.entries(css), this.LS.Map);
+            } else {
+              this.handler('Invalid CSS parameter. Must be an object or Map.', { css });
+              return this;
+            }
+
             return this.insertStyles();
           }
 
           /**
            * Add a single CSS variable for templates.
-           * @param {string} cssId CSS variable name (without --cbc- prefix)
+           * @param {string} cssId CSS identifier
+           * @param {string} prop CSS property name
            * @param {string} value CSS variable value
-           * @returns {CreateiveButtonCardsJS} Chainable instance
+           * @returns {CreativeButtonCardsJS} Chainable instance
            */
-          addStyle(cssId, value) {
-            if (!cssId || typeof cssId !== 'string') {
-              this.handler('CSS ID must be a non-empty string', { cssId, value });
+          addStyle(cssId, prop, value) {
+            if ((!cssId || typeof cssId !== 'string') ||
+                (!prop || typeof prop !== 'string') ||
+                (!value || typeof value !== 'string')) {
+              this.handler('Invalid CSS parameters. cssId, prop & value must be non-empty strings.', { cssId, prop, value });
               return this;
             }
-            this.css[cssId] = value;
+
+            this.__ls([cssId]: { [prop]: value }, this.LS.MAP);
             return this.insertStyles();
           }
 
           /**
+           * Add a CSS variable to the :root selector for global use in templates.
+           * @param {string} varName CSS variable name (without --cbc- prefix)
+           * @param {string} value CSS variable value
+           * @returns {CreativeButtonCardsJS} Chainable instance
+           */
+          addCssVar(varName, value) {
+            if ((!varName || typeof varName !== 'string') || (!value || typeof value !== 'string')) {
+              this.handler('Invalid CSS parameters. varName & value must be non-empty strings.', { varName, value });
+              return this;
+            }
+
+            varName = `--cbc-${varName.replace(/^(--cbc-|--)/, '')}`;
+            return this.addStyle(':root', varName, value);
+          }
+
+          /**
            * Set the current view path.
-           * @param {string} path View path
-           * @returns {CreateiveButtonCardsJS} Chainable instance
+           * @param {string} path View path (default: current window location)
+           * @returns {CreativeButtonCardsJS} Chainable instance
            */
           setView(path) {
             path = path ?? window.location.pathname;
-            this.view = path.split('/');
-            return this;
+            this.view = path.split('/').pop() || 'unknown';
+            return this.insertStyles();
           }
 
           /**
            * Insert CSS variables into the page when view changes.
-           * @returns {CreateiveButtonCardsJS} Chainable instance
+           * @returns {CreativeButtonCardsJS} Chainable instance
            */
           insertStyles() {
             const styles = document.head.querySelector('style#cbc-styles') ?? document.createElement('style');
@@ -241,13 +274,22 @@ cbcjs:
 
             styles.innerHTML = '';
 
-            for (const [key, value] of Object.entries(this.css)) {
-              key = key === 'root' ? ':root' : key;
+            this.sendDebug('Inserting styles for view', { view: this.view, css: this.css }); // DEBUG
 
-              styles.innerHTML += `  ${key.startsWith('--cbc-') ? key : `--cbc-${key}`}: ${value};\n`;
+            for (let [key, value] of this.css) {
+              styles.innerHTML += `\n${key} {\n`;
+              for (let cssItem in value) {
+                const [prop, val] = cssItem;
+                this.sendDebug('Processing CSS variable', { key, value, prop, val }); // DEBUG
+                try {
+                  styles.innerHTML += `  ${prop}: ${val};\n`;
+                } catch (error) {
+                  this.handler(`Invalid CSS variable skipped: ${prop}: ${value}`, { key, prop, value, error });
+                }
+              }
+              styles.innerHTML += '}';
             }
 
-            styles.innerHTML += '}';
             document.head.appendChild(styles);
             return this;
           }
@@ -305,7 +347,7 @@ cbcjs:
            * Register a card
            * @param {object} config Card configuration
            * @param {object} hass The latest hass object
-           * @returns {CreateiveButtonCardsJS} Chainable instance
+           * @returns {CreativeButtonCardsJS} Chainable instance
            */
           addCard(config, hass) {
             if (!this.generateStats && !this.debug) return this;
@@ -326,7 +368,7 @@ cbcjs:
           /**
            * Initialize the Creative Button-Card runtime.
            * @param {boolean} mustCheck Must check for updates
-           * @returns {Promise<CreateiveButtonCardsJS>} CBCJS instance
+           * @returns {Promise<CreativeButtonCardsJS>} CBCJS instance
            */
           async init(mustCheck = false) {
             mustCheck = this.debug || mustCheck;
@@ -676,8 +718,8 @@ cbcjs:
            * LocalStorage helper with common operations.
            * @param {string} name Storage key
            * @param {any} value Value to set/merge (default: null)
-           * @param {number} proc Operation flag from LS (default: LS.DEFAULT) @see CreateiveButtonCardsJS.LS
-           * @returns {any} Retreived/Stored value
+           * @param {number} proc Operation flag from LS (default: LS.DEFAULT) @see CreativeButtonCardsJS.LS
+           * @returns {any} Retrieved/Stored value
            */
           __ls(name, value = null, proc = this.LS.DEFAULT) {
             const procName = 'LS.' + Object.keys(this.LS).find((key) => this.LS[key] === proc);
@@ -755,7 +797,7 @@ cbcjs:
           /**
            * Check for the latest available version and set the properties.
            * @param {boolean} manual Is a manual request to check (default: false)
-           * @returns {CreateiveButtonCardsJS} this for chaining
+           * @returns {CreativeButtonCardsJS} this for chaining
            */
           async __setVersion(manual = false) {
             if (!this.checkUpdates && !manual) {
@@ -831,7 +873,7 @@ cbcjs:
             helpers.toast({
               message: `Creative Button-Card Update Available`,
               duration: 5000,
-              dismissable: true,
+              dismissible: true,
               action: {
                 text: `Get ${this.availableVersion}`,
                 action: () =>
@@ -869,14 +911,11 @@ cbcjs:
             window.cbcJS = new variables.__cbc_js_class(hass);
             cbcJS
               .init()
-              .then((cbcjs) => cbcjs.insertStyles().__renderConsole());
+              .then((cbcjs) => cbcjs.setView().__renderConsole());
           }
 
           cbcJS.addCard(variables?.__config, hass);
-
-          window.addEventListener('popstate', (event) => {
-            cbcJS.setView().insertStyles();
-          });
+          window.addEventListener('location-changed', () => cbcJS.setView());
 
           return cbcJS;
         ]]]

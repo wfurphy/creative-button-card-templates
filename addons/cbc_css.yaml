@@ -1,6 +1,6 @@
 cbc_css:
   variables:
-    __css:
+    __cbc_css:
       ':root':
         - --cbc-title-color: var(--primary-background-color)
         - --cbc-title-background-color: var(--accent-color)
