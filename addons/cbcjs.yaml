@@ -4,7 +4,6 @@ cbcjs:
     - cbc_settings
     - cbc_css
     - bc_config
-    - stage ###> Remove for Production
   variables:
     $parentId: >
       [[[
@@ -50,6 +49,7 @@ cbcjs:
         return class CBCWarn extends CBCError {};
       ]]]
     # __cbc_settings: "[[[ return variables.__cbc_settings ]]]"
+
     __cbc_js_class: >
       [[[
         return class CreativeButtonCardsJS {
@@ -229,7 +229,7 @@ cbcjs:
               return this;
             }
 
-            this.__ls([cssId]: { [prop]: value }, this.LS.MAP);
+            this.__ls({[cssId]: { [prop]: value }}, this.LS.MAP);
             return this.insertStyles();
           }
 
@@ -274,20 +274,14 @@ cbcjs:
 
             styles.innerHTML = '';
 
-            this.sendDebug('Inserting styles for view', { view: this.view, css: this.css }); // DEBUG
+            for (const [selector, declarations] of this.css) {
+              styles.innerHTML += `\n${selector} {\n`;
 
-            for (let [key, value] of this.css) {
-              styles.innerHTML += `\n${key} {\n`;
-              for (let cssItem in value) {
-                const [prop, val] = cssItem;
-                this.sendDebug('Processing CSS variable', { key, value, prop, val }); // DEBUG
-                try {
-                  styles.innerHTML += `  ${prop}: ${val};\n`;
-                } catch (error) {
-                  this.handler(`Invalid CSS variable skipped: ${prop}: ${value}`, { key, prop, value, error });
-                }
+              for (const [prop, val] of Object.entries(declarations)) {
+                styles.innerHTML += `  ${prop}: ${val};\n`;
               }
-              styles.innerHTML += '}';
+
+              styles.innerHTML += '}\n';
             }
 
             document.head.appendChild(styles);
@@ -673,8 +667,9 @@ cbcjs:
            */
           __lsHydrate(value, proc = this.LS.DEFAULT) {
             try {
-              if (typeof value !== 'string' || value.startsWith('cbc-') || /^v\d+((\.\d+)+)?$/g.test(value))
+              if (typeof value !== 'string' || value.startsWith('cbc-') || /^v\d+((\.\d+)+)?$/g.test(value)) {
                 return value;
+              }
               if (value === 'true' || value === 'false') return value === 'true';
               if (value === 'null' || value === 'undefined' || value === '') return null;
               if (/^\d{13,}$/.test(value)) return new Date(Number(value));
