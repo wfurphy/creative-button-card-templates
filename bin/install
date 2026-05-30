@@ -23,7 +23,9 @@ git clone https://github.com/wfurphy/creative-button-card-templates.git || {
   exit 1
 }
 cd creative-button-card-templates
+# test
 git checkout develop
+
 cp -f custom/cbc_settings.sample custom/cbc_settings.yaml
 echo "::CBC::✅::> Creative Button-Card Templates installed."
 
