@@ -14,7 +14,7 @@ button_card_templates: !include_dir_merge_named creative-button-card-templates/
 #################################################################################/
 
 EOF
-2>&1 /dev/null)
+)
 
 echo "::CBC::💻::> Installing Creative Button-Card Templates..."
 echo ""
