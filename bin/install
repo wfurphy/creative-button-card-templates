@@ -36,7 +36,7 @@ echo ""
 if [[ -f ../ui-lovelace.yaml ]]; then
   echo "::CBC::📝::> Adding Creative Button-Card Templates to your ui-lovelace.yaml file..."
   {
-    cat "$CBC_INIT"
+    echo "$CBC_INIT"
     cat ../ui-lovelace.yaml
   } > ../ui-lovelace.yaml.new && mv ../ui-lovelace.yaml.new ../ui-lovelace.yaml || {
     echo ""
