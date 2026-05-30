@@ -18,7 +18,7 @@ EOF
 
 echo "::CBC::💻::> Installing Creative Button-Card Templates..."
 echo ""
-git clone https://github.com/wfurphy/creative-button-card-templates.git 2>&1 /dev/null || {
+git clone https://github.com/wfurphy/creative-button-card-templates.git &> /dev/null || {
   echo "::CBC::❌::> Failed to clone repository. Please check your internet connection and try again."
   exit 1
 }
@@ -32,8 +32,9 @@ if [ -f ui-lovelace.yaml ]; then
   {
     cat "$CBC_INIT"
     cat ui-lovelace.yaml
-  } > ui-lovelace.yaml.new && mv ui-lovelace.yaml.new ui-lovelace.yaml 2>/dev/null
-  echo "::CBC::✅::> Added Creative Button-Card Templates to ui-lovelace.yaml."
+  } > ui-lovelace.yaml.new && mv ui-lovelace.yaml.new ui-lovelace.yaml || {
+    echo "::CBC::❌::> Failed to update ui-lovelace.yaml."
+  }
 else
   echo "::CBC::⚠️::> WARNING: ui-lovelace.yaml not found."
 fi
