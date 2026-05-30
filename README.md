@@ -286,13 +286,13 @@ I made this repo for my friends who were asking me the above question. If you're
 
 It's been a long time coming! I'll _try_ to make the updates more frequent, plenty in this release to keep you busy though...
 
- - Now compatible with Button-Card 7!
- - New templates, new features on existing cards and ALL the bug fixes!
- - There are a few little breaking changes which I've tried to call out here in the docs.
- - There's a much easier way to install for Storage (UI) mode.
- - There's an update checker so you'll know when there's an update available.
- - It's still home-ware so expect some glitches, log issues here and I will try my best to fix them.
- - Feature suggestions are welcome and please show me what you're building with them! I really want to see what you're creating!
+- Now compatible with Button-Card 7!
+- New templates, new features on existing cards and ALL the bug fixes!
+- There are a few little breaking changes which I've tried to call out here in the docs.
+- There's a much easier way to install for Storage (UI) mode.
+- There's an update checker so you'll know when there's an update available.
+- It's still home-ware so expect some glitches, log issues here and I will try my best to fix them.
+- Feature suggestions are welcome and please show me what you're building with them! I really want to see what you're creating!
 
 If you're updating from a previous version, checkout the [Updating](#updating) section below for instructions.
 
@@ -320,15 +320,15 @@ If you are using your lovelace dashboards in [yaml mode](https://www.home-assist
 
 1. Open a terminal on your Home Assistant host and navigate to the config directory where you keep your `ui-lovelace.yaml`, in Home Assistant OS this is usually `/config`.
 
-### Automated Installation
+#### Automated Installation
 
 2. Run the following command to clone this repository and install Creative Button-Card Templates:
 
      ```sh
-     curl -fsSL https://raw.githubusercontent.com/wfurphy/creative-button-card-templates/refs/heads/develop/bin/install | bash
+     curl -fsSL https://raw.githubusercontent.com/wfurphy/creative-button-card-templates/refs/heads/master/bin/install | bash
      ```
 
-### Manual Installation
+#### Manual Installation
 
  2. Clone this repository:
 
@@ -966,11 +966,9 @@ variables:
 
 ### Cover (`cover`)
 
+![cover](images/cover.png)
+
 Cover control card for blinds, curtains, shutters, garage doors, and other cover entities with a numeric position. It combines a compact position readout with an embedded `value_strip` configured for cover positions, so you can jump straight to common open/close percentages.
-
-#### Cover Inherits
-
-- `cbcjs`
 
 #### Cover Variables
 
