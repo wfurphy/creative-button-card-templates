@@ -964,6 +964,60 @@ variables:
 
 </p></details>
 
+### Cover (`cover`)
+
+Cover control card for blinds, curtains, shutters, garage doors, and other cover entities with a numeric position. It combines a compact position readout with an embedded `value_strip` configured for cover positions, so you can jump straight to common open/close percentages.
+
+#### Cover Inherits
+
+- `cbcjs`
+
+#### Cover Variables
+
+| Variable | Values | Default | Description |
+| - | - | - | - |
+| `mirror` | Boolean | `true` | Swap the position readout and title from left to right. |
+| `position_source` | `entity_id` \| Attribute | `current_position` | Source for the position readout. Use an attribute name from the cover entity or a separate entity ID. |
+| `icon_color` | String (CSS) | `#000` | Icon color for the position readout. |
+| `icon_opacity` | Number | `0.2` | Icon opacity for the position readout. |
+| `title_advanced` | Boolean | `true` | Show the advanced title card instead of the simple button-card name. |
+| `title_background_color` | String (CSS) | `#000` | Background color for the advanced title. |
+| `title_opacity` | Number | `0.2` | Background opacity for the advanced title. |
+| `title_uppercase` | Boolean | `true` | Display the advanced title text in uppercase. |
+| `title_text_color` | String (CSS) | `var(--cbc-title-text-color, var(--cbc-title-color, '#ffffff'))` | Text color for the advanced title. |
+| `strip_show_icon` | Boolean | `true` | Show icons in the embedded cover `value_strip`. |
+| `strip_show_step_value` | Boolean | `true` | Show values or labels in the embedded cover `value_strip`. |
+| `strip_show_fade` | Boolean | `false` | Fade strip items according to their position value. |
+| `strip_items` | Array of [Value Strip Items](#value-strip-item) | `[]` | Custom cover strip items. Leave empty to use the default `cover` value strip items. |
+
+#### Cover Example YAML
+
+<details><summary>See the YAML...</summary><p>
+
+```yaml
+type: custom:button-card
+template: cover
+entity: cover.lounge_blinds
+name: Lounge Blinds
+icon: mdi:blinds-horizontal
+variables:
+  position_source: current_position
+  strip_items:
+    - step_value: 0
+      icon: mdi:blinds
+      units: '%'
+      label: close
+    - step_value: 50
+      icon: mdi:blinds-open
+      units: '%'
+    - step_value: 100
+      icon: mdi:blinds-open
+      units: '%'
+      label: open
+```
+
+</p></details>
+
 ### Value Strip (`value_strip`)
 
 ![value_strip](images/value-strips.png)
