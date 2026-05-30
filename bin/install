@@ -32,6 +32,7 @@ echo ""
 echo "::CBC::✅::> Creative Button-Card Templates installed."
 echo ""
 
+cd ..
 if [ -f ui-lovelace.yaml ]; then
   echo "::CBC::📝::> Adding Creative Button-Card Templates to your ui-lovelace.yaml file..."
   echo ""
