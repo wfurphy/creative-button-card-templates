@@ -9,17 +9,7 @@ A collection of [Button Card](https://github.com/custom-cards/button-card) templ
 
 ![Template Samples using Noctis theme](images/cbc-samples-animated.gif)
 
-_Examples above are shown in the default dark theme however they should work for most themes. They might require a couple of tweaks here and there. I prefer the excellent [Noctis theme](https://github.com/aFFekopp/noctis) (Check the "See Noctis example..." section below)_
-
-<details><summary>See Noctis example...</summary>
-<p>
-
-_Here are the same samples using the [Noctis theme](https://github.com/aFFekopp/n0.1100...12octis)_
-
-![Template Samples using Noctis theme](images/cbc-samples-noctis.png)
-
-</p>
-</details>
+_Examples above are shown in the default dark theme however they should work for most themes. They might require a couple of tweaks here and there. I prefer the excellent [Noctis theme](https://github.com/aFFekopp/noctis)_
 
 <details><summary>See the YAML...</summary>
 <p>
@@ -328,7 +318,17 @@ I've used card-mod for a few tweaks here and there. It's required for most decen
 
 If you are using your lovelace dashboards in [yaml mode](https://www.home-assistant.io/dashboards/dashboards/) (Recommended):
 
- 1. Open a terminal on your Home Assistant host and navigate to the config directory where you keep your `ui-lovelace.yaml`, in Home Assistant OS this is usually `/config`.
+1. Open a terminal on your Home Assistant host and navigate to the config directory where you keep your `ui-lovelace.yaml`, in Home Assistant OS this is usually `/config`.
+
+### Automated Installation
+
+2. Run the following command to clone this repository and install Creative Button-Card Templates:
+
+     ```sh
+     curl -fsSL https://raw.githubusercontent.com/wfurphy/creative-button-card-templates/refs/heads/develop/bin/install | bash
+     ```
+
+### Manual Installation
 
  2. Clone this repository:
 
@@ -377,13 +377,22 @@ If you're using storage mode (or editing your dashboards using the UI):
 
 1. Open a terminal on your HA install.
 2. Navigate to where you installed Creative Button-Card Templates (eg. `/config/creative-button-card-templates/`)
-3. Run `git pull` to get the latest files OR download the source from the [latest release](releases/latest) and replace the entire contents of the folder (unless you have created your own templates in the `custom` folder, make sure you don't replace those).
+
+> :raising_hand: _If you have made any changes to the source files (eg. modified files outside of the `custom` folder) then make sure to run `git stash` to stash them before you pull the latest changes. If you don't do this then you will lose those changes when you pull the latest files._
+
+#### Updating from v0.2.x (Updating from v0.3+ skip this step)
+
+3. Make sure you're on the `master` branch (`git branch --show-current`), if not (`git checkout master`) and run `git pull`. then continue to step 4.
+
+#### Updating from v0.3+
+
+4. run 'bin/update' to update the source files and export the latest `cbc.yml`.
 
 ### Storage (UI) Mode
 
 1. a. Copy the contents of [`cbc.yml` from the latest release](https://github.com/wfurphy/creative-button-card-templates/releases/latest/download/cbc.yml)
     OR
-   b. If you originally cloned this repository and/or created custom templates, follow steps 1-3 above and then run `bin/export` and copy the contents of the resulting `cbc.yml`.
+   b. If you originally cloned this repository and/or created custom templates, follow steps 1-4 above and then run `bin/export` and copy the contents of the resulting `cbc.yml`.
 2. Open a browser and navigate to your Home Assistant dashboard.
 3. Click the three dots in the top right corner and choose `Edit Dashboard`.
 4. Click three dots again and choose `Raw Configuration Editor`.
@@ -485,7 +494,7 @@ variables.$parentId(removal);
 /**
  * Get a Child Entity ID from the current parent entity
  * Eg. from `swith.smart_plug` you may want the current
- * from 
+ * from
  * @param {string} name - the additional name of the child entity
  * @param {string} domain - the domain of the child entity (default: sensor)
  * @param {string} removal - (Optional) Additional string to remove from the entity name
