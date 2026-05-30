@@ -24,6 +24,7 @@ git clone https://github.com/wfurphy/creative-button-card-templates.git || {
   exit 1
 }
 cd creative-button-card-templates
+
 # test
 git checkout develop
 
