@@ -19,6 +19,7 @@ EOF
 echo "::CBC::💻::> Installing Creative Button-Card Templates..."
 echo ""
 git clone https://github.com/wfurphy/creative-button-card-templates.git || {
+  echo ""
   echo "::CBC::❌::> Failed to clone repository. Please check your internet connection and try again."
   exit 1
 }
@@ -27,7 +28,9 @@ cd creative-button-card-templates
 git checkout develop
 
 cp -f custom/cbc_settings.sample custom/cbc_settings.yaml
+echo ""
 echo "::CBC::✅::> Creative Button-Card Templates installed."
+echo ""
 
 if [ -f ui-lovelace.yaml ]; then
   echo "::CBC::📝::> Adding Creative Button-Card Templates to your ui-lovelace.yaml file..."
@@ -36,14 +39,16 @@ if [ -f ui-lovelace.yaml ]; then
     cat "$CBC_INIT"
     cat ui-lovelace.yaml
   } > ui-lovelace.yaml.new && mv ui-lovelace.yaml.new ui-lovelace.yaml || {
+    echo ""
     echo "::CBC::❌::> Failed to update ui-lovelace.yaml."
   }
 else
+  echo ""
   echo "::CBC::⚠️::> WARNING: ui-lovelace.yaml not found."
 fi
 
-echo "::CBC::::::> To use CBCT in your other dashboards just add the following to the top of any"
-echo ":::::::::::> YAML file(s) where dashboard properties (eg. title, views) are defined:"
+echo "::> To use CBCT in your other dashboards just add the following to the top of any"
+echo "::> YAML file(s) where dashboard properties (eg. title, views) are defined:"
 echo -e "\n$CBC_INIT\n"
 echo "::CBC::✅::> Installation complete! Please edit custom/cbc_settings.yaml to configure."
 echo ""
