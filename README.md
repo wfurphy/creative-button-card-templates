@@ -458,12 +458,10 @@ variables:
 # ...
 ```
 
-#### $pecial Variables
-There are a few unique universal* helper variables available for you to use when making your cards. They always start with a `$`. There are only 2 in this release but the plan is to expand them in the future. You can use them in any* card just like any other variable, using the `variables` object in a javascript template as per the example below:
+#### Helper Variables
 
-_*almost_
+There are a couple of shared helper variables available for building tidy Javascript templates. They always start with a `$` and are documented in the [Helpers](#helpers) section below.
 
-##### Example in a YAML card definition
 ```yaml
 type: custom:button-card
 template: entity
@@ -474,34 +472,90 @@ variables:
       entity: "[[[ return variables.$childEntityId('voltage'); ]]]"
 ```
 
-The first two are most useful when you have a standard **Device** which has many **Entities**. For example; a smart plug with the master `switch` entity and then `sensor` entities for current, power and voltage. This takes advantage of the default naming convention which would (in most cases) uses the master entity's name and adds an underscore (`_`) followed by the name of the sensor/control/child.
-eg. `switch.power_plug` that then has a `sensor.power_plug_voltage` and so on...
+## Helpers
 
-##### $parentId()
+The `cbc_helpers` addon provides small helper functions through the `variables` object. It is inherited by `cbcjs`, so it is available on most templates already. If you're creating your own custom template from scratch and want to use these helpers, include `cbc_helpers` in the template list.
+
+These helpers are most useful when you have a main entity with related child entities using Home Assistant's usual object ID pattern. For example, a smart plug might use `switch.power_plug` as the main entity and expose related sensors like `sensor.power_plug_voltage`, `sensor.power_plug_current`, and `sensor.power_plug_power`.
+
+### CBC Helpers (`cbc_helpers`)
+
+#### Helper Functions
+
+| Helper | Returns | Description |
+| - | - | - |
+| `$parentId(removal)` | String | Returns the current entity object ID without the domain. Optionally removes an extra string from the object ID. |
+| `$childEntityId(name, domain, removal)` | String | Builds a related child entity ID from the current entity object ID, child name, and optional domain. |
+
+#### `$parentId(removal)`
+
+Gets the current entity object ID by removing the domain from `entity.entity_id`. If you pass `removal`, that value is also removed from the object ID before it is returned.
+
+| Parameter | Value Type | Default | Description |
+| - | - | - | - |
+| `removal` | String | `''` | Optional text to remove from the current entity object ID. |
 
 ```js
-/**
- * Get the Parent ID from the current entity
- * @param {string} removal - (Optional) Additional string to remove from the entity name
- * @returns {string|regex} The entity id without the type or removal string
- */
 variables.$parentId(removal);
 ```
 
-##### $childEntityId()
+For a card using `entity: switch.power_plug`:
 
 ```js
-/**
- * Get a Child Entity ID from the current parent entity
- * Eg. from `swith.smart_plug` you may want the current
- * from
- * @param {string} name - the additional name of the child entity
- * @param {string} domain - the domain of the child entity (default: sensor)
- * @param {string} removal - (Optional) Additional string to remove from the entity name
- * @returns {string|regex} The child's entity id
- */
+variables.$parentId(); // power_plug
+```
+
+For a card using `entity: switch.power_plug_switch`:
+
+```js
+variables.$parentId('_switch'); // power_plug
+```
+
+#### `$childEntityId(name, domain, removal)`
+
+Builds a related child entity ID from the current entity. The helper removes the current entity domain, optionally removes extra text from the object ID, then appends `_<name>`.
+
+| Parameter | Value Type | Default | Description |
+| - | - | - | - |
+| `name` | String |  | Child entity suffix to append to the parent object ID. If empty, the helper returns an empty string. |
+| `domain` | String | `sensor` | Domain for the generated child entity ID. |
+| `removal` | String | `''` | Optional text to remove from the current entity object ID before appending the child suffix. |
+
+```js
 variables.$childEntityId(name, domain, removal);
 ```
+
+For a card using `entity: switch.power_plug`:
+
+```js
+variables.$childEntityId('voltage'); // sensor.power_plug_voltage
+variables.$childEntityId('enable', 'input_boolean'); // input_boolean.power_plug_enable
+```
+
+For a card using `entity: switch.power_plug_switch`:
+
+```js
+variables.$childEntityId('power', 'sensor', '_switch'); // sensor.power_plug_power
+```
+
+#### Helpers Example YAML
+
+<details><summary>See the YAML...</summary><p>
+
+```yaml
+type: custom:button-card
+template: entity
+entity: switch.power_plug
+name: Power Plug
+variables:
+  attributes:
+    - icon: mdi:flash
+      entity: "[[[ return variables.$childEntityId('power'); ]]]"
+    - icon: mdi:sine-wave
+      entity: "[[[ return variables.$childEntityId('voltage'); ]]]"
+```
+
+</p></details>
 
 ## Templates
 
