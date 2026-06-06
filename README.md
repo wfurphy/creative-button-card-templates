@@ -41,10 +41,6 @@ The docs have grown up a little and now live in a GitHub Pages site so they're e
 - [Advanced Usage](docs/reference/advanced-usage.md)
 - [Customisation](docs/customisation.md)
 
-The published site is configured here:
-
-https://wfurphy.github.io/creative-button-card-templates/
-
 ## Quick Install Reminder
 
 If you're using Lovelace YAML mode, clone this repository into your Home Assistant config directory and include it before any other dashboard content:
@@ -56,23 +52,7 @@ button_card_templates: !include_dir_merge_named creative-button-card-templates/
 #################################################################################/
 ```
 
-If you're using Storage (UI) mode, copy the generated `cbc.yml` from the latest release into the Raw Configuration Editor. The [Getting Started](docs/getting-started.md) docs have the full steps for both methods.
-
-## Local Docs
-
-If you're working on the docs locally:
-
-```sh
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements-docs.txt
-.venv/bin/mkdocs serve
-```
-
-Build the site with:
-
-```sh
-.venv/bin/mkdocs build --strict
-```
+If you're using Storage (UI) mode, copy the generated `cbc.yml` from the latest release into the Raw Configuration Editor. The [Getting Started](docs/getting-started.md) docs have the full steps for both methods
 
 ## Thanks
 

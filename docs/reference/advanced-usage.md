@@ -32,3 +32,19 @@ Mostly used for creating and debugging the templates this card displays the full
 | Variable | Values | Default | Description |
 | - | - | - | - |
 | `do_not_split` | Array of attribute names | `[]` | Attributes to keep as a single value (prevents splitting on `,` or `|`). |
+
+## Local Docs
+
+If you want to contribute and are working on the docs locally:
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-docs.txt
+.venv/bin/mkdocs serve
+```
+
+Build the site with:
+
+```sh
+.venv/bin/mkdocs build --strict
+```
