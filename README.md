@@ -13,6 +13,22 @@ _Examples above are shown in the default dark theme however they should work for
 
 I made this repo for my friends who were asking me the above question. If you're someone else who's managed to stumble across them then hello and you're welcome to use them.
 
+## v0.3.0+
+
+It's been a long time coming! I'll _try_ to make the updates more frequent, plenty in this release to keep you busy though...
+
+- Now compatible with Button-Card 7!
+- New templates, new features on existing cards and ALL the bug fixes!
+- There are a few little breaking changes which I've tried to call out in the docs.
+- There's a much easier way to install for Storage (UI) mode.
+- There's an update checker so you'll know when there's an update available.
+- It's still home-ware so expect some glitches, log issues here and I will try my best to fix them.
+- Feature suggestions are welcome and please show me what you're building with them! I really want to see what you're creating!
+
+If you're updating from a previous version, checkout the [Updating](docs/getting-started.md#updating) section for instructions.
+
+> :raising_hand_man: If you're updating then make sure to keep an eye out for the breaking changes which are highlighted throughout the docs like this: 🧨 _Breaking Change:_
+
 ## Docs
 
 The docs have grown up a little and now live in a GitHub Pages site so they're easier to browse, search and keep tidy. If you're just here to use the templates, start with the install docs and then have a browse through the examples and template reference.
