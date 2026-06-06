@@ -4,34 +4,9 @@ cbcjs:
     - cbc_settings
     - cbc_css
     - bc_config
+    - cbc_helpers
+    - stage # REMOVE FOR PRODUCTION - INTERNAL USE ONLY
   variables:
-    $parentId: >
-      [[[
-        /**
-         * Get the Parent ID from the current entity
-         * @param {string} removal - (Optional) Additional string to remove from the entity name
-         * @returns {string|regex} The entity id without the type or removal string
-         */
-        return function(removal = '') {
-          return entity.entity_id.split('.')[1].replace(removal, '');
-        }
-      ]]]
-    $childEntityId: >
-      [[[
-        /**
-         * Get a Child Entity ID from the current parent entity
-         * Eg. from `switch.smart_plug` you may want the current
-         * from
-         * @param {string} name - the additional name of the child entity
-         * @param {string} domain - the domain of the child entity (default: sensor)
-         * @param {string} removal - (Optional) Additional string to remove from the entity name
-         * @returns {string|regex} The child's entity id
-         */
-        return function(name, domain = 'sensor', removal = '') {
-          if (!name) return '';
-          return `${domain}.${entity.entity_id.split('.')[1].replace(removal, '')}_${name}`;
-        }
-      ]]]
     __cbc_version: v0.3.0
     __cbc_lovelace_method: "[[[ return hass?.panels?.[hass.panelUrl]?.config?.mode ?? 'unknown' ]]]"
     __cbc_error: >

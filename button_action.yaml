@@ -93,7 +93,6 @@ button_action:
       - justify-items: start
       - align-items: center
     card:
-      - border: none
       - padding: 2px
       - align-items: center
     icon:
@@ -141,7 +140,7 @@ button_action:
       force_recreate: true
       card:
         type: custom:button-card
-        template: 
+        template:
           - transparent
           - no_actions
         entity: "[[[ return variables.timer ]]]"
@@ -177,8 +176,7 @@ button_action:
             - color: var(--accent-color)
             - font-size: 9px
             - margin-left: 10px
-            
-            
+
+
 
 #########################################################################/
-  

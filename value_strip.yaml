@@ -52,9 +52,9 @@ value_strip_item:
   state:
     - id: cbc_active
       operator: template
-      step_value: >
+      value: >
         [[[
-          return Boolean(entity.state == variables.item.step_value)
+          return Boolean(entity.state === variables.item.step_value)
         ]]]
       styles:
         icon:
@@ -146,7 +146,7 @@ adaptive_lighting_strip_item:
   state:
     - id: cbc_active
       operator: template
-      step_value: >
+      value: >
         [[[
           return Boolean(variables.item.step_value == states['input_number.brightness_' + variables.al_area_id].state)
         ]]]
@@ -168,9 +168,9 @@ brightness_strip_item:
   state:
     - id: cbc_active
       operator: template
-      step_value: >
+      value: >
         [[[
-          return Boolean(Math.round(entity.attributes.brightness / 2.55) == variables.item.step_value)
+          return Boolean(entity.attributes.brightness === variables.item.step_value);
         ]]]
 
 #################( Cover Strip Item )################################>
@@ -182,9 +182,9 @@ cover_strip_item:
   state:
     - id: cbc_active
       operator: template
-      step_value: >
+      value: >
         [[[
-          return Boolean(entity.attributes.current_position == variables.item.step_value)
+          return Boolean(entity.attributes.current_position === variables.item.step_value);
         ]]]
   tap_action:
     action: call-service
@@ -208,9 +208,9 @@ climate_strip_item:
   state:
     - id: cbc_active
       operator: template
-      step_value: >
+      value: >
         [[[
-          return Boolean(variables.item.step_value == entity.attributes.temperature)
+          return Boolean(variables.item.step_value === entity.attributes.temperature)
         ]]]
 
 #################( Fan Strip Item )################################>
@@ -244,7 +244,7 @@ fan_mode_strip_item:
   state:
     - id: cbc_active
       operator: template
-      step_value: >
+      value: >
         [[[
           return Boolean(entity.attributes.preset_mode == variables.item.mode)
         ]]]
