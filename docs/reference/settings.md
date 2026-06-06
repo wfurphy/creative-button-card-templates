@@ -6,7 +6,7 @@ Rename `
 
 As of version 0.3^ there is a automated check so you can know if there are updates available in the future. **This feature does not send any data from your instance to any external server.** This is optional and you can set the check frequency and notifications in `addons/_cbc_settings.yaml`.
 
-#### Version Check Settings `variables.__cbc_settings.check_version:`
+### Version Check Settings `variables.__cbc_settings.check_version:`
 
 | Variable | Values | Default | Description |
 | - | - | - | - |
@@ -31,7 +31,7 @@ Make sure you have set `variables.__cbc_settings.stats.generate` to `true` in `a
 cbcJS.getStats()
 ```
 
-#### Usage Stats Settings `variables.__cbc_settings.stats:`
+### Usage Stats Settings `variables.__cbc_settings.stats:`
 
 | Variable | Values | Default | Description |
 | - | - | - | - |

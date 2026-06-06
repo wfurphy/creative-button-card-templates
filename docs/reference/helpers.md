@@ -4,16 +4,16 @@ The `cbc_helpers` addon provides small helper functions through the `variables` 
 
 These helpers are most useful when you have a main entity with related child entities using Home Assistant's usual object ID pattern. For example, a smart plug might use `switch.power_plug` as the main entity and expose related sensors like `sensor.power_plug_voltage`, `sensor.power_plug_current`, and `sensor.power_plug_power`.
 
-### CBC Helpers (`cbc_helpers`)
+## CBC Helpers (`cbc_helpers`)
 
-#### Helper Functions
+### Helper Functions
 
 | Helper | Returns | Description |
 | - | - | - |
 | `$parentId(removal)` | String | Returns the current entity object ID without the domain. Optionally removes an extra string from the object ID. |
 | `$childEntityId(name, domain, removal)` | String | Builds a related child entity ID from the current entity object ID, child name, and optional domain. |
 
-#### `$parentId(removal)`
+### `$parentId(removal)`
 
 Gets the current entity object ID by removing the domain from `entity.entity_id`. If you pass `removal`, that value is also removed from the object ID before it is returned.
 
@@ -37,7 +37,7 @@ For a card using `entity: switch.power_plug_switch`:
 variables.$parentId('_switch'); // power_plug
 ```
 
-#### `$childEntityId(name, domain, removal)`
+### `$childEntityId(name, domain, removal)`
 
 Builds a related child entity ID from the current entity. The helper removes the current entity domain, optionally removes extra text from the object ID, then appends `_<name>`.
 
@@ -64,7 +64,7 @@ For a card using `entity: switch.power_plug_switch`:
 variables.$childEntityId('power', 'sensor', '_switch'); // sensor.power_plug_power
 ```
 
-#### Helpers Example YAML
+### Helpers Example YAML
 
 <details><summary>See the YAML...</summary><p>
 
