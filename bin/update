@@ -25,7 +25,7 @@ if [ ! -d '.git' ]; then
 fi
 
 if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
-  echo "::CBC::⚠️::> WARNING: You have modified the core files! If you continue with the update, your changes will be backed up and reapplied afterwards where possible. Continue? (y/n)"
+  echo "::CBC::⚠️::> WARNING: You have modified the core files! If you continue with the update, tracked changes will be discarded. New untracked files will be backed up and reapplied afterwards where possible. Continue? (y/n)"
   read -r response
   if [[ "$response" != "y" ]]; then
     echo ":::CBC::❌::> Update cancelled. Please commit or stash your changes before updating."
@@ -45,12 +45,11 @@ if [[ "$1" != '--beta' ]] && [[ "$branch" != "master" ]]; then
 fi
 
 echo ":::CBC::✅::> Updating Creative Button-Card Templates..."
+git reset --hard
 
 stashBefore="$(git rev-parse -q --verify refs/stash || true)"
 git stash push -u -m "CBC update backup"
 stashAfter="$(git rev-parse -q --verify refs/stash || true)"
-
-git reset --hard
 
 if [ "$1" == '--beta' ]; then
   echo ":::CBC::⚠️::> You are updating to a beta version from $branch branch. This may include breaking changes and is not recommended for production use."
