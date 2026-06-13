@@ -34,7 +34,7 @@ I made this repo for my friends who were asking me the above question. If you're
 - Easier Storage (UI) mode installation.
 - Built-in update checking and optional usage stats.
 
-If you're updating from a previous version, start with [Updating](getting-started.md#updating).
+If you're updating from a previous version, start with [Updating](updating.md).
 
 ## Visual Studio Code Extension
 

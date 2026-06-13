@@ -30,6 +30,7 @@ nav:
   - Home: index.md
   - Examples: examples.md
   - Getting Started: getting-started.md
+  - Updating: updating.md
   - Templates: templates.md
   - Reference:
       - Addons: reference/addons.md
