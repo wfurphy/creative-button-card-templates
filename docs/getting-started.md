@@ -32,13 +32,18 @@ If you are using your lovelace dashboards in [yaml mode](https://www.home-assist
 
 #### Manual Installation
 
- 2. Clone this repository:
+1. Clone this repository:
 
      ```sh
      git clone https://github.com/wfurphy/creative-button-card-templates.git
     ```
+2. navigate into the `creative-button-card-templates` directory and mv or copy `cbc_settings.sample` to `cbc_settings.yaml`. If you like you can open it and change any settings or leave them as default.
 
- 3. Include the following snippet **before any other content** in your `ui-lovelace.yaml`. _If you've used a custom directory then obviously replace `creative-button-card-templates/` with a relative path to your chosen installation directory._
+     ```sh
+     cd creative-button-card-templates && cp cbc_settings.sample cbc_settings.yaml
+    ```
+
+3. Include the following snippet **before any other content** in your `ui-lovelace.yaml` or any dashboard file where you wish to use the templates. _If you've used a custom directory then obviously replace `creative-button-card-templates/` with a relative path to your chosen installation directory._
 
       ```yaml
       ####| Creative Button-Card Templates |#################################################>
