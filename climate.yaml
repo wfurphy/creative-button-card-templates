@@ -37,7 +37,7 @@ climate:
     data: >
       [[[
         if (variables.switch_entity) return {};
-        
+
         return (entity.state === 'off') ? { hvac_mode: 'auto' } : { hvac_mode: 'off' }
       ]]]
   icon: >
@@ -64,14 +64,11 @@ climate:
             ha-tile-icon, ha-tile-info {
               display: none;
             }
-            .sc-shutter-top {
-              display: none !important;
-            }
-            .sc-shutters {
-              padding: 5px !important;
-            }
             ha-card:hover {
               opacity: 0.9;
+            }
+            ha-tile-container {
+              margin-top: -50px !important;
             }
   styles:
     grid:
