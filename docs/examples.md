@@ -2,126 +2,126 @@
 
 ![Template Samples using Noctis theme](images/cbc-samples-animated.gif)
 
-## Previous Examples
-
-![Template Samples using Noctis theme](images/cbc-samples-animated.gif)
-
-![Template Samples using Noctis theme](images/cbc-samples-animated.gif)
-
 _Examples above are shown in the default dark theme however they should work for most themes. They might require a couple of tweaks here and there. I prefer the excellent [Noctis theme](https://github.com/aFFekopp/noctis)_
 
 <details><summary>See the YAML...</summary>
 <p>
 
-This is the code used to create the examples in the gif above. Some entity names omitted, of course.
+This is the code used to create the examples in the gif above, with example entity names.
 
 ```yaml
-# ...cards:
 - type: vertical-stack
   cards:
-    - type: custom:button-card #                   ####| Title - Tab & Icon |####>
+    - type: custom:button-card
       template: title
       name: Creative Button-Card Templates
       icon: mdi:cards-outline
-    - type: grid
-      square: false
-      columns: 2
+      variables:
+        background_color: '#7b54bf'
+    - type: horizontal-stack
       cards:
         - type: vertical-stack
           cards:
-            - type: custom:button-card #               ####| Action. Button |####>
+            - type: custom:button-card
               template: button_action
-              entity: timer.test_timer
+              entity: script.example_action
+              variables:
+                timer: timer.example_timer
               name: Action Button
-            - type: custom:button-card #              ####| Title - Devices |####>
+            - type: custom:button-card
+              template: select
+              entity: input_select.example_selector
+            - type: custom:button-card
+              template:
+                - climate
+              entity: climate.air_conditioner
+              name: Climate
+              icon: mdi:fan
+            - type: custom:button-card
+              template:
+                - entity
+              entity: switch.smart_plug
+              name: Entity
+              icon: mdi:power-socket-au
+              variables:
+                debug: true
+                attributes:
+                  - icon: mdi:sine-wave
+                    entity: "[[[ return variables.$childEntityId('voltage'); ]]]"
+                  - icon: mdi:alien
+                    state: 'Custom '
+                    units: Attribute
+        - type: vertical-stack
+          cards:
+            - type: custom:button-card
+              template: cover
+              entity: cover.window_blinds
+              name: Cover
+            - type: custom:button-card
               template: title
-              name: Devices
-              icon: mdi:cellphone-link
+              name: Lights
+              icon: mdi:lamps
               styles:
-                icon:
-                  - height: 110%
-        - type: custom:button-card #                           ####| Device |####>
-          template: device
-          entity: switch.sample
-          name: Device
-          icon: mdi:tumble-dryer
-        - type: custom:button-card #              ####| Device - Attributes |####>
-          template: device
-          entity: switch.sample
-          name: Device
-          icon: mdi:nuke
-          variables:
-            attributes:
-              - id: voltage
-                icon: mdi:alien
-                state: '1x '
-                units: Attribute
-        - type: custom:button-card #                             ####| Plug |####>
-          template: plug
-          entity: switch.sample
-          name: Smart Plug
-    - type: grid
-      square: false
-      columns: 2
-      cards:
-        - type: custom:button-card #                   ####| Title - Lights |####>
-          template: title
-          name: Lights
-          icon: mdi:lamps
-          styles:
-            card:
-              - margin-top: 40px
-        - type: custom:button-card #                            ####| Light |####>
-          template: light
-          entity: light.sample
-          name: Light
-        - type: custom:button-card #                   ####| Light - Motion |####>
-          template: light_motion
-          entity: light.sample
-          name: Light & Motion
-          variables:
-            motion_entity: binary_sensor.sample
-        - type: custom:button-card #                      ####| Light Group |####>
-          template:
-            - light_group
-          entity: light.sample
-          name: Light Group
-          variables:
-            items:
-              - entity: light.sample
-                symbol: mdi:stairs
-                icon: mdi:home
-              - entity: light.sample
-                symbol: C
-              - entity: light.sample
-                icon: mdi:lightbulb-spot
-                symbol: 8
-- type: vertical-stack  #                                #########################| COLUMN |#####################>
+                card:
+                  - margin-top: 5px;
+            - type: custom:button-card
+              template:
+                - light_group
+              entity: light.room_lights
+              name: Light Group
+              icon: mdi:lightbulb-multiple
+              variables:
+                show:
+                  effect_selector: true
+                  theme_selector: true
+                items:
+                  - entity: light.ceiling_light_1
+                    symbol: E1
+                  - entity: light.ceiling_light_2
+                    symbol: E2
+                  - entity: light.wall_light_1
+                    symbol: W1
+                  - entity: light.wall_light_2
+                    symbol: W2
+                  - entity: light.accent_strip
+                    symbol: mdi:desk-lamp
+                  - entity: light.floor_lamp
+                    icon: mdi:floor-lamp-dual
+            - type: custom:button-card
+              template: light_motion
+              entity: light.floor_lamp
+              name: Light & Motion
+              variables:
+                motion_entity: binary_sensor.entry_motion_occupancy
+                active_entity: input_boolean.motion_active
+    - type: custom:gap-card
+      height: 50
+- type: vertical-stack
   cards:
-    - type: horizontal-stack #                           ####| Mini Buttons |####>
+    - type: horizontal-stack
       cards:
         - type: custom:button-card
           template: title
           name: "Mini Buttons"
           icon: mdi:arrow-right
-        - type: custom:button-card #          ####| Button Mini DND |####>
+        - type: custom:button-card
           template:
             - button_mini
             - dynamic_icons
           color_type: card
           color: "#9d3042"
-          entity: input_boolean.sample
+          entity: input_boolean.do_not_disturb
           variables:
             icon: mdi:bell
             icon_on: mdi:bell-off
-            width: 70px
-        - type: custom:button-card #        ####| Button Mini Power |####>
-          template: button_mini
+            width: 60px
+        - type: custom:button-card
+          template: button_mini_power_area
           icon: mdi:power
-          entity: switch.sample
           variables:
-            width: 70px
-    - type: custom:button-card #                         ####| Value Strips |####>
+            area: living_room
+            width: 60px
+    - type: custom:button-card
       template: title
       name: Value Strips
       icon: mdi:led-strip
@@ -129,69 +129,56 @@ This is the code used to create the examples in the gif above. Some entity names
       columns: 2
       square: false
       cards:
-        - type: custom:button-card #         ####| Brightness Strip |####>
+        - type: custom:button-card
           template:
             - value_strip
+            - debug
           variables:
             type: brightness
             show:
               icon: false
               step_value: true
-          entity: light.sample
-        - type: custom:button-card #         ####| Brightness Strip |####>
+          entity: light.floor_lamp
+        - type: custom:button-card
           template:
             - value_strip
-          variables:
-            type: adaptive_lighting
-            al_area_id: den
-            show:
-              icon: true
-              step_value: true
-        - type: custom:button-card #         ####| Brightness Strip |####>
-          template:
-            - value_strip
+            - debug
             - transparent
           variables:
             type: adaptive_lighting
-            al_area_id: den
+            al_area_id: living_room
+            show:
+              icon: true
+              step_value: true
+        - type: custom:button-card
+          template:
+            - value_strip
+            - debug
+            - transparent
+          variables:
+            type: adaptive_lighting
+            al_area_id: living_room
             show:
               icon: true
               step_value: false
-        - type: custom:button-card #             ####| Blinds Strip |####>
+        - type: custom:button-card
           template:
             - value_strip
-          entity: cover.den_blinds
+            - debug
+          entity: cover.window_blinds
           variables:
             type: cover
             show:
               icon: true
               step_value: true
               fade: false
-            items:
-            - step_value: 0
-              icon: mdi:blinds
-              units: '%'
-              label: close
-            - step_value: 25
-              icon: mdi:blinds
-              units: '%'
-            - step_value: 50
-              icon: mdi:blinds-open
-              units: '%'
-            - step_value: 75
-              icon: mdi:blinds-open
-              units: '%'
-            - step_value: 100
-              icon: mdi:blinds-open
-              units: '%'
-              label: open
-    - type: horizontal-stack #                             ####| Info Cards |####>
+    - type: horizontal-stack
       cards:
         - type: custom:button-card
           template: title
           name: Info Cards
           icon: mdi:information-outline
-        - type: custom:button-card #                ####| Info Mini |####>
+        - type: custom:button-card
           template:
             - info_mini
             - transparent
@@ -199,29 +186,28 @@ This is the code used to create the examples in the gif above. Some entity names
             state: 99
             units: win
           icon: mdi:trophy
-    - type: custom:button-card #                     ####| Info x 3 |####>
-      template:
-        - info
+    - type: custom:button-card
+      template: info
       variables:
         items:
-          - entity_id: sensor.sample
+          - entity_id: sensor.room_temperature
             name: Custom Color
             color: '#e04632'
             decimals: 2
-          - entity_id: cover.den_blinds
+          - entity_id: cover.window_blinds
             attribute: current_position
             units: 'ATTRIBUTE '
             prefix_units: true
           - icon: mdi:lightbulb-variant
             name: No Entity
             state: 'Custom'
-    - type: custom:button-card #         ####| Info x 4 Transparent |####>
+    - type: custom:button-card
       template:
         - info
         - transparent
       variables:
         items:
-          - entity_id: sensor.sample
+          - entity_id: sensor.room_temperature
             name: Rounding
             decimals: 0
           - icon: mdi:cash
@@ -229,50 +215,53 @@ This is the code used to create the examples in the gif above. Some entity names
             state: '47.3'
             units: '$'
             color: "#00b59d"
-          - entity_id: sensor.sample
+          - entity_id: binary_sensor.door_contact
             name: "Sensor"
             color: "#febe6e"
-          - entity_id: input_number.air_circulation_frequency
+            state: "[[[[ return entity.state === 'off' ? 'Closed' : 'Open' ]]]]"
+          - entity_id: input_number.circulation_frequency
             name: Custom Icon
             icon: mdi:clock-outline
-    - type: horizontal-stack #                             ####| Info Minis |####>
+    - type: horizontal-stack
       cards:
-        - type: custom:button-card #                     ####| Spin |####>
+        - type: custom:button-card
           template:
-            - transparent
             - info_mini
-          entity: cover.den_blinds
+            - transparent
           variables:
             attribute: current_position
             units: 'SPIN'
             state: '↻'
-            rotate: true
+            spin: true
             icon_color: 'rgba(247, 138, 80, 0.2)'
           icon: mdi:fan
-        - type: custom:button-card #                   ####| Inline |####>
+        - type: custom:button-card
           template:
             - info_mini
             - transparent
-          entity: cover.den_blinds
+          entity: cover.window_blinds
           icon: mdi:chart-pie
           variables:
             icon_color: 'rgba(157, 48, 66, 0.4)'
             layout: inline
             attribute: current_position
             units: '%'
-        - type: custom:button-card #               ####| Background |####>
+        - type: custom:button-card
           template:
             - info_mini
-          entity: input_number.air_circulation_frequency
+          entity: input_number.circulation_frequency
           icon: mdi:clock-time-nine-outline
-        - type: custom:button-card #             ####| Mirror Title |####>
+        - type: custom:button-card
           template: title
           name: Info Mini
           icon: mdi:arrow-left
           variables:
             mirror: true
-# ...
 ```
 
 </p>
 </details>
+
+## Noctis Example
+
+![Template Samples using Noctis theme](images/cbc-samples-animated.gif)

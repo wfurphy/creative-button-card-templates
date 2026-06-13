@@ -25,7 +25,7 @@ info_helper:
             out.name = `<div class="cbc-name">${item.name ?? defaultName}</div>`;
             out.tag = 'span';
           }
-          
+
           if (item.state) {
             out.state = item.state
           } else if (item.attribute && entity) {
@@ -41,7 +41,7 @@ info_helper:
           } else if (!isNaN(out.state)) {
             out.state = +Number(out.state).toFixed(item.decimals)
           }
-          
+
           if (out.prefix) {
             return `<${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}><${out.tag} class="cbc-state">${out.state}</${out.tag}>${out.name}`
           } else {
@@ -190,8 +190,6 @@ info_item:
       let att = String(item.attribute)
       return att?.length > 0 ? att.replace('_', ' ') : entity?.attributes.friendly_name
     ]]]
-  
-  # styles:
   styles:
     grid:
       - position: relative
@@ -209,7 +207,7 @@ info_item:
     icon:
       - position: absolute
       - opacity: 0.3
-      - justify-self: center 
+      - justify-self: center
       - align-self: center
       - min-width: 50px
       - min-height: 50px
@@ -248,7 +246,6 @@ info:
     icon_color: "var(--state-icon-color, var(--paper-item-icon-color))"
   show_icon: false
   show_name: false
-  # card_size: 1
   styles:
     grid:
       - grid-template-areas: >
@@ -366,6 +363,6 @@ info:
           item: "[[[ return variables.__qty >= 4 ? variables.items[3] : null ]]]"
         entity: "[[[ return variables.__qty >= 4 ? variables.items[3].entity_id : null ]]]"
 
-        
+
 #########################################################################/
-  
+

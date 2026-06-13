@@ -98,7 +98,6 @@ value_strip_item:
       active_logic:
         - width: 0
         - height: 0
-        # - display: none
         - visibility: hidden
     icon:
       - display: "[[[ return variables.__both || variables.show.icon ? 'block' : 'none' ]]]"
@@ -122,8 +121,6 @@ adaptive_lighting_strip_item:
     - value_strip_item
   variables:
     al_area_id: main_area
-    # item:
-    #   step_value: 100
   color: auto
   custom_fields:
     active_logic: >
@@ -154,9 +151,6 @@ adaptive_lighting_strip_item:
 #################( Brightness Strip Item )################################>
 brightness_strip_item:
   template: value_strip_item
-  # variables:
-  #   item:
-  #     step_value: 100
   color: auto
   tap_action:
     action: call-service
@@ -176,9 +170,6 @@ brightness_strip_item:
 #################( Cover Strip Item )################################>
 cover_strip_item:
   template: value_strip_item
-  # variables:
-  #   item:
-  #     step_value: 100
   state:
     - id: cbc_active
       operator: template
@@ -216,9 +207,6 @@ climate_strip_item:
 #################( Fan Strip Item )################################>
 fan_strip_item:
   template: value_strip_item
-  # variables:
-  #   item:
-  #     step_value: 100
   state:
     - id: cbc_active
       operator: template
@@ -237,10 +225,6 @@ fan_strip_item:
 #################( Fan Mode Strip Item )################################>
 fan_mode_strip_item:
   template: value_strip_item
-  # variables:
-    # item:
-    #   step_value: 100
-    #   mode: Auto
   state:
     - id: cbc_active
       operator: template
@@ -264,8 +248,6 @@ air_purifier_strip_item:
     - state_helper
   variables:
     level_entity: "[[[ return `${entity.entity_id.replace('fan.', 'number.')}_fan_level` ]]]"
-    # item:
-    #   step_value: 100
   state:
     - id: cbc_active
       operator: template
@@ -279,7 +261,6 @@ air_purifier_strip_item:
     service_data:
       entity_id: "[[[ return entity.entity_id ]]]"
       percentage: "[[[ return variables.item.step_value ]]]"
-      # step_value: "[[[ return variables.item.step_value ]]]"
     haptic: success
 
 #################( Value Strip )################################>
@@ -288,7 +269,6 @@ value_strip:
   show_step_value: false
   show_state: false
   show_name: false
-  # template: css
   variables:
     #::::[ type ]::::( value | brightness | adaptive_lighting | cover | fan )::::>
     type: domain
@@ -451,7 +431,6 @@ value_strip:
       - justify-items: center
       - align-items: center
       - min-height: "[[[ return variables.height ]]]"
-      # - padding: 5px
       - margin-bottom: 3px
     custom_fields:
       c1:

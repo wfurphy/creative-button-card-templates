@@ -1,6 +1,6 @@
 timer:
   type: custom:button-card
-  template: 
+  template:
     - transparent
   custom_fields:
     t:
@@ -28,13 +28,10 @@ timer:
         - id: cbc_on
           value: active
           styles:
-            # card:
-            #   - display: block
             state:
               - color: var(--highlight)
   styles:
     card:
-      # - display: none
       - position: absolute
       - left: 5px
       - bottom: 5px

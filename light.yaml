@@ -166,7 +166,7 @@ light:
       force_recreate: true
       card:
         type: custom:button-card
-        template: 
+        template:
           - value_strip
           - transparent
         entity: "[[[ return entity?.entity_id ]]]"
@@ -178,7 +178,7 @@ light:
           card:
             - max-height: 25px
             - max-width: 200px
-    es: 
+    es:
       force_recreate: true
       card:
         type: custom:button-card
@@ -186,7 +186,7 @@ light:
           - show_only_name
           - transparent
         name: >
-          [[[ 
+          [[[
             if (!variables.show.effect_selector || !entity.attributes.effect_list || !Array.isArray(entity.attributes.effect_list)) return ''
 
             const entSubId = entity.entity_id.replace('light.','');
@@ -241,7 +241,7 @@ light:
                   </div>`
               }
             }
-                              
+
             return `
                 <style>
                   .cbc-extra-cont {
@@ -293,9 +293,3 @@ light:
                 </div>
             `
           ]]]
-
-
-# From when we had to convert the color_temp, now kelvin is standard in HA
-# Math.round(1000000/entity.attributes.color_temp, 0)
-# °K
-#########################################################################/

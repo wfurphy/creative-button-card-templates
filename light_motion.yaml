@@ -20,7 +20,7 @@ light_motion:
               timer: 'none'
             }
           }
-          
+
           if (timer_entity) {
             if(states[timer_entity].state == 'active') {
               ps.custom_field = 'timer'
@@ -91,7 +91,7 @@ light_motion:
           - id: cbc_motion_active
             operator: template
             value: >
-              [[[ 
+              [[[
                 return variables.active_entity && states[variables.active_entity].state == 'off'
               ]]]
             icon: mdi:motion-sensor-off
@@ -106,13 +106,6 @@ light_motion:
               icon:
                 - opactiy: 0.8
         icon: mdi:run
-        # icon: >
-        #   [[[
-        #     if (!variables.active_entity || states[variables.active_entity].state == 'on') {
-        #       return 
-        #     }
-        #   ]]]
-        styles:
           card:
             - overflow: visible
             - margin-left: -2px
@@ -204,7 +197,6 @@ light_motion:
           card:
             - overflow: visible
             - opacity: 0.6
-            # - padding: 0
           grid:
             - grid-template-areas: '"i s l"'
             - grid-template-rows: 1fr
@@ -229,4 +221,3 @@ light_motion:
             - color: rgba(254, 190, 110, 1)
 
 #########################################################################/
-  

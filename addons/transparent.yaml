@@ -5,7 +5,6 @@ transparent:
       - background: none
       - box-shadow: none
       - border: none
-      # - border-radius: 0 #::Breaking::> Set border radius to 0
 
 #########################################################################/
 

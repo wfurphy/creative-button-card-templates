@@ -87,7 +87,6 @@ button_action:
     grid:
       - grid-template-areas: >
           [[[ return variables.timer && states[variables.timer].state == 'active' ? '"i n" "i timer"' : '"i n" "i l"' ]]]
-      # - grid-template-areas: '"i n" "i l"'
       - grid-template-columns: 50px auto
       - grid-template-rows: 1fr 1fr
       - justify-items: start

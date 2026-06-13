@@ -52,7 +52,7 @@ notify:
               }
             }
           }
-          
+
           if (!out) {
             switch (JSON.parse(entity.state).type) {
               case 'event':
@@ -96,11 +96,6 @@ notify:
     script: script.dashbaord_notification
     _updated_at: "[[[ return entity.last_updated || null ]]]"
     json: "[[[ return JSON.parse(entity.state) ]]]"
-      # type: "[[[ return JSON.parse(entity.state).type ]]]"
-      # icon: "[[[ return JSON.parse(entity.state).icon || undefined ]]]"
-      # title: "[[[ return JSON.parse(entity.state).title || undefined ]]]"
-      # message: "[[[ return JSON.parse(entity.state).message ]]]"
-      # color: "[[[ return JSON.parse(entity.state).color || undefined ]]]"
   name: "[[[ return variables.json.title ]]]"
   label: "[[[ return variables.json.message ]]]"
   show_icon: true

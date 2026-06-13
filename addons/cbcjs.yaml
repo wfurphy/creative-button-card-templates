@@ -22,7 +22,6 @@ cbcjs:
       [[[
         return class CBCWarn extends CBCError {};
       ]]]
-    # __cbc_settings: "[[[ return variables.__cbc_settings ]]]"
 
     __cbc_js_class: >
       [[[
