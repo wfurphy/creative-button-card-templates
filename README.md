@@ -25,7 +25,7 @@ It's been a long time coming! I'll _try_ to make the updates more frequent, plen
 - It's still home-ware so expect some glitches, log issues here and I will try my best to fix them.
 - Feature suggestions are welcome and please show me what you're building with them! I really want to see what you're creating!
 
-If you're updating from a previous version, checkout the [Updating](docs/getting-started.md#updating) section for instructions.
+If you're updating from a previous version, check out the [Updating](https://wfurphy.github.io/creative-button-card-templates/updating/#:~:text=Storage%20(UI)%20Mode-,Updating,-%C2%B6) section [the new Documentation](https://wfurphy.github.io/creative-button-card-templates) for instructions.
 
 > :raising_hand_man: If you're updating then make sure to keep an eye out for the breaking changes which are highlighted throughout the docs like this: 🧨 _Breaking Change:_
 
