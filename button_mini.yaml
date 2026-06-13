@@ -162,6 +162,7 @@ button_mini_power_area:
   variables:
     area:
     width: 45px
+  icon: mdi:power
   color_type: card
   color: var(--accent-color)
   tap_action:

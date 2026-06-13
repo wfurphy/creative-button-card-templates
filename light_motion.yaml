@@ -106,6 +106,7 @@ light_motion:
               icon:
                 - opactiy: 0.8
         icon: mdi:run
+        styles:
           card:
             - overflow: visible
             - margin-left: -2px

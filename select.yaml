@@ -3,6 +3,8 @@ select:
   type: custom:button-card
   template:
     - show_only_icon
+    - no_actions
+  variables:
     __getState: >
       [[[
         /**
