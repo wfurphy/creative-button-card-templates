@@ -1,0 +1,55 @@
+site_name: Creative Button-Card Templates
+site_description: Button Card templates for Home Assistant Lovelace dashboards.
+site_url: https://wfurphy.github.io/creative-button-card-templates/
+repo_url: https://github.com/wfurphy/creative-button-card-templates
+repo_name: wfurphy/creative-button-card-templates
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - search.share
+    - toc.follow
+  palette:
+    - scheme: slate
+      primary: black
+      accent: deep orange
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+    - scheme: default
+      primary: black
+      accent: deep orange
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+nav:
+  - Home: index.md
+  - Examples: examples.md
+  - Getting Started: getting-started.md
+  - Templates: templates.md
+  - Reference:
+      - Addons: reference/addons.md
+      - Helpers: reference/helpers.md
+      - Advanced Usage: reference/advanced-usage.md
+      - Settings: reference/settings.md
+  - Customisation: customisation.md
+  - Thanks: thanks.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.superfences
+  - toc:
+      permalink: true
+
+plugins:
+  - search

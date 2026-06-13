@@ -16,3 +16,6 @@ cbc.yml
 cbc_master.yml
 .history
 .codex
+site/
+.cache/
+.venv/
