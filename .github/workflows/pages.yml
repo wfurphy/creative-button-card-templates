@@ -29,6 +29,7 @@ jobs:
         with:
           python-version: '3.x'
           cache: pip
+          cache-dependency-path: requirements-docs.txt
 
       - name: Install documentation dependencies
         run: pip install -r requirements-docs.txt
