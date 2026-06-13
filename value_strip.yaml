@@ -1,50 +1,60 @@
 #################( Value Strip Item )################################>
+# :: @Changes v0.3::> Added ability to have different types on the same strip, Added fan, fan mode, air purifier and climate types
+# :: @Changes v0.3 BREAKING ::> Due to button-card v7+ using 'value' as a reserved variable name, the value strip templates now use 'step_value' instead of 'value' for the item variable.
+# :: @TODO: Give items IDs so they can be deduped on merge, allowing partial use of defaults.
 value_strip_item:
   template:
+  - cbcjs
   - transparent
   - interactive
   variables:
     item:
       active: false
-      prefix:
+      max: 3
+      mode: null
+      prefix: null
       units: ''
-      value: 100
+      step_value: 100
       icon: mdi:bomb
-      label:
+      label: null
       active_color: var(--button-card-light-color, var(--accent-color))
       color: 'var(--paper-item-icon-color)'
     show:
       icon: true
-      value: true
+      step_value: true
       fade: true
     __css: >
       [[[
         return `
       <style>
-        .cbc-units {
-          opacity: 0.5;
-          font-size: 85%;
-          margin-top: 10%;
+        .cbc-item-value {
+          display: inline-block;
+          vertical-align: baseline;
         }
-      </style>`
+        .cbc-units {
+          vertical-align: baseline;
+          display: inline-block;
+          font-size: 75%;
+        }
+      </style>`;
       ]]]
   name: >
     [[[
-      variables.__opc = (variables.item.value / 100) + 0.07
-      variables.__both = variables.show.icon && variables.show.value
+      variables.__opc = variables.item.opacity ?? (variables.item.step_value / 100) + 0.07;
+      variables.__both = variables.show.icon && variables.show.step_value;
 
       if (variables.item.label) {
-        return `${variables.__css}<span class="cbc-units item-prefix">${variables.item.prefix}</span><span class="cbc-item-value label">${variables.item.label}</span>`
+        return `${variables.__css}<span class="cbc-units item-prefix">${variables.item.prefix}</span><span class="cbc-item-value label">${variables.item.label}</span>`;
       }
 
-      return `${variables.__css}<span class="cbc-item-value">${variables.item.value}</span><span class="cbc-units item-units">${variables.item.units}</span>`
+      return `${variables.__css}<span class="cbc-item-value">${variables.item.step_value}</span><span class="cbc-units item-units">${variables.item.units}</span>`;
     ]]]
   state:
     - id: cbc_active
       operator: template
       value: >
         [[[
-          return Boolean(entity.state == variables.item.value)
+          return Boolean(entity.state === variables.item.step_value)
         ]]]
       styles:
         icon:
@@ -62,39 +72,48 @@ value_strip_item:
             return variables.show.icon ? '\"i\"' : '\"n\"'
           ]]]
       - grid-template-columns: 1fr
-      - grid-template-rows: "[[[ return variables.__both ? '1fr 1fr' : '1fr' ]]]"
+      - grid-template-rows: "[[[ return variables.__both ? '2fr 1fr' : '1fr' ]]]"
       - justify-items: center
       - align-items: center
     name:
-      - display: "[[[ return variables.__both || variables.show.value ? 'inline-flex' : 'none' ]]]"
+      - display: "[[[ return variables.__both || variables.show.step_value ? 'block' : 'none' ]]]"
       - opacity: >
           [[[
-            if (variables.__lock) return 0.2;
-            return (!variables.show.fade || variables.__opc > 1) ? 0.8 : variables.__opc
+            if (variables.__lock) return 0.1;
+            if (variables.item.opacity) return variables.item.opacity;
+            return (!variables.show.fade || variables.__opc >= 1) ? 0.8 : variables.__opc
           ]]]
       - color: "[[[ return variables.item.color ]]]"
-      - font-size: "[[[ return variables.__both ? '14px' : '16px' ]]]"
+      - font-size: "[[[ return variables.__both ? '12px' : '16px' ]]]"
       - align-self: "[[[ return variables.__both ? 'start' : 'center' ]]]"
+      - justify-self: center
     card:
-      - height: 40px
-      - border-radius: 40%
+      - height: "[[[ return variables.height ]]]"
+      - min-height: 40px
+      - border-radius: 5%
+      - padding: 0
     lock:
       - opacity: 0
     custom_fields:
       active_logic:
         - width: 0
         - height: 0
-        # - display: none
         - visibility: hidden
     icon:
-      - width: "[[[ return variables.__both || variables.show.value ? '18px' : '30px' ]]]"
-      - display: "[[[ return variables.__both || variables.show.icon ? 'inline-flex' : 'none' ]]]"
+      - display: "[[[ return variables.__both || variables.show.icon ? 'block' : 'none' ]]]"
+      - width: auto
+      - height: 70%
+      - padding: "[[[ return variables.__both || variables.show.step_value ? 0 : '5px' ]]]"
       - color: "[[[ return variables.item.color ]]]"
       - opacity: >
           [[[
             if (variables.__lock) return 0.1;
-            return (!variables.show.fade || variables.__opc > 1) ? 0.9 : variables.__opc
+            if (variables.item.opacity) return variables.item.opacity;
+            return (!variables.show.fade || variables.__opc >= 1) ? 0.9 : variables.__opc
           ]]]
+      - align-self: 'center'
+      - justify-self: center
+
 
 #################( Adaptive Lighting Strip Item )################################>
 adaptive_lighting_strip_item:
@@ -102,8 +121,6 @@ adaptive_lighting_strip_item:
     - value_strip_item
   variables:
     al_area_id: main_area
-    item:
-      value: 100
   color: auto
   custom_fields:
     active_logic: >
@@ -121,77 +138,171 @@ adaptive_lighting_strip_item:
     service: script.al_set
     service_data:
       area_id: "[[[ return variables.al_area_id ]]]"
-      brightness: "[[[ return variables.item.value ]]]"
+      brightness: "[[[ return variables.item.step_value ]]]"
     haptic: success
   state:
     - id: cbc_active
       operator: template
       value: >
         [[[
-          return Boolean(variables.item.value == states['input_number.brightness_' + variables.al_area_id].state)
+          return Boolean(variables.item.step_value == states['input_number.brightness_' + variables.al_area_id].state)
         ]]]
 
 #################( Brightness Strip Item )################################>
 brightness_strip_item:
   template: value_strip_item
-  variables:
-    item:
-      value: 100
   color: auto
   tap_action:
     action: call-service
     service: light.turn_on
     service_data:
-      entity_id: "[[[ return entity.entity_id ]]]"
-      brightness_pct: "[[[ return variables.item.value ]]]"
+      entity_id: "[[[ return entity?.entity_id ]]]"
+      brightness_pct: "[[[ return variables.item.step_value ]]]"
     haptic: success
   state:
     - id: cbc_active
       operator: template
       value: >
         [[[
-          return Boolean(Math.round(entity.attributes.brightness / 2.55) == variables.item.value)
+          return Boolean(entity.attributes.brightness === variables.item.step_value);
         ]]]
 
 #################( Cover Strip Item )################################>
 cover_strip_item:
   template: value_strip_item
-  variables:
-    item:
-      value: 100
   state:
     - id: cbc_active
       operator: template
       value: >
         [[[
-          return Boolean(entity.attributes.current_position == variables.item.value)
+          return Boolean(entity.attributes.current_position === variables.item.step_value);
         ]]]
   tap_action:
     action: call-service
     service: cover.set_cover_position
     service_data:
-      entity_id: "[[[ return entity.entity_id ]]]"
-      position: "[[[ return variables.item.value ]]]"
+      entity_id: "[[[ return entity?.entity_id ]]]"
+      position: "[[[ return variables.item.step_value ]]]"
     haptic: success
 
+
+#################( Climate Strip Item )################################>
+climate_strip_item:
+  template: value_strip_item
+  tap_action:
+    action: call-service
+    service: climate.set_temperature
+    service_data:
+      entity_id: "[[[ return entity?.entity_id ]]]"
+      temperature: "[[[ return variables.item.step_value ]]]"
+    haptic: success
+  state:
+    - id: cbc_active
+      operator: template
+      value: >
+        [[[
+          return Boolean(variables.item.step_value === entity.attributes.temperature)
+        ]]]
+
+#################( Fan Strip Item )################################>
+fan_strip_item:
+  template: value_strip_item
+  state:
+    - id: cbc_active
+      operator: template
+      step_value: >
+        [[[
+          return Boolean(entity.attributes.percentage == variables.item.step_value)
+        ]]]
+  tap_action:
+    action: call-service
+    service: fan.set_percentage
+    service_data:
+      entity_id: "[[[ return entity?.entity_id ]]]"
+      percentage: "[[[ return variables.item.step_value ]]]"
+    haptic: success
+
+#################( Fan Mode Strip Item )################################>
+fan_mode_strip_item:
+  template: value_strip_item
+  state:
+    - id: cbc_active
+      operator: template
+      value: >
+        [[[
+          return Boolean(entity.attributes.preset_mode == variables.item.mode)
+        ]]]
+  tap_action:
+    action: call-service
+    service: fan.set_preset_mode
+    service_data:
+      entity_id: "[[[ return entity?.entity_id ]]]"
+      preset_mode: "[[[ return variables.item.mode ]]]"
+    haptic: success
+
+#################( Air Purifier Strip Item )################################>
+air_purifier_strip_item:
+  template:
+    - value_strip_item
+    - style_helper
+    - state_helper
+  variables:
+    level_entity: "[[[ return `${entity.entity_id.replace('fan.', 'number.')}_fan_level` ]]]"
+  state:
+    - id: cbc_active
+      operator: template
+      step_value: >
+        [[[
+          return Boolean(entity.attributes.preset_mode == 'Fan' && states[variables.level_entity].state == variables.item.step_value)
+        ]]]
+  tap_action:
+    action: call-service
+    service: fan.set_percentage
+    service_data:
+      entity_id: "[[[ return entity.entity_id ]]]"
+      percentage: "[[[ return variables.item.step_value ]]]"
+    haptic: success
 
 #################( Value Strip )################################>
 value_strip:
   show_icon: false
-  show_value: false
+  show_step_value: false
   show_state: false
   show_name: false
   variables:
-    type: value
+    #::::[ type ]::::( value | brightness | adaptive_lighting | cover | fan )::::>
+    type: domain
+    __domains:
+      - light
+      - cover
+      - fan
+      - climate
+    height: 45px
     al_area_id: null
     triggers: []
     items: []
     show:
       icon: true
-      value: true
+      step_value: true
       fade: true
+    __has: >
+        [[[
+          /**
+          * Get the value of a property from an object, or a fallback value if the property is not found.
+          *
+          * @param {Object} obj - The object to retrieve the property value from.
+          * @param {string} prop - The name of the property to retrieve.
+          * @param {*} [fallback=null] - The fallback value to return if the property is not found.
+          * @returns {*} - The value of the property, or the fallback value if the property is not found or the object is falsy.
+          */
+          return function(obj, prop, fallback = null) {
+            return obj && Object.keys(obj).includes(prop) ? obj[prop] : fallback
+          }
+        ]]]
     __merge:
-      value: 0
+      type: null
+      entity: null
+      step_value: 0
       active: false
       prefix: ''
       units: ''
@@ -199,136 +310,202 @@ value_strip:
       label: ''
       active_color: 'var(--accent-color)'
       color: 'var(--paper-item-icon-color)'
+      max: 3
+      opacity: null
     __defaults: []
-    _defaults_brightness:
-      - value: 10
-        units: '%'
-        icon: mdi:brightness-3
-      - value: 25
-        units: '%'
-        icon: mdi:brightness-4
-      - value: 50
-        units: '%'
-        icon: mdi:brightness-5
-      - value: 75
-        units: '%'
-        icon: mdi:brightness-6
-      - value: 100
-        units: '%'
-        icon: mdi:brightness-7
-    _defaults_cover:
-      - value: 0
-        icon: mdi:blinds
-        prefix: ''
-        units: '%'
-        label: close
-      - value: 25
-        icon: mdi:blinds
-        units: '%'
-      - value: 50
-        icon: mdi:blinds-open
-        units: '%'
-      - value: 75
-        icon: mdi:blinds-open
-        units: '%'
-      - value: 100
-        icon: mdi:blinds-open
-        units: '%'
-        prefix: ''
-        label: open
+    _defaults:
+      brightness:
+        - step_value: 10
+          units: '%'
+          icon: mdi:brightness-3
+        - step_value: 25
+          units: '%'
+          icon: mdi:brightness-4
+        - step_value: 50
+          units: '%'
+          icon: mdi:brightness-5
+        - step_value: 75
+          units: '%'
+          icon: mdi:brightness-6
+        - step_value: 100
+          units: '%'
+          icon: mdi:brightness-7
+      cover:
+        - step_value: 0
+          icon: mdi:blinds
+          prefix: ''
+          units: '%'
+          label: close
+        - step_value: 25
+          icon: mdi:blinds
+          units: '%'
+        - step_value: 50
+          icon: mdi:blinds-open
+          units: '%'
+        - step_value: 75
+          icon: mdi:blinds-open
+          units: '%'
+        - step_value: 100
+          icon: mdi:blinds-open
+          units: '%'
+          prefix: ''
+          label: open
+      fan:
+        - step_value: 10
+          icon: mdi:circle-slice-1
+          prefix: ''
+          units: '%'
+        - step_value: 25
+          icon: mdi:circle-slice-2
+          units: '%'
+        - step_value: 50
+          icon: mdi:circle-slice-4
+          units: '%'
+        - step_value: 75
+          icon: mdi:circle-slice-6
+          units: '%'
+        - step_value: 100
+          icon: mdi:circle-slice-8
+          units: '%'
+          prefix: ''
+      climate:
+        - step_value: 18
+          units: '℃'
+          icon: mdi:thermometer-low
+          opacity: 0.3
+        - step_value: 19
+          units: '℃'
+          icon: mdi:thermometer
+          opacity: 0.45
+        - step_value: 20
+          units: '℃'
+          icon: mdi:thermometer
+          opacity: 0.6
+        - step_value: 21
+          units: '℃'
+          icon: mdi:thermometer
+          opacity: 0.75
+        - step_value: 22
+          units: '℃'
+          icon: mdi:thermometer-high
+          opacity: 0.9
   styles:
     card:
       - clear: >
           [[[
+            // ::> Changes 0.3 Updated logic for automatic domain/type choice.
+            if (!variables.type || variables.type === 'domain') {
+              const domain = entity.entity_id.toString().substring(0, entity.entity_id.indexOf('.'));
+              if (variables.__domains.includes(domain)) {
+                variables.type = domain === 'light' ? 'brightness' : domain;
+              } else {
+                variables.type = 'value';
+              }
+            }
+
             switch (variables.type) {
               case 'adaptive_lighting':
-                variables.__defaults = variables._defaults_brightness
-                variables.__entity_id = 'light.al_lights_' + variables.al_area_id
-                variables.triggers = ['switch.adaptive_lighting_' + variables.al_area_id, 'switch.adaptive_lighting_adapt_brightness_' + variables.al_area_id]
-                break
+                variables.__defaults = variables._defaults.brightness;
+                variables.__entity_id = 'light.al_group_' + variables.al_area_id;
+                variables.triggers = ['switch.adaptive_lighting_' + variables.al_area_id, 'switch.adaptive_lighting_adapt_brightness_' + variables.al_area_id];
+                break;
               case 'cover':
-                variables.__defaults = variables._defaults_cover
-                variables.__entity_id = entity.entity_id
-                break
+              case 'fan':
               case 'brightness':
               case 'value':
+              case 'climate':
               default:
-                variables.__defaults = variables._defaults_brightness
-                variables.__entity_id = entity.entity_id
-                break
+                variables.__defaults = variables._defaults[variables.type] ?? variables._defaults.brightness;
+                variables.__entity_id = entity.entity_id;
+                break;
             }
 
             return 'none'
           ]]]
-      - height: 40px
+      - height: "[[[ return variables.height ]]]"
+      - padding: 0
     grid:
       - grid-template-areas: '"c1 c2 c3 c4 c5"'
-      - grid-template-columns: 1fr 1fr 1fr 1fr 1fr
+      - grid-template-columns: repeat(5, 1fr)
       - grid-template-rows: 1fr
       - justify-items: center
       - align-items: center
-      - height: 40px
-      - padding: 5px
-      - margin-top: 5px
+      - min-height: "[[[ return variables.height ]]]"
+      - margin-bottom: 3px
     custom_fields:
       c1:
         - width: 100%
+        - align-self: center
       c2:
         - width: 100%
+        - align-self: center
       c3:
         - width: 100%
+        - align-self: center
       c4:
         - width: 100%
+        - align-self: center
       c5:
         - width: 100%
+        - align-self: center
   custom_fields:
     c1:
+      force_recreate: true
       card:
         type: custom:button-card
-        template: "[[[ return variables.type + '_strip_item' ]]]"
-        entity: "[[[ return variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[0], 'type', variables.type)}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[0], 'entity', variables.__entity_id) ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
+          height: "[[[ return variables.height ]]]"
           item: "[[[ return {...variables.__merge, ...variables.__defaults[0], ...variables.items[0]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
     c2:
+      force_recreate: true
       card:
         type: custom:button-card
-        template: "[[[ return variables.type + '_strip_item' ]]]"
-        entity: "[[[ return variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[1], 'type', variables.type)}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[1], 'entity', variables.__entity_id) ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
+          height: "[[[ return variables.height ]]]"
           item: "[[[ return {...variables.__merge, ...variables.__defaults[1], ...variables.items[1]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
     c3:
+      force_recreate: true
       card:
         type: custom:button-card
-        template: "[[[ return variables.type + '_strip_item' ]]]"
-        entity: "[[[ return variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[2], 'type', variables.type)}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[2], 'entity', variables.__entity_id) ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
+          height: "[[[ return variables.height ]]]"
           item: "[[[ return {...variables.__merge, ...variables.__defaults[2], ...variables.items[2]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
     c4:
+      force_recreate: true
       card:
         type: custom:button-card
-        template: "[[[ return variables.type + '_strip_item' ]]]"
-        entity: "[[[ return variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[3], 'type', variables.type)}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[3], 'entity', variables.__entity_id) ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
+          height: "[[[ return variables.height ]]]"
           item: "[[[ return {...variables.__merge, ...variables.__defaults[3], ...variables.items[3]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"
     c5:
+      force_recreate: true
       card:
         type: custom:button-card
-        template: "[[[ return variables.type + '_strip_item' ]]]"
-        entity: "[[[ return variables.__entity_id ]]]"
+        template: "[[[ return `${variables.__has(variables.items[4], 'type', variables.type)}_strip_item` ]]]"
+        entity: "[[[ return variables.__has(variables.items[4], 'entity', variables.__entity_id) ]]]"
         triggers_update: "[[[ return variables.triggers ]]]"
         variables:
+          height: "[[[ return variables.height ]]]"
           item: "[[[ return {...variables.__merge, ...variables.__defaults[4], ...variables.items[4]} ]]]"
           show: "[[[ return variables.show ]]]"
           al_area_id: "[[[ return variables.al_area_id ]]]"

@@ -1,6 +1,6 @@
 ####{ CreativeBC }####| Plug |####[ github.com/wfurphy/creative-button-card-templates ]####>
 plug:
-  template: device
+  template: entity
   variables:
     attributes:
       - id: "current"

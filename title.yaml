@@ -1,30 +1,91 @@
 ####{ CreativeBC }####| Title |####[ github.com/wfurphy/creative-button-card-templates ]####>
-title:
+# ::{ Update 0.3 }:: Added `resizable` addon, add `{bool} uppercase` variable to control text-transform }
+
+###################[ title_info ]#######################################################>
+title_info:
   template:
+    - cbcjs
+    - info_mini
+    - transparent
+  variables:
+    width: 45px
+  styles:
+    icon:
+      - opacity: "[[[ return variables._item.opacity ?? '0.2' ]]]"
+      - color: "[[[ return variables._item.color ?? 'var(--accent-color)' ]]]"
+
+title:
+  icon: 'mdi:'
+  template:
+    - cbcjs
     - style_helper
+    - no_actions
+    - resizable
   variables:
     mirror: false
-    color: var(--primary-background-color)
-    background_color: var(--state-icon-color)
+    color: var(--cbc-title-color, var(--primary-background-color))
+    background_color: var(--cbc-title-background-color, var(--accent-color))
+    text_color: var(--cbc-title-text-color, var(--cbc-title-color, '#ffffff'))
+    icon_size: 155% # v.03 Added ability to set icon_size
+    uppercase: true # v0.3 Added ability to control uppercase
     show_tab: false
     offset: 0
+    opacity: var(--cbc-title-opacity, 0.4) # v0.3 Changed to background color opactiy not whole card ###>
+    info: []
+  custom_fields:
+    i1:
+      force_recreate: true
+      card:
+        type: custom:button-card
+        template: title_info
+        entity: "[[[ return variables.info[0]?.entity ]]]"
+        variables: 
+          _item: "[[[ return variables.info[0] ?? '' ]]]"
+          layout: "[[[ return variables.info[0]?.layout ?? 'stack' ]]]"
+    i2:
+      force_recreate: true
+      card:
+        type: custom:button-card
+        template: title_info
+        entity: "[[[ return variables.info[1]?.entity ]]]"
+        variables: 
+          _item: "[[[ return variables.info[1] ?? '' ]]]"
+          layout: "[[[ return variables.info[1]?.layout ?? 'stack' ]]]"
+    i3:
+      force_recreate: true
+      card:
+        type: custom:button-card
+        template: title_info
+        entity: "[[[ return variables.info[2]?.entity ]]]"
+        variables: 
+          _item: "[[[ return variables.info[2] ?? '' ]]]"
+          layout: "[[[ return variables.info[2]?.layout ?? 'stack' ]]]"
   styles:
     grid:
       - position: relative
-      - grid-template-areas: >
-          [[[ return variables.mirror ? '\"i n\"' : '\"n i\"' ]]]
-      - grid-template-columns: 3fr 1fr
+      - grid-template-areas: >-
+          [[[
+            const ic = variables.info.length ? ' i3 i2 i1 ' : ' '
+            const icm = variables.info.length ? ' i1 i2 i3 ' : ' '
+            return variables.mirror ? `\"i${ic}n\"` : `\"n${icm}i\"`
+          ]]]
+      - grid-template-columns: >-
+          [[[
+            const ic = variables.info.length ? ' 1fr 1fr 1fr ' : ' '
+            return variables.mirror ? `2fr${ic}5fr` : `5fr${ic}2fr`
+          ]]]
       - grid-template-rows: 1fr
       - justify-items: start
       - align-items: center
-      - padding: 6px
+      - padding: 4px
       - overflow: visible
     card:
+      - cursor: default
       - --mdc-ripple-press-opacity: 0
-      - opacity: 0.5
-      - height: 40px
+      - min-height: 40px
+      - height: "[[[ return variables.height ?? '45px' ]]]"
       - margin-left: "[[[ return variables.offset ]]]"
-      - background-color: "[[[ return variables.background_color ]]]"
+      - background-color: "[[[ return `rgb(from ${variables.background_color} r g b / ${variables.opacity})` ]]]"
       - box-shadow: none
       - border: none
       - border-radius: "[[[ return variables.mirror ? '10px 0 0 10px' : '0 10px 10px 0' ]]]"
@@ -41,13 +102,14 @@ title:
     name:
       - opactiy: 1
       - justify-self: "[[[ return variables.mirror ? 'end' : 'start' ]]]"
-      - text-transform: uppercase
+      - text-transform: "[[[ return variables.uppercase ? 'uppercase' : 'none' ]]]"
       - margin-left: 10px
       - letter-spacing: 2px
       - line-height: 18px
       - font-size: 14px
       - text-align: "[[[ return variables.mirror ? 'right' : 'left' ]]]"
       - overflow: visible
+      - color: "[[[ return variables.text_color ]]]"
     icon:
       - opacity: 1
       - position: absolute
@@ -55,20 +117,16 @@ title:
       - justify-self: "[[[ return variables.mirror ? 'start' : 'end' ]]]"
       - text-align: "[[[ return variables.mirror ? 'left' : 'right' ]]]"
       - overflow: visible
-      - height: 155%
-      - width: 155%
+      - height: "[[[ return variables.icon_size ]]]"
+      - width: "[[[ return variables.icon_size ]]]"
       - max-height: 500%
-
-#### title_grid ####>
-# @deprecated v0.2 to be removed in v0.3
-##/
-title_grid:
-  template: title
-  styles:
-    card:
-      - margin-top: 40px
-      - justify-self: center
-      - align-self: end
+    custom_fields:
+      i1:
+        - display: "[[[ return variables.info.length && variables.info[0]?.entity ? 'block' : 'none' ]]]"
+      i2:
+        - display: "[[[ return variables.info.length >= 2 && variables.info[1]?.entity ? 'block' : 'none' ]]]"
+      i3:
+        - display: "[[[ return variables.info.length == 3 && variables.info[2]?.entity ? 'block' : 'none' ]]]"
 
 #########################################################################/
   

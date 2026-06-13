@@ -1,22 +1,89 @@
 ####{ CreativeBC }####| Light |####[ github.com/wfurphy/creative-button-card-templates ]####>
+# :: @Changes v0.3::> Fixed z-index, add brightness & effects
 light:
-  template:
-    - button_landscape
+  template: button_landscape
   variables:
-    off_hide_info: true
-    height: 80px
+    __grid: >
+      [[[
+        return function(type, bs, er = 1) {
+          if (entity.state == 'off') { bs.info = false }
+
+          switch (type) {
+            case 'areas':
+              let areas = `"i i n"`
+              const ref = {
+                info: 'l',
+                brightness_strip: 'bc',
+                effect_selector: 'es'
+              }
+
+              Object.keys(bs).forEach(key => {
+                  areas += bs[key] ? `
+                  "i i ${ref[key]}"` : ''
+              })
+              return areas
+            case 'rows':
+              const rq = Object.values(bs).filter((v) => v).length
+              return `repeat(${rq+er}, 1fr)`
+          }
+
+          return ''
+        }
+      ]]]
     attribute_icon_color: var(--state-icon-color)
-    _rgb_symbols: 
+    rgb_symbols:
       - R
       - G
       - B
+    show:
+      info: true
+      brightness_strip: false
+      effect_selector: false
+    strip_show:
+      icon: true
+      step_value: false
+      fade: true
+    strip_items: []
   color: auto
   show_label: true
+  state:
+    - id: cbc_on
+      styles:
+        label:
+          - display: "[[[ return variables.show.info ? 'block' : 'none' ]]]"
+    - id: cbc_off
+      styles:
+        label:
+          - display: none
   styles:
+    grid:
+      - grid-template-areas: "[[[ return variables.__grid('areas', variables.show) ]]]"
+      - grid-template-columns: 1fr 1fr 4fr
+      - grid-template-rows: "[[[ return variables.__grid('rows', variables.show) ]]]"
     label:
-      - display: "[[[ return entity.state == 'on' ? 'block' : 'none' ]]]"
+      - display: "[[[ return variables.show.info ? 'block' : 'none' ]]]"
       - overflow: visible
       - text-overflow: visible
+      - align-self: start
+    name:
+      - justify-self: start
+      - align-self: center
+    custom_fields:
+      bc:
+        - z-index: 3
+        - align-self: center
+        - justify-self: start
+        - width: 90%
+        - display: "[[[ return variables.show.brightness_strip ? 'block' : 'none' ]]]"
+        - padding: 0
+      es:
+        - z-index: 3
+        - align-self: center
+        - justify-self: start
+        - display: "[[[ return variables.show.effect_selector ? 'block' : 'none' ]]]"
+        - padding: 0
+        - pointer-events: none
+        - background: none
   label: >
     [[[
       const styles = `
@@ -25,6 +92,9 @@ light:
             color: ${variables.attribute_icon_color};
             width: 15px;
             margin-right: 1px;
+          }
+          .cbc-l-icon.effect {
+            margin-left: 2px;
           }
           .cbc-l-icon.last {
             margin-right: 2px;
@@ -42,29 +112,17 @@ light:
             font-weight: bold;
             margin-left: -1px;
           }
+          .cbc-l-value {
+            margin-left: 3px;
+          }
+          .cbc-l-value-effect {
+            text-transform: capitalize;
+          }
         </style>`
 
-      if (!entity) return styles + `<elt><ha-icon icon="mdi:wifi-cancel" class="cbc-l-icon"></ha-icon><span class="cbc-l-value">Unavailable</span></elt>`
-
-      if (entity.attributes.effect && entity.attributes.effect !== "none")
-        return styles + `<elt><ha-icon icon="mdi:creation" class="cbc-l-icon"></ha-icon><span class="cbc-l-value">${entity.attributes.effect}</span></elt>`
+      if (!entity) return `${styles}<elt><ha-icon icon="mdi:wifi-cancel" class="cbc-l-icon"></ha-icon><span class="cbc-l-value">Unavailable</span></elt>`
 
       const bpct = Math.round(entity.attributes.brightness / 2.55)
-      const rgb = String(entity.attributes.rgb_color).split(',')
-      let clr = `
-      <span class="ellipsis">
-        <span class="cbc-l-rgb cbc-i" style="color: #ad0826;">${variables._rgb_symbols[0]}</span><span class="cbc-l-rgb">${rgb[0]}</span>
-        <span class="cbc-l-rgb cbc-i" style="color: #00b558;">${variables._rgb_symbols[1]}</span><span class="cbc-l-rgb">${rgb[1]}</span>
-        <span class="cbc-l-rgb cbc-i" style="color: #1a89f5;">${variables._rgb_symbols[2]}</span><span class="cbc-l-rgb">${rgb[2]}</span>
-      </span>`
-      let ci = ''
-
-      if (entity.attributes.color_mode == 'color_temp') {
-        ci = `<ha-icon icon="mdi:palette" class="cbc-l-icon last"></ha-icon>`
-        clr = `${entity.attributes.color_temp_kelvin} <span class="cbc-l-unit">K</span>`
-      //  ci = 'mdi:thermometer'
-      }
-      
       let bi = 'mdi:brightness-2'
       if (bpct >= 90) { bi = 'mdi:brightness-7' } else
       if (bpct >= 75) { bi = 'mdi:brightness-6' } else
@@ -72,15 +130,166 @@ light:
       if (bpct >= 25) { bi = 'mdi:brightness-4' } else
       if (bpct >= 10) { bi = 'mdi:brightness-3' }
 
-      return styles + `
+      const brt = `<ha-icon icon="${bi}" class="cbc-l-icon"></ha-icon><span class="cbc-l-val">${bpct}</span><span class="cbc-l-unit">%</span>`
+
+      if (entity.attributes.effect && entity.attributes.effect !== "effect_stop") {
+        const efct = entity.attributes.effect.replace('effect', '').replace('_', ' ')
+        return `${styles}<elt>${brt}<ha-icon icon="mdi:creation" class="cbc-l-icon effect"></ha-icon><span class="cbc-l-value-effect">${efct}</span></elt>`
+      }
+
+      let clr, ci = ''
+
+      if (entity.attributes.color_mode == 'color_temp') {
+        ci = `<ha-icon icon="mdi:palette" class="cbc-l-icon last"></ha-icon>`
+        clr = `${entity.attributes.color_temp_kelvin} <span class="cbc-l-unit">K</span>`
+      } else {
+        const rgb = String(entity.attributes.rgb_color).split(',')
+        clr = `
+        <span class="ellipsis">
+          <span class="cbc-l-rgb cbc-i" style="color: #ad0826;">${variables.rgb_symbols[0]}</span><span class="cbc-l-rgb">${rgb[0]}</span>
+          <span class="cbc-l-rgb cbc-i" style="color: #00b558;">${variables.rgb_symbols[1]}</span><span class="cbc-l-rgb">${rgb[1]}</span>
+          <span class="cbc-l-rgb cbc-i" style="color: #1a89f5;">${variables.rgb_symbols[2]}</span><span class="cbc-l-rgb">${rgb[2]}</span>
+        </span>
+        `
+      }
+
+      return `
+        ${styles}
         <elt>
-          <ha-icon icon="${bi}" class="cbc-l-icon"></ha-icon><span class="cbc-l-val">${bpct}</span><span class="cbc-l-unit">%</span>
+          ${brt}
           ${ci}${clr}
         </elt>
       `
     ]]]
+  custom_fields:
+    bc:
+      force_recreate: true
+      card:
+        type: custom:button-card
+        template:
+          - value_strip
+          - transparent
+        entity: "[[[ return entity?.entity_id ]]]"
+        variables:
+          type: brightness
+          show: "[[[ return variables.strip_show ]]]"
+          items: "[[[ return variables.strip_items ]]]"
+        styles:
+          card:
+            - max-height: 25px
+            - max-width: 200px
+    es:
+      force_recreate: true
+      card:
+        type: custom:button-card
+        template:
+          - show_only_name
+          - transparent
+        name: >
+          [[[
+            if (!variables.show.effect_selector || !entity.attributes.effect_list || !Array.isArray(entity.attributes.effect_list)) return ''
 
-# From when we had to convert the color_temp, now kelvin is standard in HA
-# Math.round(1000000/entity.attributes.color_temp, 0)
-# °K
-#########################################################################/
+            const entSubId = entity.entity_id.replace('light.','');
+            const entid = entSubId.replace('_','-');
+            let options = `<option id="cbc-es-opt-none" class="cbc-option cbc-es cbce-${entid}" value="effect_stop">Effects Off</option>`
+
+            entity.attributes.effect_list.forEach((val, i) => {
+              const selected = entity.attributes.effect === val ? 'selected' : ''
+              let label = val.replace('effect_', '').replace('_', ' ')
+              label = label.charAt(0).toUpperCase() + label.slice(1)
+              options += `
+                <option id="cbc-es-opt-${i}" class="cbc-option ${selected} cbc-es cbce-${entid} ellipsis" style="text-transform: capitalize;" value="${val}" ${selected}>${label}</option>`
+            })
+
+            // Theme Selector?
+            let tsCode = '';
+            let tsOptions = '';
+            let theme = '';
+            let tsEnt = states[`select.${entSubId}_theme`] ?? undefined;
+
+            if (!tsEnt && Array.isArray(variables.items)) {
+              const tryStates = variables.items;
+              if (tryStates.length > 0) {
+                tryStates.some(s => {
+                  tsEnt = states[`select.${s.entity.replace('light.')}_theme`] ?? undefined;
+                  return Boolean(tsEnt);
+                });
+              }
+            }
+
+            if (tsEnt) {
+              theme = tsEnt.state;
+              tsEnt.attributes.options.unshift('unknown')
+              tsEnt.attributes.options.forEach((val, i) => {
+                const selected = theme === val ? 'selected' : ''
+                const label = (!val || val === 'unknown') ? 'None' : val.replace(/\w\S*/g, text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase());
+                tsOptions += `
+                  <option id="cbc-ts-opt-${i}" class="cbc-option ${selected} cbc-es cbce-${entid} ellipsis" style="text-transform: capitalize !important;" value="${val}" ${selected}>${label}</option>`
+              });
+
+              if(tsOptions.length > 0) {
+                tsCode = `
+                  <div class="cbc-es-cont">
+                    <div id="cbc-ts-icon-div" class="cbc-div cbc-es cbce-${entid}" style="grid-area: i / i / i / i;">
+                      <ha-icon id="cbc-ts-icon" class="cbc-icon cbc-es cbce-${entid}" icon="mdi:palette-swatch"></ha-icon>
+                    </div>
+                    <div id="cbc-ts-select-div" class="cbc-div cbc-es cbce-${entid}" style="grid-area: s / s / s / s;">
+                      <select id="cbc-ts-select" class="cbc-select cbc-es cbce-${entid}" onChange="cbcJS.selectOption(this.options[this.selectedIndex].value, '${entity?.entity_id}')">
+                        ${tsOptions}
+                      </select>
+                    </div>
+                  </div>`
+              }
+            }
+
+            return `
+                <style>
+                  .cbc-extra-cont {
+                    display: flex;
+                    justify-content: space-evenly;
+                  }
+                  .cbc-div {
+                    width: 100%;
+                  }
+                  .cbc-es-cont {
+                    background: none;
+                    display: grid;
+                    grid: "i s" 1fr / 20px 1fr;
+                    opacity: 0.6;
+                    pointer-events: auto;
+                  }
+                  .cbc-es-cont:hover {
+                    opacity: 1;
+                  }
+                  .cbc-icon {
+                    width: 18px;
+                    padding-right: 2px;
+                    color: ${!entity.attributes.effect || entity.attributes.effect == 'effect_stop' ? 'var(--primary-text-color)' : 'var(--accent-color)'}
+                  }
+                  .cbc-select {
+                    width: 100%;
+                    background: none;
+                    border: 0;
+                  }
+                  .cbc-option {
+                    text-transform: capitalize;
+                  }
+                  .cbc-option .selected {
+                    color: var(--accent-color);
+                  }
+                </style>
+                <div class="cbc-extra-cont">
+                  ${tsCode}
+                  <div class="cbc-es-cont">
+                    <div id="cbc-es-icon-div" class="cbc-div cbc-es cbce-${entid}" style="grid-area: i / i / i / i;">
+                      <ha-icon id="cbc-es-icon" class="cbc-icon cbc-es cbce-${entid}" icon="mdi:creation"></ha-icon>
+                    </div>
+                    <div id="cbc-es-select-div" class="cbc-div cbc-es cbce-${entid}" style="grid-area: s / s / s / s;">
+                      <select id="cbc-es-select" class="cbc-select cbc-es cbce-${entid}" onChange="cbcJS.runLightEffect(this.options[this.selectedIndex].value, '${entity?.entity_id}')">
+                        ${options}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+            `
+          ]]]

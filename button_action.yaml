@@ -1,6 +1,8 @@
 ####{ CreativeBC }####| Action Button |####[ github.com/wfurphy/creative-button-card-templates ]####>
+# @ignore Changes v0.3.0 `(mix|max)-(height|width)` style changes
 button_action:
   template:
+    - cbcjs
     - state_helper
     - style_helper
     - dynamic_icons
@@ -12,6 +14,8 @@ button_action:
     icon_on: mdi:stop
     name_on: "Cancel"
     timer:
+    name_timer:
+    min_height: 55px
   show_state: true
   show_name: true
   show_label: true
@@ -19,7 +23,7 @@ button_action:
   name: Start
   tap_action:
     action: >
-      [[[ return entity?.entity_id.search('timer.') !== -1 ? 'call-service' : 'toggle' ]]]
+      [[[ return entity?.entity_id.includes('timer.') ? 'call-service' : 'toggle' ]]]
     service: >
       [[[ return entity?.state == 'active' ? 'timer.cancel' : 'timer.start' ]]]
     service_data:
@@ -36,11 +40,11 @@ button_action:
     action: more-info
     haptic: success
   state:
-    - id: cbc_custom_1
+    - id: cbc_action_timer
       operator: template
       value: >
-        [[[ 
-          return entity?.entity_id.search('timer.') !== -1 && entity.state == 'active'
+        [[[
+          return entity?.entity_id.includes('timer.') && entity.state == 'active'
         ]]]
       icon: "[[[ return variables.icon_on ]]]"
       name: "[[[ return variables.name_on ]]]"
@@ -83,14 +87,11 @@ button_action:
     grid:
       - grid-template-areas: >
           [[[ return variables.timer && states[variables.timer].state == 'active' ? '"i n" "i timer"' : '"i n" "i l"' ]]]
-      # - grid-template-areas: '"i n" "i l"'
-      - grid-template-columns: 60px auto
+      - grid-template-columns: 50px auto
       - grid-template-rows: 1fr 1fr
       - justify-items: start
       - align-items: center
     card:
-      - min-height: 40px
-      - border: none
       - padding: 2px
       - align-items: center
     icon:
@@ -122,7 +123,7 @@ button_action:
         - align-self: center
         - justify-self: start
         - width: 35px
-        - margin-left: 12.5px
+        - margin-left: 9px
         - opacity: 0.6
         - display: none
       timer:
@@ -135,14 +136,15 @@ button_action:
     loadicon: >
       [[[ return html`<ha-icon id="cbc-loading" rotating icon="mdi:loading"></ha-icon>` ]]]
     timer:
+      force_recreate: true
       card:
         type: custom:button-card
-        template: 
+        template:
           - transparent
           - no_actions
         entity: "[[[ return variables.timer ]]]"
         icon: mdi:timer-outline
-        label: Double Tap<br>to Cancel
+        label: Double Tap<br>Stop Timer
         show_name: false
         show_state: true
         show_label: true
@@ -173,8 +175,7 @@ button_action:
             - color: var(--accent-color)
             - font-size: 9px
             - margin-left: 10px
-            
-            
+
+
 
 #########################################################################/
-  

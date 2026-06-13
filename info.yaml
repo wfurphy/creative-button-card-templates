@@ -1,5 +1,8 @@
 ####{ CreativeBC }####| Info |####[ github.com/wfurphy/creative-button-card-templates ]####>
+# :: @Changes v0.3::> Fixed z-index, state position, icon_opacity > transparency, add item.name
 info_helper:
+  template:
+    - bc_config
   variables:
     __item: >
       [[[
@@ -9,14 +12,20 @@ info_helper:
       ]]]
     __makeHtml: >
       [[[
-        return function(vars) {
+        return function(vars, showName = false, defaultName = '') {
           const item = {...vars, ...vars.item}
           const out = {
             units: String(item.units || entity?.attributes.unit_of_measurement || ''),
             tag: item.layout == 'stack' ? 'div' : 'span',
-            prefix: !!item.prefix_units
+            prefix: !!item.prefix_units,
+            name: '',
           }
-          
+
+          if(showName && item.show_name) {
+            out.name = `<div class="cbc-name">${item.name ?? defaultName}</div>`;
+            out.tag = 'span';
+          }
+
           if (item.state) {
             out.state = item.state
           } else if (item.attribute && entity) {
@@ -32,18 +41,20 @@ info_helper:
           } else if (!isNaN(out.state)) {
             out.state = +Number(out.state).toFixed(item.decimals)
           }
-          
+
           if (out.prefix) {
-            return `<${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}><${out.tag} class="cbc-state">${out.state}</${out.tag}>`
+            return `<${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}><${out.tag} class="cbc-state">${out.state}</${out.tag}>${out.name}`
           } else {
-            return `<${out.tag} class="cbc-state">${out.state}</${out.tag}><${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}>`
+            return `<${out.tag} class="cbc-state">${out.state}</${out.tag}><${out.tag} class="cbc-units layout-${out.tag}">${out.units}</${out.tag}>${out.name}`
           }
         }
       ]]]
 
 #################( Info Mini )################################>
+
 info_mini:
   template:
+    - cbcjs
     - button_mini
     - no_actions
     - info_helper
@@ -51,23 +62,33 @@ info_mini:
     group: false
     item: {}
     __type: mini
-    spin: false
-    ####/ layout / string { stack|inline } / default: stack /####>
+    rotate: false
+    spin: false # :: @Deprecated v0.3
+    ####/ layout: {string} stack|inline  / default: stack /####>
     layout: stack
     icon_color: var(--state-icon-color, var(--paper-item-icon-color))
+    icon_opactiy: 0 # TODO: v0.3 Not working
+    icon_offset_y: 0
+    icon_offset_x: 0
     color:
     width: 60px
-    style:
-      opacity:
-        icon: 0.4
+    height: 45px
+    show_name: false
+    style: # :: @Deprecated v0.3
+      opacity:  # :: @Deprecated v0.3
+        icon: 0 # :: @Deprecated v0.3
     __css: |
         <style>
           .cbc-units {
-            font-size: 70%;
+            font-size: 70% !important;
             color: var(--secondary-text-color);
           }
-          div.cbc-units {
-            font-size: 70% !important;
+          .cbc-name {
+            font-size: 60% !important;
+            opacity: 0.9;
+          }
+          div.cbc-units,
+          div.cbc-name {
             margin-top: -4px;
           }
         </style>
@@ -78,10 +99,10 @@ info_mini:
     - id: cbc_spin
       operator: template
       value: "[[[ return variables.__item(variables).spin ]]]"
-      spin: true
+      rotate: "[[[ return variables.spin || variables.rotate ]]]" # Account for deprecated "spin"
   state_display: >
     [[[
-      return variables.__css + variables.__makeHtml(variables)
+      return variables.__css + variables.__makeHtml(variables, true, variables.__config.name)
     ]]]
   styles:
     grid:
@@ -90,41 +111,56 @@ info_mini:
       - padding: 0
       - margin: 0
     icon:
-      - opacity: "[[[ return this.___config.template.includes('transparent') ? 1 : variables.style.opacity.icon ]]]"
-      - justify-self: center
-      - align-self: center
+      # :: @Breaking v0.3 ::::> Now icon_opacity will override transparent rule if set.
+      - opacity: >-
+          [[[
+            if (variables.__item(variables).icon_opactiy > 0) { return variables.__item(variables).icon_opactiy }
+            if (variables.__item(variables).style.opacity.icon > 0) { return variables.__item(variables).style.opacity.icon }
+            return variables.__config.template.includes('transparent') ? 1 : 0.4
+          ]]]
+      - justify-self: start
+      - align-self: start
+      - position: absolute
+      - top: 0
+      - left: 0
       - max-height: 200%
       - max-width: 200%
-      - height: 48px
-      - width: 48px
-      - margin-top: -3px
+      - height: 100%
+      - width: 100%
+      - margin-top: "[[[ return (variables.__item(variables).show_name && !variables.__item(variables).icon_offset_y) ? '-2%' : `-${String(variables.__item(variables).icon_offset_y).replace(/[%-]/g,'')}%` ]]]"
+      - margin-left: "[[[ return `-${String(variables.__item(variables).icon_offset_x).replace(/[%-]/g,'')}%` ]]]"
       - padding: 0
+      - z-index: 1
       - color: >
           [[[
             if(variables.__item(variables).color) { return variables.__item(variables).color } else
-            if(variables.icon_color && variables.icon_color !== 'var(--state-icon-color, var(--paper-item-icon-color))') { return variables.icon_color }
-            return this.___config.template.includes('transparent') ? 'var( --ha-card-background, var(--card-background-color, white) )' : 'var(--state-icon-color)'
+            if(variables.__item(variables).icon_color && variables.__item(variables).icon_color !== 'var(--state-icon-color, var(--paper-item-icon-color))') { return variables.__item(variables).icon_color }
+            return variables.__config.template.includes('transparent') ? 'var( --ha-card-background, var(--card-background-color, white) )' : 'var(--state-icon-color)'
           ]]]
     state:
-      - position: fixed
+      - position: absolute #:::: Update 0.3 ::::>
       - justify-self: end
       - align-self: end
       - font-size: 18px
       - margin-top: 0
       - margin-bottom: 0
       - overflow: visible
+      - text-align: right
+      - z-index: 3
+      - text-shadow: 1px 1px 2px var(--view-background,var(--lovelace-background,var(--primary-background-color)));
 
 #################( Info Item )################################>
+# :: @Changes v0.3 added `font_size`
 info_item:
   template:
     - style_helper
-    - no_actions
     - transparent
     - info_helper
   variables:
     group: false
     item: {}
     icon_color: "var(--state-icon-color, var(--paper-item-icon-color))"
+    font_size: 20px
     name: ''
     attribute: ''
     color:
@@ -152,9 +188,8 @@ info_item:
       }
 
       let att = String(item.attribute)
-      return att.length > 0 ? att.replace('_', ' ') : entity?.attributes.friendly_name
+      return att?.length > 0 ? att.replace('_', ' ') : entity?.attributes.friendly_name
     ]]]
-  # styles:
   styles:
     grid:
       - position: relative
@@ -171,14 +206,14 @@ info_item:
       - overflow: visible
     icon:
       - position: absolute
-      # - margin-left: -10%
       - opacity: 0.3
-      - justify-self: center 
+      - justify-self: center
       - align-self: center
-      - min-width: 60px
-      - min-height: 60px
-      - overflow: visible
+      - min-width: 50px
+      - min-height: 50px
+      - overflow: visible !important
       - color: "[[[ return variables.__item(variables).color || variables.icon_color ]]]"
+      - z-index: 1
     name:
       - color: var(--secondary-text-color)
       - justify-self: end
@@ -187,12 +222,14 @@ info_item:
       - text-justify: right
       - overflow: visible
       - text-transform: uppercase
+      - z-index: 3
     state:
       - justify-self: end
       - align-self: end
-      - font-size: 20px
+      - font-size: "[[[ return variables.__item(variables).font_size || variables.font_size ]]]"
       - text-justify: right
       - overflow: visible
+      - z-index: 3
 
 #################( Info Icon )################################>
 info_icon:
@@ -201,6 +238,7 @@ info_icon:
 #################( Info Card )################################>
 info:
   template:
+    - cbcjs
     - no_actions
   variables:
     items: []
@@ -208,19 +246,18 @@ info:
     icon_color: "var(--state-icon-color, var(--paper-item-icon-color))"
   show_icon: false
   show_name: false
-  card_size: 1
   styles:
     grid:
       - grid-template-areas: >
           [[[
-            variables.__qty = variables.items.length
-            let areas = '\"dts1'
+            variables.__qty = variables.items.length;
+            let areas = '\"dts1';
 
             for(let i = 1; i < variables.__qty; i++) {
-              areas += ` dts${i+1}`
+              areas += ` dts${i+1}`;
             }
 
-            return areas += '\"'
+            return areas += '\"';
           ]]]
       - grid-template-columns: "[[[ return `repeat(${variables.__qty}, 1fr)` ]]]"
       - grid-template-rows: 1fr
@@ -271,6 +308,7 @@ info:
     }
   custom_fields:
     dts1:
+      force_recreate: true
       card:
         type: custom:button-card
         template:
@@ -284,6 +322,7 @@ info:
         entity: "[[[ return variables.__qty >= 1 ? variables.items[0].entity_id : null ]]]"
 
     dts2:
+      force_recreate: true
       card:
         type: custom:button-card
         template:
@@ -297,6 +336,7 @@ info:
         entity: "[[[ return variables.__qty >= 2 ? variables.items[1].entity_id : null ]]]"
 
     dts3:
+      force_recreate: true
       card:
         type: custom:button-card
         template:
@@ -310,6 +350,7 @@ info:
         entity: "[[[ return variables.__qty >= 3 ? variables.items[2].entity_id : null ]]]"
 
     dts4:
+      force_recreate: true
       card:
         type: custom:button-card
         template:
@@ -322,6 +363,6 @@ info:
           item: "[[[ return variables.__qty >= 4 ? variables.items[3] : null ]]]"
         entity: "[[[ return variables.__qty >= 4 ? variables.items[3].entity_id : null ]]]"
 
-        
+
 #########################################################################/
-  
+

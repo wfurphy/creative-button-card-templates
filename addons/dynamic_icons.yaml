@@ -2,8 +2,8 @@
 dynamic_icons:
   template: state_helper
   variables:
-    icon: "mdi:wifi"
-    icon_on: "mdi:wifi-star"
+    icon: "mdi:toggle-switch-off"
+    icon_on: "mdi:toggle-switch"
     icon_unavailable: "mdi:wifi-cancel"
   state:
     - id: cbc_on
@@ -13,4 +13,3 @@ dynamic_icons:
   icon: "[[[ return variables.icon ]]]"
 
 #########################################################################/
-  

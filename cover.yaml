@@ -1,0 +1,121 @@
+# ::::CBCTemplate::(cover v0.3)::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::>
+cover:
+  type: custom:button-card
+  template: 
+    - cbcjs
+  show_name: true
+  show_icon: false
+  show_state: false
+  show_label: false
+  name: Blind
+  icon: mdi:blinds-horizontal
+  variables:
+    # ::> mirror > title and icon will be swapped left<->right
+    mirror: true
+    # ::> position_source > can be an entity_id or an attribute of the main entity
+    position_source: current_position
+
+    # ::::[ icon variables ]::::>
+    icon_color: '#000'
+    icon_opacity: 0.2
+    
+    # ::::[ title variables ]::::>
+    # ::> title_advanced > turns on advanced title vs simple name (as per other cards)
+    title_advanced: true
+    # ::> All title_* settings only apply if title_advanced = true
+    title_background_color: '#000'
+    title_opacity: 0.2
+    title_uppercase: true
+    title_text_color: var(--cbc-title-text-color, var(--cbc-title-color, '#ffffff'))
+
+    # ::::[ value_strip variables ]::::>
+    strip_show_icon: true
+    strip_show_step_value: true
+    strip_show_fade: false
+    # ::> strip_items > (Default: [close, 25%, 50%, 75%, open])
+    strip_items: []
+
+    # ::::[ IGNORE: template system only use ]::::>
+    _tt: "[[[ return variables.title_advanced ? 'title' : 'n' ]]]"
+
+  styles:
+    card:
+      - padding: 0
+      - margin: 0
+    grid:
+      - padding: 0
+      - margin: 0
+      - grid-template-areas: >
+          [[[ return variables.mirror ? `"pos ${variables._tt}" "strip strip"` : `"${variables._tt} pos" "strip strip"` ]]]
+      - grid-template-columns: >
+          [[[ return variables.mirror ? '60px auto' : 'auto 60px' ]]]
+      - grid-template-rows: 1fr 1fr
+    name:
+      - display: "[[[ return variables.title_advanced ? 'none' : 'block' ]]]"
+      - text-align: center
+    custom_fields:
+      title:
+        - display: "[[[ return variables.title_advanced ? 'block' : 'none' ]]]"
+        - margin-left: "[[[ return variables.mirror ? '5px' : 0 ]]]"
+        - margin-right: "[[[ return variables.mirror ? 0 : '5px' ]]]"
+      strip:
+      - padding: 5px
+  custom_fields:
+    pos:
+      force_recreate: true
+      card:
+        type: custom:button-card #           ##### Blinds Position ####>
+        template:
+          - info_mini
+          - transparent
+          - debug
+        entity: >
+            [[[
+              return variables.position_source?.includes('\.') ? variables.position_source : entity.entity_id;
+            ]]]
+        variables:
+          height: 40px
+          attribute: >
+            [[[
+              return variables.position_source?.includes('\.') ? null : variables.position_source;
+            ]]]
+          units: '%'
+          layout: inline
+          color: "[[[ return variables.icon_color ]]]"
+          style:
+            opacity:
+              icon: "[[[ return variables.icon_opacity ]]]"
+        icon: "[[[ return variables.__config?.icon ?? variables.icon ?? 'mdi:blinds-horizontal' ]]]"
+        styles:
+          card:
+            - padding: 0
+            - margin: 0
+    title:
+      card:
+        type: custom:button-card #                     ##### Title ####>
+        template: title
+        name: "[[[ return variables.__config?.name ]]]"
+        variables:
+          mirror: "[[[ return variables.mirror ]]]"
+          background_color: "[[[ return variables.title_background_color ]]]"
+          text_color: "[[[ return variables.title_text_color ]]]"
+          uppercase: "[[[ return variables.title_uppercase ]]]"
+          height: 40px
+          opacity: "[[[ return variables.title_opacity ]]]"
+    strip:
+      force_recreate: true
+      card:
+        type: custom:button-card #                 ####| Blinds Strip |####>
+        template:
+          - value_strip
+          - transparent
+        entity: "[[[ return entity?.entity_id ]]]"
+        variables:
+          type: cover
+          items: "[[[ return variables.strip_items ?? [] ]]]"
+          show: 
+            icon: "[[[ return variables.strip_show_icon ]]]"
+            step_value: "[[[ return variables.strip_show_step_value ]]]"
+            fade: "[[[ return variables.strip_show_fade ]]]"
+                
+# :::::::::::::::::::::::::::::::::::::; /end :::::::::::::::::::::::::::::::::::::::::::::::::::::>

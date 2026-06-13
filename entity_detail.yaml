@@ -1,6 +1,7 @@
 ############| Entity Detail - Detailed information panel for debugging |###########################>
 entity_detail:
   template:
+    - cbcjs
     - no_actions
   variables:
     do_not_split: []
@@ -81,7 +82,7 @@ entity_detail:
           const value = String(entity.attributes[a])
           htmlList += `<tr><td>${a}</td><td>`
           const no_split = Array.isArray(variables.do_not_split) ? variables.do_not_split.find(e => e == a) : variables.do_not_split == a
-          
+
           if (!no_split && value.search(/[\|,]+/) >= 0) {
             htmlList += `<ul>`
             const list = value.split(/[\|,]+/)
@@ -122,7 +123,6 @@ entity_detail:
       - justify-self: start
       - align-self: start
       - padding: 10px
-      # - opacity: 0.6
       - color: >
           [[[
             if (!entity) return '#797592'

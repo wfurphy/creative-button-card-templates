@@ -1,0 +1,86 @@
+####{ CreativeBC }####| Climate |####[ github.com/wfurphy/creative-button-card-templates ]####>
+climate:
+  type: custom:button-card
+  template:
+    - entity
+    - dynamic_icons
+  variables:
+    _service_data:
+      hvac_mode: "auto"
+    #icon_on: mdi:radiator
+    switch_entity: false
+    attributes:
+      - id: current_temperature
+        icon: mdi:thermometer-auto
+        units: °C
+      - id: state
+        icon: mdi:state-machine
+        use_state: true
+        units: ''
+    features:
+      - type: target-temperature
+      - type: climate-hvac-modes
+        style: icons
+  state:
+    - id: cbc_off
+      value: >
+        [[[ return variables.switch_entity ? states[variables.switch_entity].state == 'off' : ['standby', 'off'].includes(entity.state); ]]]
+    - id: cbc_on
+      value: >
+        [[[ return variables.switch_entity ? states[variables.switch_entity].state == 'on' : !(['standby', 'off'].includes(entity.state)); ]]]
+      icon: "[[[ return variables.icon_on ]]]"
+  tap_action:
+    action: call-service
+    service: "[[[ return variables.switch_entity ? 'switch.toggle' : 'climate.set_hvac_mode' ]]]"
+    target:
+      entity_id: "[[[ return variables.switch_entity ? variables.switch_entity : entity?.entity_id ]]]"
+    data: >
+      [[[
+        if (variables.switch_entity) return {};
+
+        return (entity.state === 'off') ? { hvac_mode: 'auto' } : { hvac_mode: 'off' }
+      ]]]
+  icon: >
+    [[[ return (variables.switch_entity && states[variables.switch_entity].state == 'off') || ['standby', 'off'].includes(entity.state) ? 'mdi:radiator-disabled' : 'mdi:radiator'; ]]]
+  custom_fields:
+    c:
+      force_recreate: true
+      card:
+        type: tile
+        features: >
+          [[[ return [...new Map(variables.features.map(v => [v.type, v])).values()]; ]]]
+        entity: "[[[ return entity?.entity_id ]]]"
+        card_mod:
+          style: |
+            ha-card {
+              background: none;
+              box-shadow: none;
+              border: none;
+              opacity: 0.7;
+              width: 100%;
+              z-index: 3;
+              margin-top: -22px;
+            }
+            ha-tile-icon, ha-tile-info {
+              display: none;
+            }
+            ha-card:hover {
+              opacity: 0.9;
+            }
+            ha-tile-container {
+              margin-top: -50px !important;
+            }
+  styles:
+    grid:
+      - grid-template-areas: '"i i n" "i i l" "c c c"'
+      - grid-template-rows: auto
+      - grid-template-columns: 1fr 1fr 4fr
+    icon:
+      - color: >
+          [[[ return (variables.switch_entity && states[variables.switch_entity].state == 'off') || ['standby', 'off'].includes(entity.state) ? 'var(--primary-text-color)' : 'var(--accent-color)'; ]]]
+    custom_fields:
+      c:
+        - width: 100%
+        - margin-top: 10px
+
+        ###

@@ -1,0 +1,57 @@
+#!/bin/bash
+
+set -e
+
+if ! command -v git >/dev/null 2>&1; then
+  echo "::CBC::❌::> This install script requires git. Please install git and try again."
+  exit 1
+fi
+
+CBC_INIT=$(cat <<'EOF'
+####| Creative Button-Card Templates |#################################################>
+####| Will Furphy | https://github.com/wfurphy/creative-button-card-templates
+button_card_templates: !include_dir_merge_named creative-button-card-templates/
+#################################################################################/
+
+EOF
+)
+
+echo "::CBC::💻::> Installing Creative Button-Card Templates..."
+echo ""
+git clone https://github.com/wfurphy/creative-button-card-templates.git || {
+  echo ""
+  echo "::CBC::❌::> Failed to clone repository. Please check your internet connection and try again."
+  exit 1
+}
+cd creative-button-card-templates
+
+
+if [[ -f "custom/cbc_settings.yaml" ]]; then
+  echo "::CBC::⚠️::> Your existing cbc_settings.yaml file has been preserved. Please review it against the sample and make any necessary adjustments to new settings added in the update."
+else
+  cp -f custom/cbc_settings.sample custom/cbc_settings.yaml
+  echo "::CBC::✅::> A new cbc_settings.yaml file has been created from the sample. Please review and adjust settings as needed."
+fi
+echo ""
+echo "::CBC::✅::> Creative Button-Card Templates installed."
+echo ""
+
+if [[ -f ../ui-lovelace.yaml ]]; then
+  echo "::CBC::📝::> Adding Creative Button-Card Templates to your ui-lovelace.yaml file..."
+  {
+    echo -e "$CBC_INIT\n"
+    cat ../ui-lovelace.yaml
+  } > ../ui-lovelace.yaml.new && mv ../ui-lovelace.yaml.new ../ui-lovelace.yaml || {
+    echo ""
+    echo "::CBC::❌::> Failed to update ui-lovelace.yaml."
+  }
+else
+  echo ""
+  echo "::CBC::⚠️::> WARNING: ui-lovelace.yaml not found."
+fi
+
+echo "::> To use CBCT in your other dashboards just add the following to the top of any"
+echo "::> YAML file(s) where dashboard properties (eg. title, views) are defined:"
+echo -e "\n$CBC_INIT\n"
+echo "::CBC::✅::> Installation complete! Please edit custom/cbc_settings.yaml to configure."
+echo ""

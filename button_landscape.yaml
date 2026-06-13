@@ -1,13 +1,14 @@
 ####{ CreativeBC }####| Landscape Button Template |####[ github.com/wfurphy/creative-button-card-templates ]####>
 button_landscape:
   template:
+    - cbcjs
     - state_helper
-    - style_helper
     - actions
     - resizable
     - interactive
   variables:
     off_hide_info: true
+    min_height: 80px
   size: 50px
   show_icon: true
   show_name: true
@@ -25,8 +26,8 @@ button_landscape:
       - align-items: center
       - padding: 4px
     card:
-      - min-height: 80px
       - padding: 0
+      - margin: 0
     icon:
       - justify-self: center
       - align-self: center

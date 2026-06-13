@@ -1,5 +1,7 @@
 ####{ CreativeBC }####| +Interactive |####[ github.com/wfurphy/creative-button-card-templates ]####>
+# ::@Changes v0.3::> Added `style_helper` template.
 interactive:
+  template: style_helper
   card_mod:
     style: |
       ha-card:hover::after {
@@ -11,11 +13,17 @@ interactive:
         height: 100%;
         background: rgba(255,255,255,0.02);
         content: '';
-        z-index: 1
+        z-index: 1;
       }
       ha-card:hover #label { opacity: 0.8 !important; }
-      ha-card:hover #name { opacity: 1 !important; }
-      ha-card:hover #icon { opacity: 1 !important; }
+      ha-card:hover #name { opacity: 1 !important; font-size: 103%; }
+      ha-card:hover #icon { 
+        opacity: 1 !important; 
+        max-width: 105% !important;
+        max-height: 105% !important;
+        height: 103%; 
+        width: 103%; 
+      }
 
 ############################################################################/
   

@@ -1,0 +1,36 @@
+#!/bin/sh
+#!/bin/sed -r
+
+ic='custom/*.yaml'
+sc=''
+comments=''
+
+if [ ! -f 'button_landscape.yaml' ]; then
+  echo "::ERROR::> This command must be run in the directory containing the Creative Button-Card Templates!"
+  exit
+fi
+
+for arg in "$@"; do
+  case "$arg" in
+    --no-custom)
+      ic=''
+      sc="${sc}, excluding custom,"
+      shift
+    ;;
+    --comments)
+      comments="true"
+      sc="${sc}, including comments,"
+      shift
+    ;;
+  esac
+done
+
+if [ -z "$comments" ]; then
+  echo 'button_card_templates:' > cbc.yml && cat addons/*.yaml *.yaml $ic | sed -nr '/^ *#+[^\w]/!p' | sed -n '/^ *\/\/ /!p' | sed -n '/^ *$/!p' | sed 's/^/  /' | sed 's/\(__cbclm: \)yaml/\1storage/' >> cbc.yml
+else
+  echo 'button_card_templates:' > cbc.yml && cat addons/*.yaml *.yaml $ic | sed -n '/^ *$/!p' | sed 's/^/  /' | sed 's/\(__cbclm: \)yaml/\1storage/' >> cbc.yml
+fi
+echo "  __END_CBC_TEMPLATES__: {}" >> cbc.yml
+
+echo "::> Creative Button-Card Templates${sc} exported to cbc.yml"
+echo "::> You can now copy the contents of cbc.yml into your dashboard's Raw Editor in Home Assistant"
