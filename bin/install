@@ -25,7 +25,13 @@ git clone https://github.com/wfurphy/creative-button-card-templates.git || {
 }
 cd creative-button-card-templates
 
-cp -f custom/cbc_settings.sample custom/cbc_settings.yaml
+
+if [[ -f "custom/cbc_settings.yaml" ]]; then
+  echo "::CBC::⚠️::> Your existing cbc_settings.yaml file has been preserved. Please review it against the sampleand make any necessary adjustments to new settings added in the update."
+else
+  cp -f custom/cbc_settings.sample custom/cbc_settings.yaml
+  echo "::CBC::✅::> A new cbc_settings.yaml file has been created from the sample. Please review and adjust settings as needed."
+fi
 echo ""
 echo "::CBC::✅::> Creative Button-Card Templates installed."
 echo ""

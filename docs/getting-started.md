@@ -20,10 +20,11 @@ I've used card-mod for a few tweaks here and there. It's required for most decen
 
 If you are using your lovelace dashboards in [yaml mode](https://www.home-assistant.io/dashboards/dashboards/) (Recommended):
 
-1. Open a terminal on your Home Assistant host and navigate to the config directory where you keep your `ui-lovelace.yaml`, in Home Assistant OS this is usually `/config`.
+
 
 #### Automated Installation
 
+1. Open a terminal on your Home Assistant host and navigate to the config directory where you keep your `ui-lovelace.yaml`, in Home Assistant OS this is usually `/config`.
 2. Run the following command to clone this repository and install Creative Button-Card Templates:
 
      ```sh
@@ -32,18 +33,19 @@ If you are using your lovelace dashboards in [yaml mode](https://www.home-assist
 
 #### Manual Installation
 
-1. Clone this repository:
+1. Open a terminal on your Home Assistant host and navigate to the config directory where you keep your `ui-lovelace.yaml`, in Home Assistant OS this is usually `/config`.
+2. Clone this repository:
 
      ```sh
      git clone https://github.com/wfurphy/creative-button-card-templates.git
     ```
-2. navigate into the `creative-button-card-templates` directory and mv or copy `cbc_settings.sample` to `cbc_settings.yaml`. If you like you can open it and change any settings or leave them as default.
+3. navigate into the `creative-button-card-templates` directory and mv or copy `cbc_settings.sample` to `cbc_settings.yaml`. If you like you can open it and change any settings or leave them as default.
 
      ```sh
      cd creative-button-card-templates && cp cbc_settings.sample cbc_settings.yaml
     ```
 
-3. Include the following snippet **before any other content** in your `ui-lovelace.yaml` or any dashboard file where you wish to use the templates. _If you've used a custom directory then obviously replace `creative-button-card-templates/` with a relative path to your chosen installation directory._
+4. Include the following snippet **before any other content** in your `ui-lovelace.yaml` or any dashboard file where you wish to use the templates. _If you've used a custom directory then obviously replace `creative-button-card-templates/` with a relative path to your chosen installation directory._
 
       ```yaml
       ####| Creative Button-Card Templates |#################################################>
@@ -56,16 +58,15 @@ If you are using your lovelace dashboards in [yaml mode](https://www.home-assist
 
 If you're using storage mode (or editing your dashboards using the UI):
 
-1. a. Open the [`cbc.yml` file from the latest release](https://github.com/wfurphy/creative-button-card-templates/releases/latest/download/cbc.yml) and copy the contents.
+1. A. If you have no custom templates, B if you do!
+  - A. Open the [`cbc.yml` file from the latest release](https://github.com/wfurphy/creative-button-card-templates/releases/latest/download/cbc.yml) and copy the contents.
+  - OR
+  - B. Clone this repository to wherever you would like to keep the files and then run `bin/export` script to create `cbc.yml`. (If you plan to create custom templates then this is the way for you!):
 
-    OR
-
-   b. Clone this repository to wherever you would like to keep the files and then run `bin/export` script to create `cbc.yml`. (If you plan to create custom templates then this is the way for you!):
-
-     ```sh
-     git clone https://github.com/wfurphy/creative-button-card-templates.git && \
-     cd creative-button-card-templates && \
-     bin/export
+    ```sh
+    git clone https://github.com/wfurphy/creative-button-card-templates.git && \
+    cd creative-button-card-templates && \
+    bin/export
     ```
 
   > :raising_hand_man: _There are some advanced options like excluding custom templates, use `bin/export --help` to see them._

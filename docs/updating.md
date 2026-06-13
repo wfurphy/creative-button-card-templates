@@ -9,17 +9,29 @@
 
 ### Updating from v0.2.x (Updating from v0.3+ skip this step)
 
-3. Make sure you're on the `master` branch (`git branch --show-current`), if not (`git checkout master`) and run `git pull`. then continue to step 4.
+3. navigate to the installation directory (`/config/creative-button-card-templates/` or wherever you installed it) and run the following command to update:
+
+    ```sh
+    curl -fsSL https://raw.githubusercontent.com/wfurphy/creative-button-card-templates/refs/heads/master/bin/update | bash
+    ```
 
 ### Updating from v0.3+
 
-4. run 'bin/update' to update the source files and export the latest `cbc.yml`.
+4. navigate to the installation directory (`/config/creative-button-card-templates/` or wherever you installed it) and run
+
+```
+bin/update
+```
+
 
 ## Storage (UI) Mode
 
-1. a. Copy the contents of [`cbc.yml` from the latest release](https://github.com/wfurphy/creative-button-card-templates/releases/latest/download/cbc.yml)
-    OR
-   b. If you originally cloned this repository and/or created custom templates, follow steps 1-4 above and then run `bin/export` and copy the contents of the resulting `cbc.yml`.
+> If you have custom templates follow the instructions above for Upgrade and then run `bin/export` to create an updated `cbc.yml` file with your custom templates included. If you have no custom templates then simply download the latest `cbc.yml` from the releases page.
+
+1.
+  - A. Copy the contents of [`cbc.yml` from the latest release](https://github.com/wfurphy/creative-button-card-templates/releases/latest/download/cbc.yml)
+  - OR
+  - B. If you originally cloned this repository and/or created custom templates, follow steps 1-4 above and then run `bin/export` and copy the contents of the resulting `cbc.yml`.
 2. Open a browser and navigate to your Home Assistant dashboard.
 3. Click the three dots in the top right corner and choose `Edit Dashboard`.
 4. Click three dots again and choose `Raw Configuration Editor`.
