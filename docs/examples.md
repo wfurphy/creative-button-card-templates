@@ -264,4 +264,4 @@ This is the code used to create the examples in the gif above, with example enti
 
 ## Noctis Example
 
-![Template Samples using Noctis theme](images/cbc-samples-animated.gif)
+![Template Samples using Noctis theme](images/cbc-samples-noctis.png)
