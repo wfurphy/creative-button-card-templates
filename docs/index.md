@@ -9,6 +9,10 @@ A collection of [Button Card](https://github.com/custom-cards/button-card) templ
 
 Examples above are shown in the default dark theme however they should work for most themes. They might require a couple of tweaks here and there. I prefer the excellent [Noctis theme](https://github.com/aFFekopp/noctis).
 
+> "What card are you using for that? I want to use that on mine!"
+
+I made this repo for my friends who were asking me the above question. If you're someone else who's managed to stumble across them then "hello" and you're welcome to use them. If you like them then please post some images of what you create on the [Home Assistant Forum](https://community.home-assistant.io/t/creative-button-card-templates-for-lovelace-dashboards/515667) and  remember to send kudos to [@RomRider](https://github.com/RomRider) and everyone who contributed to [Button Card](https://github.com/custom-cards/button-card) which is the only reason these templates were possible.
+
 ## Quick Links
 
 [:material-download: Install](getting-started.md#installation){ .md-button .md-button--primary }
@@ -31,3 +35,7 @@ Examples above are shown in the default dark theme however they should work for 
 - Built-in update checking and optional usage stats.
 
 If you're updating from a previous version, start with [Updating](getting-started.md#updating).
+
+## Visual Studio Code Extension
+
+If you're using VSCode to work on your button-cards then check out my [Creative Button-Card Templates Extension](https://marketplace.visualstudio.com/items?itemName=will-furphy.creative-button-card-templates) for syntax highlighting and autocompletion of all templates and addons.

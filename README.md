@@ -31,15 +31,9 @@ If you're updating from a previous version, checkout the [Updating](docs/getting
 
 ## Docs
 
-The docs have grown up a little and now live in a GitHub Pages site so they're easier to browse, search and keep tidy. If you're just here to use the templates, start with the install docs and then have a browse through the examples and template reference.
+The docs have grown up a little and now live in a GitHub Pages site so they're easier to browse, search and keep tidy. You can find them here:
 
-- [Getting Started](docs/getting-started.md)
-- [Examples](docs/examples.md)
-- [Templates](docs/templates.md)
-- [Addons](docs/reference/addons.md)
-- [Helpers](docs/reference/helpers.md)
-- [Advanced Usage](docs/reference/advanced-usage.md)
-- [Customisation](docs/customisation.md)
+[Documentation](https://wfurphy.github.io/creative-button-card-templates/)
 
 ## Quick Install Reminder
 

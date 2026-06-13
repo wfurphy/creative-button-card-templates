@@ -2,6 +2,12 @@
 
 ![Template Samples using Noctis theme](images/cbc-samples-animated.gif)
 
+## Previous Examples
+
+![Template Samples using Noctis theme](images/cbc-samples-animated.gif)
+
+![Template Samples using Noctis theme](images/cbc-samples-animated.gif)
+
 _Examples above are shown in the default dark theme however they should work for most themes. They might require a couple of tweaks here and there. I prefer the excellent [Noctis theme](https://github.com/aFFekopp/noctis)_
 
 <details><summary>See the YAML...</summary>
@@ -270,7 +276,3 @@ This is the code used to create the examples in the gif above. Some entity names
 
 </p>
 </details>
-
- > "What card are you using for that? I want to use that on mine!"
-
-I made this repo for my friends who were asking me the above question. If you're someone else who's managed to stumble across them then hello and you're welcome to use them. If you like them then please send your kudos to [@RomRider](https://github.com/RomRider) and everyone who contributed to [Button Card](https://github.com/custom-cards/button-card) which is the only reason these templates were possible.
