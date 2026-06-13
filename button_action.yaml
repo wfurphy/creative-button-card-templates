@@ -15,7 +15,7 @@ button_action:
     name_on: "Cancel"
     timer:
     name_timer:
-    min_height: 40px
+    min_height: 55px
   show_state: true
   show_name: true
   show_label: true
