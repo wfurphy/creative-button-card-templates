@@ -19,6 +19,11 @@ light_group:
       symbol_color: var( --ha-card-background, var(--card-background-color, white) )
       symbol_margin_top: -10%
       display: none
+  tap_action:
+    action: call-service
+    service: light.toggle
+    target:
+      entity_id: "[[[ return variables.items?.length ? variables.items.map(i => i.entity) : entity.entity_id ]]]"
   styles:
     grid:
       - grid-template-areas: >
@@ -29,11 +34,11 @@ light_group:
                 return ''
               }
 
-              entity.attributes.entity_id.forEach(function(e,i) { 
+              entity.attributes.entity_id.forEach(function(e,i) {
                 variables.items.push({
-              ...variables.__defaults, 
-              ...{ 
-                entity: e, 
+              ...variables.__defaults,
+              ...{
+                entity: e,
                 symbol: String(i+1)
                 }})
               })
@@ -68,7 +73,7 @@ light_group:
             const info = entity.state == 'on' && variables.show.info ? inf : pre
             const bso = variables.show.brightness_strip ? ` "${bs}"` : ''
             const eso = variables.show.effect_selector ? ` "${es}"` : ''
-            
+
             return `"${pre}" "${info}" "${cf}"${bso}${eso}`
           ]]]
       - grid-template-columns: "[[[ return variables._qty == 2 ? 'repeat(4, 1fr)' : `repeat(${variables._qty}, 1fr)` ]]]"
@@ -157,7 +162,7 @@ light_group:
         entity: "[[[ return variables.items[0]?.entity ]]]"
         icon: "[[[ return variables.items[0]?.icon ]]]"
         color: auto
-        variables: 
+        variables:
           item: "[[[ return variables.items[0] ]]]"
           icon_min_size: 40px
           icon_max_size: 45px
@@ -170,7 +175,7 @@ light_group:
         entity: "[[[ return variables.items[1]?.entity ]]]"
         icon: "[[[ return variables.items[1]?.icon ]]]"
         color: auto
-        variables: 
+        variables:
           item: "[[[ return variables.items[1] ]]]"
           icon_min_size: 40px
           icon_max_size: 45px
@@ -183,7 +188,7 @@ light_group:
         entity: "[[[ return variables.items[2]?.entity ]]]"
         icon: "[[[ return variables.items[2]?.icon ]]]"
         color: auto
-        variables: 
+        variables:
           item: "[[[ return variables.items[2] ]]]"
           icon_min_size: 40px
           icon_max_size: 45px
@@ -196,7 +201,7 @@ light_group:
         entity: "[[[ return variables.items[3]?.entity ]]]"
         icon: "[[[ return variables.items[3]?.icon ]]]"
         color: auto
-        variables: 
+        variables:
           item: "[[[ return variables.items[3] ]]]"
           icon_min_size: 40px
           icon_max_size: 45px
@@ -209,7 +214,7 @@ light_group:
         entity: "[[[ return variables.items[4]?.entity ]]]"
         icon: "[[[ return variables.items[4]?.icon ]]]"
         color: auto
-        variables: 
+        variables:
           item: "[[[ return variables.items[4] ]]]"
           icon_min_size: 40px
           icon_max_size: 45px
@@ -222,7 +227,7 @@ light_group:
         entity: "[[[ return variables.items[5]?.entity ]]]"
         icon: "[[[ return variables.items[5]?.icon ]]]"
         color: auto
-        variables: 
+        variables:
           item: "[[[ return variables.items[5] ]]]"
           icon_min_size: 40px
           icon_max_size: 45px
