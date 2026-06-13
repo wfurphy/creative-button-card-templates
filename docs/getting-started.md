@@ -39,10 +39,10 @@ If you are using your lovelace dashboards in [yaml mode](https://www.home-assist
      ```sh
      git clone https://github.com/wfurphy/creative-button-card-templates.git
     ```
-3. navigate into the `creative-button-card-templates` directory and mv or copy `cbc_settings.sample` to `cbc_settings.yaml`. If you like you can open it and change any settings or leave them as default.
+3. Navigate into the `creative-button-card-templates` directory and copy `custom/cbc_settings.sample` to `custom/cbc_settings.yaml`. If you like you can open it and change any settings or leave them as default.
 
      ```sh
-     cd creative-button-card-templates && cp cbc_settings.sample cbc_settings.yaml
+     cd creative-button-card-templates && cp custom/cbc_settings.sample custom/cbc_settings.yaml
     ```
 
 4. Include the following snippet **before any other content** in your `ui-lovelace.yaml` or any dashboard file where you wish to use the templates. _If you've used a custom directory then obviously replace `creative-button-card-templates/` with a relative path to your chosen installation directory._
@@ -75,7 +75,7 @@ If you're using storage mode (or editing your dashboards using the UI):
 3. Open a browser and navigate to your Home Assistant dashboard.
 4. Click the three dots in the top right corner and choose `Edit Dashboard`.
 5. Click three dots again and choose `Raw Configuration Editor`.
-6. Put your curser on the very first line before any content (usually `views:`) and hit return to move it down so the first line is now blank.
+6. Put your cursor on the very first line before any content (usually `views:`) and hit return to move it down so the first line is now blank.
 7. On that blank first line, **paste** the copied text from `cbc.yml`.
 8. Click **Save** and close the raw configuration editor.
 

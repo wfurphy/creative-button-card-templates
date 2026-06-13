@@ -35,6 +35,6 @@ bin/update
 2. Open a browser and navigate to your Home Assistant dashboard.
 3. Click the three dots in the top right corner and choose `Edit Dashboard`.
 4. Click three dots again and choose `Raw Configuration Editor`.
-5. Highight all of the existing content of `button_card_templates:`. This will probably be from the first line to just above `views:`.
+5. Highlight all of the existing content of `button_card_templates:`. This will probably be from the first line to just above `views:`.
 6. Replace the highlighted text with the copied text.
 7. click **Save** and close the raw configuration editor.
