@@ -123,7 +123,7 @@ This template serves as the base template for the `device` and `light` templates
 
 This is a little button which only displays an icon with the option of defining a single text character or another icon as a symbol which will display in front of the main icon. These are great for in a `horizontal-stack` next to the title to control a group or for things like Do Not Disturb (DND) toggles. Of course you can use them for whatever you need. I nearly always add [`dynamic_icons`](reference/addons.md#dynamic-icons-dynamic_icons) to them.
 
-> 🙋‍♂️ _The first button in the examples is using the button-card `color_type` property set to `card`. Check out all the [button-card options here]_(https://github.com/custom-cards/button-card)
+> 🙋‍♂️ _The first button in the examples is using the button-card `color_type` property set to `card`. Check out all the [button-card options here](https://github.com/custom-cards/button-card)._
 
 ### Mini Button Inherits
 
@@ -156,7 +156,7 @@ This is a little button which only displays an icon with the option of defining 
 
 <details><summary>See the YAML...</summary><p>
 
-_See examples of symbol usage in the [`light_group` section](#light-group-light_group)._
+<em>See examples of symbol usage in the <a href="#light-group-light_group"><code>light_group</code> section</a>.</em>
 
 ```yaml
 - type: custom:button-card #          ####| Button Mini DND |####>
