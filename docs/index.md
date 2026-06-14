@@ -40,4 +40,4 @@ If you're updating from a previous version, start with [Updating](updating.md).
 
 If you're using VSCode to work on your Button-Card YAML, check out [Button-Card Javascript Support in YAML for VSCode](https://marketplace.visualstudio.com/items?itemName=wfurphy.vscode-button-card-js). It adds embedded JavaScript support for `[[[ ... ]]]` Button-Card templates, including ESLint diagnostics when your workspace has ESLint configured.
 
-[VSCode extension details](thanks/vscode.md){ .md-button }
+[VSCode extension details](vscode.md){ .md-button }
