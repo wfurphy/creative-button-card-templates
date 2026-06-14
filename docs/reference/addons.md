@@ -18,7 +18,7 @@ The `no_actions` addon does the opposite of above. It removes the standard funct
 
 The `dynamic_icons` addon will add functionality to the card which will change the icon dependant on the state of the entity. It works for all entities that have an "on" and "off" state.
 
-> :raising_hand_man: _If you just want to have a static custom icon for your card then it's easiest just to populate the `icon` property of your button-card. You only need to use this addon if you would like different icons for different states._
+> 🙋‍♂️ _If you just want to have a static custom icon for your card then it's easiest just to populate the `icon` property of your button-card. You only need to use this addon if you would like different icons for different states._
 
 ### Dynamic Icon Variables
 

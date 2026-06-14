@@ -1,7 +1,7 @@
 # Creative Button-Card Templates
 
 [![release](https://img.shields.io/github/v/release/wfurphy/creative-button-card-templates)](https://github.com/wfurphy/creative-button-card-templates/releases)
-[![license](https://img.shields.io/github/license/wfurphy/creative-button-card-templates)](https://github.com/wfurphy/creative-button-card-templates/blob/develop/LICENSE)
+[![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/wfurphy/creative-button-card-templates/blob/master/LICENSE)
 
 A collection of [Button Card](https://github.com/custom-cards/button-card) templates to improve the build speed and quality of your Home Assistant Lovelace dashboards.
 
@@ -38,4 +38,6 @@ If you're updating from a previous version, start with [Updating](updating.md).
 
 ## Visual Studio Code Extension
 
-If you're using VSCode to work on your button-cards then check out my [Creative Button-Card Templates Extension](https://marketplace.visualstudio.com/items?itemName=will-furphy.creative-button-card-templates) for syntax highlighting and autocompletion of all templates and addons.
+If you're using VSCode to work on your Button-Card YAML, check out [Button-Card Javascript Support in YAML for VSCode](https://marketplace.visualstudio.com/items?itemName=wfurphy.vscode-button-card-js). It adds embedded JavaScript support for `[[[ ... ]]]` Button-Card templates, including ESLint diagnostics when your workspace has ESLint configured.
+
+[VSCode extension details](vscode.md){ .md-button }

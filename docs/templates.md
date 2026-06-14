@@ -18,6 +18,7 @@ It's what it says on the tin. Title is created from the `name` property and supp
 | `mirror` | Boolean | `false` | Run right-to-left instead of left-to-right |
 | `show_tab` | Boolean | `false` | Show a colored tab edge on the card. |
 | `offset` | String/Number | `0` | Horizontal offset for the card. |
+| `icon_size` | String (CSS) | `155%` | Icon width and height. |
 
 ### Title Example YAML
 
@@ -40,7 +41,7 @@ variables:
 
 This template serves as the base template for the `device` and `light` templates. You probably won't need to use it yourself until you step up to the advanced  Through it's configuration and addons which it inherits it has features to reduce the card size and opacity if the entity is unavailable, hide the label containing extra information (like attributes or brightness and color for lights) when the entity is `off`, highlight elements when you hover over it to show it's interactive, set a max-height and include the standard set of `actions`.
 
-> :raising_hand_man: _Remember if a template inherits an addon you can just use those variables to change the properties when using this template. For example; a card with only the `button_landscape` template specified can accept the `width` and `height` variables from the `resizable` addon. This is the case for all templates and addons. Also inheritance is recursive so if a template inherits another template it also inherits that templates inherited templates right back through the chain. So when you use the `light` template you get all of the options listed here as well._
+> 🙋‍♂️ _Remember if a template inherits an addon you can just use those variables to change the properties when using this template. For example; a card with only the `button_landscape` template specified can accept the `width` and `height` variables from the `resizable` addon. This is the case for all templates and addons. Also inheritance is recursive so if a template inherits another template it also inherits that templates inherited templates right back through the chain. So when you use the `light` template you get all of the options listed here as well._
 
 ### Landscape Button Inherits
 
@@ -55,6 +56,7 @@ This template serves as the base template for the `device` and `light` templates
 | Variable | Values | Default | Description |
 | - | - | - | - |
 | `off_hide_info` | Boolean | `true` | Hides the Extra Information or `label` (eg. brightness and color on lights or the attributes on devices) when the entity is off. Set to false if you wish to display this content while the entity is off. _Keep in mind that some attributes are not available when an entity's state is off._ |
+| `min_height` | String (CSS) | `80px` | Minimum height of the card. Inherited from `resizable`. |
 
 ## Action Button (`button_action`)
 
@@ -80,7 +82,7 @@ This template serves as the base template for the `device` and `light` templates
 | `timer` | `timer.*` | | A timer entity that is started by your script. Not required if your `entity` is already a timer.
 | `icon_on` | `mdi:*` | `mdi:stop` | Set a custom icon for while the script/timer is running. Inherited from `dynamic_icons`. You can use the card `icon` property to change the default icon (`mdi:play`). |
 | `name_on` | String | `Cancel` | Set a custom name for while the script/timer is running. You can use the card `name` property to change the default name (`Start`). |
-| `min_height` | String (CSS) | `40px` | Minimum height of the card. |
+| `min_height` | String (CSS) | `55px` | Minimum height of the card. |
 
 ### Action Button Example YAML
 
@@ -123,7 +125,7 @@ This template serves as the base template for the `device` and `light` templates
 
 This is a little button which only displays an icon with the option of defining a single text character or another icon as a symbol which will display in front of the main icon. These are great for in a `horizontal-stack` next to the title to control a group or for things like Do Not Disturb (DND) toggles. Of course you can use them for whatever you need. I nearly always add [`dynamic_icons`](reference/addons.md#dynamic-icons-dynamic_icons) to them.
 
-> :raising_hand_man: _The first button in the examples is using the button-card `color_type` property set to `card`. Check out all the [button-card options here]_(https://github.com/custom-cards/button-card)
+> 🙋‍♂️ _The first button in the examples is using the button-card `color_type` property set to `card`. Check out all the [button-card options here](https://github.com/custom-cards/button-card)._
 
 ### Mini Button Inherits
 
@@ -156,7 +158,7 @@ This is a little button which only displays an icon with the option of defining 
 
 <details><summary>See the YAML...</summary><p>
 
-_See examples of symbol usage in the [`light_group` section](#light-group-light_group)._
+<em>See examples of symbol usage in the <a href="#light-group-light_group"><code>light_group</code> section</a>.</em>
 
 ```yaml
 - type: custom:button-card #          ####| Button Mini DND |####>
@@ -188,7 +190,7 @@ For any `entity` which has on/off state. It can optionally display up to 2 `attr
 
 > 🧨 _Breaking Change:_ `device` still works for now but is deprecated in favour of `entity` and is planned for removal in a future `1.x` release.
 
-> :raising_hand_man: _If you don't know what attributes are available on your entity you can use the more-info dialogue or check out the [`entity_details` template](reference/advanced-usage.md#detailed-entity-information-entity_detail)_
+> 🙋‍♂️ _If you don't know what attributes are available on your entity you can use the more-info dialogue or check out the [`entity_details` template](reference/advanced-usage.md#detailed-entity-information-entity_detail)_
 
 ### Entity Inherits
 
@@ -242,7 +244,7 @@ Intended for use with smart plugs which have energy metering attributes. Add the
 
 ### Plug Inherits
 
-- `device`
+- `entity`
 
 ### Plug Extra information
 
@@ -465,6 +467,10 @@ variables:
 
 Cover control card for blinds, curtains, shutters, garage doors, and other cover entities with a numeric position. It combines a compact position readout with an embedded `value_strip` configured for cover positions, so you can jump straight to common open/close percentages.
 
+### Cover Inherits
+
+- cbcjs
+
 ### Cover Variables
 
 | Variable | Values | Default | Description |
@@ -517,14 +523,14 @@ variables:
 
 Value strips can be used to control anything which has a gradual, numeric value. The most obvious examples are brightness / color of lights, covers position (like blinds and garage doors) or temperature for environmental controls. Let your imagination run wild though, they can be customised and used for anything you like. They give you quick tap access to 5 pre-set values and if the value of an item matches the value of the target then they are set to active and highlighted.
 
-There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`, `climate`, or a custom `value`. You can also mix item types in a single strip by setting `type` on individual items.
+There are built-in options for `brightness`, `cover`, `fan`, `fan_mode`, `climate`, or a custom `value`. You can also mix item types in a single strip by setting `type` on individual items.
 
 
 ### Value Strip Variables
 
 | Variable | Property | Values | Default | Description |
 | - | - | - | - | - |
-| `type` | | `value` \| `brightness` \| `cover` \| `adaptive_lighting` \| `fan` \| `climate` | `value` | The type of value strip. See [Value Strip Types](#value-strip-types) below for descriptions of the available values. |
+| `type` | | `domain` \| `value` \| `brightness` \| `cover` \| `fan` \| `fan_mode` \| `climate` | `domain` | The type of value strip. See [Value Strip Types](#value-strip-types) below for descriptions of the available values. |
 | `show` | | Object | | Display settings. See [Value Strip Show Options](#value-strip-show-options) below. |
 | `items` | | Array of [value strip items](#value-strip-item) | See [Value Strip Types](#value-strip-types) | Define the items in your `value_strip`. See [value strip item](#value-strip-item) below for available properties.
 
@@ -538,7 +544,8 @@ There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`
 
 ### Value Strip Types
 
-- **`value`:** _(default)_  This is for creating completely custom Value Strips. You will need to provide the array of `items` to define all 5 items in the strip.
+- **`domain`:** _(default)_ Automatically chooses a built-in type from the entity domain. Lights use `brightness`; covers, fans, and climate entities use their matching type. Other domains fall back to `value`.
+- **`value`:** This is for creating completely custom Value Strips. You will need to provide the array of `items` to define all 5 items in the strip.
 - **`brightness`:** This is for use with a light entity and has five percentage values for brightness. It has the `light.turn_on` service configured in the `tap_action` and highlights the matching value by calculating the brightness percentage from `light.attributes.brightness`. <details><summary>Default items...</summary><p>
 
   ```yaml
@@ -612,6 +619,7 @@ There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`
 
 </p></details>
 
+- **`fan_mode`:** Uses `fan.set_preset_mode` and matches against `entity.attributes.preset_mode`. Use `mode` on each item to set the target preset mode.
 - **`climate`:** Provides temperature setpoints for climate entities via `climate.set_temperature`. <details><summary>Default items...</summary><p>
 
   ```yaml
@@ -645,7 +653,8 @@ There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`
 | - | - | - | - |
 | `step_value` | Number | | The value of this item. Used for the action and for display. _Required_ |
 | `entity` | `entity_id` |  | Optional source entity for this item. Defaults to the main entity. |
-| `type` | `value` \| `brightness` \| `cover` \| `adaptive_lighting` \| `fan` \| `climate` |  | Override the item type for mixed strips. |
+| `type` | `value` \| `brightness` \| `cover` \| `fan` \| `fan_mode` \| `climate` |  | Override the item type for mixed strips. |
+| `mode` | Fan preset mode |  | Preset mode for `fan_mode` items. |
 | `icon` | `mdi:*` | | The icon for this item |
 | `units` | String | | The unit of measurement for the item |
 | `prefix` | String | | Any text you would like to prefix before the value. |
@@ -668,7 +677,6 @@ _These aren't the same as the example images, no need to include too much YAML!_
     - transparent
   variables:
     type: brightness
-    al_area_id: den
     show:
       icon: true
       step_value: false
@@ -707,12 +715,11 @@ _These aren't the same as the example images, no need to include too much YAML!_
 
 ![select](images/select.png)
 
-A slim control for Home Assistant select entities, embedding the native dropdown inside a button card. Supports per-state icons/colors through the button-card `state` list.
+A slim control for Home Assistant select entities, embedding the native dropdown inside a button card. Supports per-option icons and icon colours through `variables.state`.
 
 ### Select Inherits
 
 - show_only_icon
-- transparent
 - no_actions
 
 ### Select Variables
@@ -721,8 +728,15 @@ A slim control for Home Assistant select entities, embedding the native dropdown
 | - | - | - | - |
 | `name` | String | `Select` | Default label shown next to the dropdown. |
 | `secondary_info` | `none` \| `last-changed` \| `last-updated` \| ... | `none` | Secondary info mode to pass to the embedded entity row. |
-| `color` | String (CSS) |  | Optional icon color override. |
-| `state` | Array | `[]` | Standard button-card state array to set icon/color per select option. |
+| `state` | Array of [Select State Items](#select-state-item) | `[]` | Match select option values to custom icons and icon colours. |
+
+### Select State Item
+
+| Property | Values | Default | Description |
+| - | - | - | - |
+| `value` | Select option value |  | The exact option value to match against `entity.state`. _Required_ |
+| `icon` | `mdi:*` | Entity icon | Icon to show while this option is selected. |
+| `color` | String (CSS) | `var(--primary-text-color)` | Icon colour to use while this option is selected. |
 
 ### Select Example YAML
 
@@ -732,13 +746,15 @@ A slim control for Home Assistant select entities, embedding the native dropdown
 type: custom:button-card
 template: select
 entity: select.theme_mode
-state:
-  - value: "Relax"
-    icon: mdi:sofa-outline
-    color: "#febe6e"
-  - value: "Focus"
-    icon: mdi:desk
-    color: "#1a89f5"
+variables:
+  secondary_info: last-changed
+  state:
+    - value: "Relax"
+      icon: mdi:sofa-outline
+      color: "#febe6e"
+    - value: "Focus"
+      icon: mdi:desk
+      color: "#1a89f5"
 ```
 
 </p></details>
@@ -826,6 +842,13 @@ The Info card is for displaying entities and their states or attributes. It's gr
 ![info_mini](images/info-mini.gif)
 
 Displays the icon and state of an entity only. Good for displaying information next to a `title` in a `horizontal-stack`. You can choose between `stack` and `inline` layouts for the state and units. Specify the `entity` and optionally `icon` properties then the other options are in `variables`.
+
+### Mini Info Inherits
+
+- cbcjs
+- button_mini
+- no_actions
+- info_helper
 
 ### Mini Info Variables
 

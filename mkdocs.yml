@@ -7,6 +7,7 @@ repo_name: wfurphy/creative-button-card-templates
 theme:
   name: material
   features:
+    - content.code.copy
     - navigation.sections
     - navigation.top
     - search.highlight
@@ -26,6 +27,9 @@ theme:
         icon: material/weather-night
         name: Switch to dark mode
 
+extra_css:
+  - stylesheets/extra.css
+
 nav:
   - Home: index.md
   - Examples: examples.md
@@ -39,6 +43,7 @@ nav:
       - Settings: reference/settings.md
   - Customisation: customisation.md
   - Thanks: thanks.md
+  - VSCode: vscode.md
 
 markdown_extensions:
   - admonition

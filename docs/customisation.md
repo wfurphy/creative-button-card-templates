@@ -33,7 +33,7 @@ Then when I'm placing the lights in the dashboard:
 
 You're not limited to `variables` you can override any other property from the template with your own. If you wanted to get really advanced you can copy properties or the entire contents from `light.yaml` and copy it to `custom/showy_light.yaml` and then change the appropriate ones.
 
-> :raising_hand_man: __If you do this, make sure you change the template name (eg. `light:` to `showy_light:`) or else the tears :sob: again!__
+> 🙋‍♂️ __If you do this, make sure you change the template name (eg. `light:` to `showy_light:`) or else the tears :sob: again!__
 
 My **strong** suggestion is to use the method of loading the template and overriding only what you need to change though because they can get a tad complicated especially when you consider the inherited templates. If you're comfortable with YAML and (poorly-written, buttoncardworkaroundesque) Javascript then you should be fine with whatever you find.
 
