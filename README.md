@@ -25,7 +25,7 @@ It's been a long time coming! I'll _try_ to make the updates more frequent, plen
 - It's still home-ware so expect some glitches, log issues here and I will try my best to fix them.
 - Feature suggestions are welcome and please show me what you're building with them! I really want to see what you're creating!
 
-If you're updating from a previous version, check out the [Updating](https://wfurphy.github.io/creative-button-card-templates/updating/#:~:text=Storage%20(UI)%20Mode-,Updating,-%C2%B6) section [the new Documentation](https://wfurphy.github.io/creative-button-card-templates) for instructions.
+If you're updating from a previous version, check out the [Updating](https://wfurphy.github.io/creative-button-card-templates/updating) section in [the new Documentation](https://wfurphy.github.io/creative-button-card-templates) for instructions.
 
 > 🙋‍♂️ If you're updating then make sure to keep an eye out for the breaking changes which are highlighted throughout the docs like this: 🧨 _Breaking Change:_
 
@@ -34,19 +34,6 @@ If you're updating from a previous version, check out the [Updating](https://wfu
 The docs have grown up a little and now live in a GitHub Pages site so they're easier to browse, search and keep tidy. You can find them here:
 
 [Documentation](https://wfurphy.github.io/creative-button-card-templates/)
-
-## Quick Install Reminder
-
-If you're using Lovelace YAML mode, clone this repository into your Home Assistant config directory and include it before any other dashboard content:
-
-```yaml
-####| Creative Button-Card Templates |#################################################>
-####| Will Furphy | https://github.com/wfurphy/creative-button-card-templates
-button_card_templates: !include_dir_merge_named creative-button-card-templates/
-#################################################################################/
-```
-
-If you're using Storage (UI) mode, copy the generated `cbc.yml` from the latest release into the Raw Configuration Editor. The [Getting Started](docs/getting-started.md) docs have the full steps for both methods
 
 ## Thanks
 
