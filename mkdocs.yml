@@ -27,6 +27,9 @@ theme:
         icon: material/weather-night
         name: Switch to dark mode
 
+extra_css:
+  - stylesheets/extra.css
+
 nav:
   - Home: index.md
   - Examples: examples.md

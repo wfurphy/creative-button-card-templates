@@ -1,0 +1,5 @@
+/* Keep variable names readable in reference tables while preserving wrapping elsewhere. */
+.md-typeset table th:first-child,
+.md-typeset table td:first-child {
+  white-space: nowrap;
+}
