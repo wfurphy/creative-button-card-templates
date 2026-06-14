@@ -1,7 +1,7 @@
 # Creative Button-Card Templates
 
 [![release](https://img.shields.io/github/v/release/wfurphy/creative-button-card-templates)](https://github.com/wfurphy/creative-button-card-templates/releases)
-[![license](https://img.shields.io/github/license/wfurphy/creative-button-card-templates)](https://github.com/wfurphy/creative-button-card-templates/blob/develop/LICENSE)
+[![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/wfurphy/creative-button-card-templates/blob/master/LICENSE)
 
 A collection of [Button Card](https://github.com/custom-cards/button-card) templates to improve the build speed and quality of your Home Assistant Lovelace dashboards.
 
