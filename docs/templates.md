@@ -18,6 +18,7 @@ It's what it says on the tin. Title is created from the `name` property and supp
 | `mirror` | Boolean | `false` | Run right-to-left instead of left-to-right |
 | `show_tab` | Boolean | `false` | Show a colored tab edge on the card. |
 | `offset` | String/Number | `0` | Horizontal offset for the card. |
+| `icon_size` | String (CSS) | `155%` | Icon width and height. |
 
 ### Title Example YAML
 
@@ -55,6 +56,7 @@ This template serves as the base template for the `device` and `light` templates
 | Variable | Values | Default | Description |
 | - | - | - | - |
 | `off_hide_info` | Boolean | `true` | Hides the Extra Information or `label` (eg. brightness and color on lights or the attributes on devices) when the entity is off. Set to false if you wish to display this content while the entity is off. _Keep in mind that some attributes are not available when an entity's state is off._ |
+| `min_height` | String (CSS) | `80px` | Minimum height of the card. Inherited from `resizable`. |
 
 ## Action Button (`button_action`)
 
@@ -80,7 +82,7 @@ This template serves as the base template for the `device` and `light` templates
 | `timer` | `timer.*` | | A timer entity that is started by your script. Not required if your `entity` is already a timer.
 | `icon_on` | `mdi:*` | `mdi:stop` | Set a custom icon for while the script/timer is running. Inherited from `dynamic_icons`. You can use the card `icon` property to change the default icon (`mdi:play`). |
 | `name_on` | String | `Cancel` | Set a custom name for while the script/timer is running. You can use the card `name` property to change the default name (`Start`). |
-| `min_height` | String (CSS) | `40px` | Minimum height of the card. |
+| `min_height` | String (CSS) | `55px` | Minimum height of the card. |
 
 ### Action Button Example YAML
 
@@ -242,7 +244,7 @@ Intended for use with smart plugs which have energy metering attributes. Add the
 
 ### Plug Inherits
 
-- `device`
+- `entity`
 
 ### Plug Extra information
 
@@ -465,6 +467,10 @@ variables:
 
 Cover control card for blinds, curtains, shutters, garage doors, and other cover entities with a numeric position. It combines a compact position readout with an embedded `value_strip` configured for cover positions, so you can jump straight to common open/close percentages.
 
+### Cover Inherits
+
+- cbcjs
+
 ### Cover Variables
 
 | Variable | Values | Default | Description |
@@ -517,14 +523,14 @@ variables:
 
 Value strips can be used to control anything which has a gradual, numeric value. The most obvious examples are brightness / color of lights, covers position (like blinds and garage doors) or temperature for environmental controls. Let your imagination run wild though, they can be customised and used for anything you like. They give you quick tap access to 5 pre-set values and if the value of an item matches the value of the target then they are set to active and highlighted.
 
-There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`, `climate`, or a custom `value`. You can also mix item types in a single strip by setting `type` on individual items.
+There are built-in options for `brightness`, `cover`, `fan`, `fan_mode`, `climate`, or a custom `value`. You can also mix item types in a single strip by setting `type` on individual items.
 
 
 ### Value Strip Variables
 
 | Variable | Property | Values | Default | Description |
 | - | - | - | - | - |
-| `type` | | `value` \| `brightness` \| `cover` \| `adaptive_lighting` \| `fan` \| `climate` | `value` | The type of value strip. See [Value Strip Types](#value-strip-types) below for descriptions of the available values. |
+| `type` | | `domain` \| `value` \| `brightness` \| `cover` \| `fan` \| `fan_mode` \| `climate` | `domain` | The type of value strip. See [Value Strip Types](#value-strip-types) below for descriptions of the available values. |
 | `show` | | Object | | Display settings. See [Value Strip Show Options](#value-strip-show-options) below. |
 | `items` | | Array of [value strip items](#value-strip-item) | See [Value Strip Types](#value-strip-types) | Define the items in your `value_strip`. See [value strip item](#value-strip-item) below for available properties.
 
@@ -538,7 +544,8 @@ There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`
 
 ### Value Strip Types
 
-- **`value`:** _(default)_  This is for creating completely custom Value Strips. You will need to provide the array of `items` to define all 5 items in the strip.
+- **`domain`:** _(default)_ Automatically chooses a built-in type from the entity domain. Lights use `brightness`; covers, fans, and climate entities use their matching type. Other domains fall back to `value`.
+- **`value`:** This is for creating completely custom Value Strips. You will need to provide the array of `items` to define all 5 items in the strip.
 - **`brightness`:** This is for use with a light entity and has five percentage values for brightness. It has the `light.turn_on` service configured in the `tap_action` and highlights the matching value by calculating the brightness percentage from `light.attributes.brightness`. <details><summary>Default items...</summary><p>
 
   ```yaml
@@ -612,6 +619,7 @@ There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`
 
 </p></details>
 
+- **`fan_mode`:** Uses `fan.set_preset_mode` and matches against `entity.attributes.preset_mode`. Use `mode` on each item to set the target preset mode.
 - **`climate`:** Provides temperature setpoints for climate entities via `climate.set_temperature`. <details><summary>Default items...</summary><p>
 
   ```yaml
@@ -645,7 +653,8 @@ There are built-in options for `brightness`, `cover`, `adaptive_lighting`, `fan`
 | - | - | - | - |
 | `step_value` | Number | | The value of this item. Used for the action and for display. _Required_ |
 | `entity` | `entity_id` |  | Optional source entity for this item. Defaults to the main entity. |
-| `type` | `value` \| `brightness` \| `cover` \| `adaptive_lighting` \| `fan` \| `climate` |  | Override the item type for mixed strips. |
+| `type` | `value` \| `brightness` \| `cover` \| `fan` \| `fan_mode` \| `climate` |  | Override the item type for mixed strips. |
+| `mode` | Fan preset mode |  | Preset mode for `fan_mode` items. |
 | `icon` | `mdi:*` | | The icon for this item |
 | `units` | String | | The unit of measurement for the item |
 | `prefix` | String | | Any text you would like to prefix before the value. |
@@ -668,7 +677,6 @@ _These aren't the same as the example images, no need to include too much YAML!_
     - transparent
   variables:
     type: brightness
-    al_area_id: den
     show:
       icon: true
       step_value: false
@@ -834,6 +842,13 @@ The Info card is for displaying entities and their states or attributes. It's gr
 ![info_mini](images/info-mini.gif)
 
 Displays the icon and state of an entity only. Good for displaying information next to a `title` in a `horizontal-stack`. You can choose between `stack` and `inline` layouts for the state and units. Specify the `entity` and optionally `icon` properties then the other options are in `variables`.
+
+### Mini Info Inherits
+
+- cbcjs
+- button_mini
+- no_actions
+- info_helper
 
 ### Mini Info Variables
 

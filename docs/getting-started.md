@@ -114,16 +114,16 @@ icon: mdi:lamp
 # ...
 ```
 
-> 🙋‍♂️ _Some properties are used to provide the features of the template and overriding them will break the functionality. For example the device and light cards make use of the `label` property. However, they should only be one's you are unlikely to use. If you have one that's not working, go and check out the template YAML and check if you're overriding anything vital!_
+> 🙋‍♂️ _Some properties are used to provide the features of the template and overriding them will break the functionality. For example the entity and light cards make use of the `label` property. However, they should only be one's you are unlikely to use. If you have one that's not working, go and check out the template YAML and check if you're overriding anything vital!_
 
 ### Variables
 
-The templates allow you to set most options via the `variables` property. You only ever define one `variables` property, just include any variables from any of the templates or addons that you've specified. Here's an example for a device card with a custom width, 1 attribute and dynamic icons:
+The templates allow you to set most options via the `variables` property. You only ever define one `variables` property, just include any variables from any of the templates or addons that you've specified. Here's an example for an entity card with a custom width, 1 attribute and dynamic icons:
 
 ```yaml
 type: custom:button-card
 template:
-  - device
+  - entity
   - dynamic_icons
 entity: switch.something
 variables:
