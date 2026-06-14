@@ -27,7 +27,7 @@ It's been a long time coming! I'll _try_ to make the updates more frequent, plen
 
 If you're updating from a previous version, check out the [Updating](https://wfurphy.github.io/creative-button-card-templates/updating/#:~:text=Storage%20(UI)%20Mode-,Updating,-%C2%B6) section [the new Documentation](https://wfurphy.github.io/creative-button-card-templates) for instructions.
 
-> :raising_hand_man: If you're updating then make sure to keep an eye out for the breaking changes which are highlighted throughout the docs like this: 🧨 _Breaking Change:_
+> 🙋‍♂️ If you're updating then make sure to keep an eye out for the breaking changes which are highlighted throughout the docs like this: 🧨 _Breaking Change:_
 
 ## Docs
 

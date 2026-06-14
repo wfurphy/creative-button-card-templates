@@ -40,7 +40,7 @@ variables:
 
 This template serves as the base template for the `device` and `light` templates. You probably won't need to use it yourself until you step up to the advanced  Through it's configuration and addons which it inherits it has features to reduce the card size and opacity if the entity is unavailable, hide the label containing extra information (like attributes or brightness and color for lights) when the entity is `off`, highlight elements when you hover over it to show it's interactive, set a max-height and include the standard set of `actions`.
 
-> :raising_hand_man: _Remember if a template inherits an addon you can just use those variables to change the properties when using this template. For example; a card with only the `button_landscape` template specified can accept the `width` and `height` variables from the `resizable` addon. This is the case for all templates and addons. Also inheritance is recursive so if a template inherits another template it also inherits that templates inherited templates right back through the chain. So when you use the `light` template you get all of the options listed here as well._
+> 🙋‍♂️ _Remember if a template inherits an addon you can just use those variables to change the properties when using this template. For example; a card with only the `button_landscape` template specified can accept the `width` and `height` variables from the `resizable` addon. This is the case for all templates and addons. Also inheritance is recursive so if a template inherits another template it also inherits that templates inherited templates right back through the chain. So when you use the `light` template you get all of the options listed here as well._
 
 ### Landscape Button Inherits
 
@@ -123,7 +123,7 @@ This template serves as the base template for the `device` and `light` templates
 
 This is a little button which only displays an icon with the option of defining a single text character or another icon as a symbol which will display in front of the main icon. These are great for in a `horizontal-stack` next to the title to control a group or for things like Do Not Disturb (DND) toggles. Of course you can use them for whatever you need. I nearly always add [`dynamic_icons`](reference/addons.md#dynamic-icons-dynamic_icons) to them.
 
-> :raising_hand_man: _The first button in the examples is using the button-card `color_type` property set to `card`. Check out all the [button-card options here]_(https://github.com/custom-cards/button-card)
+> 🙋‍♂️ _The first button in the examples is using the button-card `color_type` property set to `card`. Check out all the [button-card options here]_(https://github.com/custom-cards/button-card)
 
 ### Mini Button Inherits
 
@@ -188,7 +188,7 @@ For any `entity` which has on/off state. It can optionally display up to 2 `attr
 
 > 🧨 _Breaking Change:_ `device` still works for now but is deprecated in favour of `entity` and is planned for removal in a future `1.x` release.
 
-> :raising_hand_man: _If you don't know what attributes are available on your entity you can use the more-info dialogue or check out the [`entity_details` template](reference/advanced-usage.md#detailed-entity-information-entity_detail)_
+> 🙋‍♂️ _If you don't know what attributes are available on your entity you can use the more-info dialogue or check out the [`entity_details` template](reference/advanced-usage.md#detailed-entity-information-entity_detail)_
 
 ### Entity Inherits
 

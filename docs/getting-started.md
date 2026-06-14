@@ -8,7 +8,7 @@ You will need to ensure you have the following components installed. They are bo
 
 The very first step is to ensure you have [Button Card](https://github.com/custom-cards/button-card) installed and working in home assistant. These templates are not going to work without it!
 
-> :raising_hand_man: _If you plan to further extend these templates or create your own then it is **essential** that you read the [button-card documentation](https://custom-cards.github.io/button-card/stable/). In fact, I recommend you read it regardless._
+> 🙋‍♂️ _If you plan to further extend these templates or create your own then it is **essential** that you read the [button-card documentation](https://custom-cards.github.io/button-card/stable/). In fact, I recommend you read it regardless._
 
 ### [thomasloven/lovelace-card-mod](https://github.com/thomasloven/lovelace-card-mod)
 
@@ -69,7 +69,7 @@ If you're using storage mode (or editing your dashboards using the UI):
     bin/export
     ```
 
-  > :raising_hand_man: _There are some advanced options like excluding custom templates, use `bin/export --help` to see them._
+  > 🙋‍♂️ _There are some advanced options like excluding custom templates, use `bin/export --help` to see them._
 
 2. Open `cbc.yml` in your chosen text editor, **select all** and **copy** the entire contents to the clipboard.
 3. Open a browser and navigate to your Home Assistant dashboard.
@@ -81,7 +81,7 @@ If you're using storage mode (or editing your dashboards using the UI):
 
 ## Using the Templates
 
-> :raising_hand_man: _This is all going to make much more sense to you if you have read the [button-card documentation](https://custom-cards.github.io/button-card/stable/)._
+> 🙋‍♂️ _This is all going to make much more sense to you if you have read the [button-card documentation](https://custom-cards.github.io/button-card/stable/)._
 
 To use the templates simply specify the `template` property in your button-card yaml. For most you'll need to specify your `entity` (although some don't need it, like `title`). This is all you need for a light card:
 
@@ -114,7 +114,7 @@ icon: mdi:lamp
 # ...
 ```
 
-> :raising_hand_man: _Some properties are used to provide the features of the template and overriding them will break the functionality. For example the device and light cards make use of the `label` property. However, they should only be one's you are unlikely to use. If you have one that's not working, go and check out the template YAML and check if you're overriding anything vital!_
+> 🙋‍♂️ _Some properties are used to provide the features of the template and overriding them will break the functionality. For example the device and light cards make use of the `label` property. However, they should only be one's you are unlikely to use. If you have one that's not working, go and check out the template YAML and check if you're overriding anything vital!_
 
 ### Variables
 
