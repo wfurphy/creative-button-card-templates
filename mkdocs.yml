@@ -39,9 +39,8 @@ nav:
       - Advanced Usage: reference/advanced-usage.md
       - Settings: reference/settings.md
   - Customisation: customisation.md
-  - Thanks:
-      - Thanks: thanks.md
-      - VSCode: thanks/vscode.md
+  - Thanks: thanks.md
+  - VSCode: thanks/vscode.md
 
 markdown_extensions:
   - admonition
