@@ -707,12 +707,11 @@ _These aren't the same as the example images, no need to include too much YAML!_
 
 ![select](images/select.png)
 
-A slim control for Home Assistant select entities, embedding the native dropdown inside a button card. Supports per-state icons/colors through the button-card `state` list.
+A slim control for Home Assistant select entities, embedding the native dropdown inside a button card. Supports per-option icons and icon colours through `variables.state`.
 
 ### Select Inherits
 
 - show_only_icon
-- transparent
 - no_actions
 
 ### Select Variables
@@ -721,8 +720,15 @@ A slim control for Home Assistant select entities, embedding the native dropdown
 | - | - | - | - |
 | `name` | String | `Select` | Default label shown next to the dropdown. |
 | `secondary_info` | `none` \| `last-changed` \| `last-updated` \| ... | `none` | Secondary info mode to pass to the embedded entity row. |
-| `color` | String (CSS) |  | Optional icon color override. |
-| `state` | Array | `[]` | Standard button-card state array to set icon/color per select option. |
+| `state` | Array of [Select State Items](#select-state-item) | `[]` | Match select option values to custom icons and icon colours. |
+
+### Select State Item
+
+| Property | Values | Default | Description |
+| - | - | - | - |
+| `value` | Select option value |  | The exact option value to match against `entity.state`. _Required_ |
+| `icon` | `mdi:*` | Entity icon | Icon to show while this option is selected. |
+| `color` | String (CSS) | `var(--primary-text-color)` | Icon colour to use while this option is selected. |
 
 ### Select Example YAML
 
@@ -732,13 +738,15 @@ A slim control for Home Assistant select entities, embedding the native dropdown
 type: custom:button-card
 template: select
 entity: select.theme_mode
-state:
-  - value: "Relax"
-    icon: mdi:sofa-outline
-    color: "#febe6e"
-  - value: "Focus"
-    icon: mdi:desk
-    color: "#1a89f5"
+variables:
+  secondary_info: last-changed
+  state:
+    - value: "Relax"
+      icon: mdi:sofa-outline
+      color: "#febe6e"
+    - value: "Focus"
+      icon: mdi:desk
+      color: "#1a89f5"
 ```
 
 </p></details>
