@@ -66,4 +66,4 @@ cbcJS.getStats()
 | `generate` | Boolean (true/false) | `false` | Generate usage statistics. |
 | `hash_panels` | Boolean (true/false) | `false` | Anonymise dashboard (panel) names. |
 
-> 🙋‍♂️ _I'd like to collect anonymous usage data so that I can focus on the most popular cards for improving later versions and ultimately creating a complete dashboard plugin._
+> 🙋‍♂️ _In the future, I'd like to collect anonymous usage data so that I can focus on the most popular cards for improving later versions and ultimately creating a complete dashboard plugin. However, I don't want to implement something like this without commuinity discussion first. Please reach out and let me know if the information you are able to generate here would be something you'd be willing to share in the future (with names anonymised etc, of course). Thanks!_
