@@ -6,7 +6,7 @@ cbcjs:
     - bc_config
     - cbc_helpers
   variables:
-    __cbc_version: v0.3.1
+    __cbc_version: v0.3.2
     __cbc_lovelace_method: "[[[ return hass?.panels?.[hass.panelUrl]?.config?.mode ?? 'unknown' ]]]"
     __cbc_error: >
       [[[
@@ -22,7 +22,6 @@ cbcjs:
       [[[
         return class CBCWarn extends CBCError {};
       ]]]
-
     __cbc_js_class: >
       [[[
         return class CreativeButtonCardsJS {
@@ -108,7 +107,7 @@ cbcjs:
                 this.LS.SET
               );
             }
-            this.version = this.__ls('version', variables?.__cbc_version || 'v0.0.0', this.LS.UPDATE);
+            this.version = this.__ls('version', variables?.__cbc_version || 'v0.3.0', this.LS.SET);
             this.availableVersion = this.__ls('available_version');
             this.updateLink = this.__ls('update_link');
             this.firstCheck = this.__ls('first_check', null);
@@ -128,7 +127,7 @@ cbcjs:
               effect: ef,
             };
 
-            let theme = this.hass.states[`select.${entity.replace('light.', '')}_theme`]?.state;
+            const theme = this.hass.states[`select.${entity.replace('light.', '')}_theme`]?.state;
             if (theme && theme !== 'unknown') data.theme = theme;
             this.hass.callService('light', 'turn_on', data);
           }
@@ -791,8 +790,8 @@ cbcjs:
                 throw new CBCError('Empty or incorrect version information received', responseBody);
               }
 
-              this.availableVersion = this.__ls('available_version', out, this.LS.UPDATE);
-              this.updateLink = this.__ls('update_link', responseBody?.data?.updateLink, this.LS.UPDATE);
+              this.availableVersion = this.__ls('available_version', out, this.LS.SET);
+              this.updateLink = this.__ls('update_link', responseBody?.data?.updateLink, this.LS.SET);
               this.lastCheck = this.__ls('last_check', thisCheck, this.LS.SET);
               this.failQty = this.__ls('check_fail_qty', 0, this.LS.SET);
               this.checkQty = this.__lsInc('check_qty');
