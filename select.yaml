@@ -53,6 +53,16 @@ select:
           - entity: "[[[ return entity?.entity_id ]]]"
             secondary_info: "[[[ return variables.secondary_info ]]]"
             icon: 'mdi:'
+            card_mod:
+              style: |
+                :host {
+                  background: none;
+                  box-shadow: none;
+                  border: none;
+                }
+                :host .mdc-select .mdc-select__anchor {
+                  background: none;
+                }
         show_header_toggle: false
         show_icon: false
         card_mod:

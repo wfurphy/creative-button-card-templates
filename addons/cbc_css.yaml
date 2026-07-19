@@ -1,10 +1,15 @@
 cbc_css:
   variables:
     __cbc_css:
-
       ':root':
         # --cbc-title-background-color: '#7b54bf'
         # --cbc-title-opacity: 0.4
         # --cbc-title-color: var(--primary-background-color)
-        # --cbc-title-background-color: var(--accent-color)
-        --cbc-primary-color: var(--accent-color)
+        # --cbc-title-background-color: var(--state-icon-active-color)
+        --cbc-primary-color: var(--primary-color)
+        # --accent-color: var(--primary-color) !important
+        # --state-active-color: '#2CD09F !important'
+        # --state-switch-active-color: '#2CD09F !important'
+
+
+

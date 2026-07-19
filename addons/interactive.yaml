@@ -2,28 +2,26 @@
 # ::@Changes v0.3::> Added `style_helper` template.
 interactive:
   template: style_helper
-  card_mod:
-    style: |
-      ha-card:hover::after {
-        display: block;
-        position:absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255,255,255,0.02);
-        content: '';
-        z-index: 1;
-      }
-      ha-card:hover #label { opacity: 0.8 !important; }
-      ha-card:hover #name { opacity: 1 !important; font-size: 103%; }
-      ha-card:hover #icon { 
-        opacity: 1 !important; 
-        max-width: 105% !important;
-        max-height: 105% !important;
-        height: 103%; 
-        width: 103%; 
-      }
+  extra_styles: |
+    ha-card:hover::after, :host:hover::after {
+      display: block;
+      position:absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,0.02);
+      content: '';
+      z-index: 1;
+    }
+    ha-card:hover, :host:hover #label { opacity: 0.8 !important; }
+    ha-card:hover, :host:hover #name { opacity: 1 !important; font-size: 103%; }
+    ha-card:hover, :host:hover #icon {
+      opacity: 1 !important;
+      max-width: 105% !important;
+      max-height: 105% !important;
+      height: 103%;
+      width: 103%;
+    }
 
 ############################################################################/
-  

@@ -1,7 +1,7 @@
 # ::::CBCTemplate::(cover v0.3)::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::>
 cover:
   type: custom:button-card
-  template: 
+  template:
     - cbcjs
   show_name: true
   show_icon: false
@@ -18,7 +18,7 @@ cover:
     # ::::[ icon variables ]::::>
     icon_color: '#000'
     icon_opacity: 0.2
-    
+
     # ::::[ title variables ]::::>
     # ::> title_advanced > turns on advanced title vs simple name (as per other cards)
     title_advanced: true
@@ -27,6 +27,7 @@ cover:
     title_opacity: 0.2
     title_uppercase: true
     title_text_color: var(--cbc-title-text-color, var(--cbc-title-color, '#ffffff'))
+
 
     # ::::[ value_strip variables ]::::>
     strip_show_icon: true
@@ -46,13 +47,15 @@ cover:
       - padding: 0
       - margin: 0
       - grid-template-areas: >
-          [[[ return variables.mirror ? `"pos ${variables._tt}" "strip strip"` : `"${variables._tt} pos" "strip strip"` ]]]
+          [[[ return variables.mirror ? `"pos ${variables._tt}" "strip strip"` : `"${variables._tt} pos" "strip strip"`; ]]]
       - grid-template-columns: >
-          [[[ return variables.mirror ? '60px auto' : 'auto 60px' ]]]
+          [[[ return variables.mirror ? '60px auto' : 'auto 60px'; ]]]
       - grid-template-rows: 1fr 1fr
     name:
       - display: "[[[ return variables.title_advanced ? 'none' : 'block' ]]]"
-      - text-align: center
+      - text-align: left
+      - justify-self: start
+      - margin-left: 20px
     custom_fields:
       title:
         - display: "[[[ return variables.title_advanced ? 'block' : 'none' ]]]"
@@ -113,9 +116,9 @@ cover:
         variables:
           type: cover
           items: "[[[ return variables.strip_items ?? [] ]]]"
-          show: 
+          show:
             icon: "[[[ return variables.strip_show_icon ]]]"
             step_value: "[[[ return variables.strip_show_step_value ]]]"
             fade: "[[[ return variables.strip_show_fade ]]]"
-                
+
 # :::::::::::::::::::::::::::::::::::::; /end :::::::::::::::::::::::::::::::::::::::::::::::::::::>

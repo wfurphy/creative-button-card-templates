@@ -14,10 +14,10 @@ light_group:
       entity: "[[[ return entity?.entity_id ]]]"
       icon: mdi:lightbulb
       symbol:
-      symbol_width: 50%
+      # symbol_width: 50%
       symbol_font_size: 10px
-      symbol_color: var( --ha-card-background, var(--card-background-color, white) )
-      symbol_margin_top: -10%
+      # symbol_color: var( --ha-card-background, var(--card-background-color, white) )
+      symbol_margin_top: -20%
       display: none
   tap_action:
     action: call-service

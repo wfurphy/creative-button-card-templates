@@ -12,7 +12,7 @@ It's what it says on the tin. Title is created from the `name` property and supp
 | - | - | - | - |
 | `color` | String (CSS) | `var(--cbc-title-color, var(--primary-background-color))` | The color of the icon |
 | `text_color` | String (CSS) | `var(--cbc-title-text-color, var(--cbc-title-color, '#ffffff'))` | The color of the title text. |
-| `background_color` | String (CSS) | `var(--cbc-title-background-color, var(--accent-color))` | The color of the background |
+| `background_color` | String (CSS) | `var(--cbc-title-background-color, var(--state-icon-active-color))` | The color of the background |
 | `opacity` | Number | `var(--cbc-title-opacity, 0.4)` | Opacity applied to the background color (text remains at full opacity). |
 | `uppercase` | Boolean | `true` | Transform the title text to uppercase. |
 | `mirror` | Boolean | `false` | Run right-to-left instead of left-to-right |
@@ -661,7 +661,7 @@ There are built-in options for `brightness`, `cover`, `fan`, `fan_mode`, `climat
 | `label` | String | | If provided the label will be displayed instead of the value |
 | `opacity` | Number |  | Custom opacity for the item. |
 | `color` | String (CSS) | `var(--paper-item-icon-color)` | The color of the item |
-| `active_color` | String (CSS) | `var(--button-card-light-color, var(--accent-color))` | The color of the item when it is active (it matches the target value) |
+| `active_color` | String (CSS) | `var(--button-card-light-color, var(--state-icon-active-color))` | The color of the item when it is active (it matches the target value) |
 
 ### Value Strip Example YAML
 

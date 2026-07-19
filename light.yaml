@@ -264,7 +264,7 @@ light:
                   .cbc-icon {
                     width: 18px;
                     padding-right: 2px;
-                    color: ${!entity.attributes.effect || entity.attributes.effect == 'effect_stop' ? 'var(--primary-text-color)' : 'var(--accent-color)'}
+                    color: ${!entity.attributes.effect || entity.attributes.effect == 'effect_stop' ? 'var(--primary-text-color)' : 'var(--state-icon-active-color)'}
                   }
                   .cbc-select {
                     width: 100%;
@@ -275,7 +275,7 @@ light:
                     text-transform: capitalize;
                   }
                   .cbc-option .selected {
-                    color: var(--accent-color);
+                    color: var(--state-icon-active-color);
                   }
                 </style>
                 <div class="cbc-extra-cont">

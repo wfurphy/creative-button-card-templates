@@ -34,7 +34,7 @@ button_mini:
     symbol:
     symbol_width: 50%
     symbol_font_size: auto
-    symbol_color: var( --ha-card-background, var(--card-background-color, white) )
+    symbol_color: var(--ha-color-text-primary) !important
     symbol_margin_top: 0
     symbol_padding:
   custom_fields:
@@ -72,28 +72,17 @@ button_mini:
         - align-self: "[[[ return variables.__get('symbol', variables) == '$state' ? 'end' : 'center'; ]]]"
         - margin-top: "[[[ return variables.__get('symbol', variables) == '$state' ? 'none' : variables.__get('symbol_margin_top', variables); ]]]"
         - padding: "[[[ return variables.__get('symbol', variables) == '$state' ? 'none' : variables.__get('symbol_padding', variables); ]]]"
-        - color: >
-            [[[
-              const col = variables.__get('symbol_color', variables)
-
-              if (
-                col == 'var( --ha-card-background, var(--card-background-color, white) )' &&
-                variables.__get('symbol', variables) == '$state'
-                ) {
-                  return '#fff'
-                }
-
-                return col
-            ]]]
+        - color: "[[[ return variables.__get('symbol_color', variables) ]]]"
         - font-size: "[[[ return variables.__get('symbol_font_size', variables);  ]]]"
         - font-weight: bold
         - text-align: center
         - opacity: 0.9 # :: @Breaking v0.3::> Changed the Opacity of Symbol to 0.9
 
-############| Button Mini - Embeded |###########################>
+############| Button Mini - Embedded |###########################>
 button_mini_embed:
   template:
     - button_mini
+    - transparent
   variables:
     min_width:
     icon_max_size:
@@ -101,10 +90,8 @@ button_mini_embed:
   color: auto
   styles:
     card:
-      - background: none
-      - box-shadow: none
-      - border: 0
       - cursor: crosshair
+
 
 ############| Button Mini + State |###########################>
 button_mini_state:
@@ -136,7 +123,7 @@ button_mini_power:
     width: 45px
   icon: mdi:power
   color_type: card
-  color: var(--accent-color)
+  color: var(--state-icon-active-color)
   tap_action:
     action: call-service
     service: light.toggle
@@ -164,7 +151,7 @@ button_mini_power_area:
     width: 45px
   icon: mdi:power
   color_type: card
-  color: var(--accent-color)
+  color: var(--state-icon-active-color)
   tap_action:
     action: call-service
     service: light.toggle

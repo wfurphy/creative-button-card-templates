@@ -175,9 +175,9 @@ cbcjs:
            */
           addCss(css = {}) {
             if (css instanceof Map) {
-              this.css = this.__ls(...css, this.LS.MAP);
+              this.css = this.__ls('css', css, this.LS.MAP);
             } else if (typeof css === 'object') {
-              this.css = this.__ls(...Object.entries(css), this.LS.Map);
+              this.css = this.__ls('css', new Map(Object.entries(css)), this.LS.MAP);
             } else {
               this.handler('Invalid CSS parameter. Must be an object or Map.', { css });
               return this;
@@ -201,7 +201,7 @@ cbcjs:
               return this;
             }
 
-            this.__ls({[cssId]: { [prop]: value }}, this.LS.MAP);
+            this.__ls('css', new Map([[cssId, { [prop]: value }]]), this.LS.MAP);
             return this.insertStyles();
           }
 

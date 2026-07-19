@@ -17,8 +17,8 @@ value_strip_item:
       step_value: 100
       icon: mdi:bomb
       label: null
-      active_color: var(--button-card-light-color, var(--accent-color))
-      color: 'var(--paper-item-icon-color)'
+      active_color: var(--button-card-light-color, var(--state-icon-active-color))
+      color: 'var(--state-icon-color)'
     show:
       icon: true
       step_value: true
@@ -308,8 +308,8 @@ value_strip:
       units: ''
       icon: 'mdi:cancel'
       label: ''
-      active_color: 'var(--accent-color)'
-      color: 'var(--paper-item-icon-color)'
+      active_color: 'var(--state-icon-active-color)'
+      color: 'var(--state-icon-color)'
       max: 3
       opacity: null
     __defaults: []

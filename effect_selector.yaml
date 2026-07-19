@@ -5,7 +5,7 @@ effect_selector:
     - transparent
     - cbcjs
   name: >
-    [[[ 
+    [[[
       if (!variables.show.effect_selector || !entity.attributes.effect_list || !Array.isArray(entity.attributes.effect_list)) return ''
 
       const entid = entity.entity_id.replace('light.','').replace('_','-')
@@ -18,7 +18,7 @@ effect_selector:
         options += `
           <option id="cbc-es-opt-${i}" class="cbc-option ${selected} cbc-es cbce-${entid} ellipsis" style="text-transform: capitalize;" value="${val}" ${selected}>${label}</option>`
       })
-            
+
       return `
           <style>
             .cbc-div {
@@ -37,7 +37,7 @@ effect_selector:
             .cbc-icon {
               width: 18px;
               padding-right: 2px;
-              color: ${!entity.attributes.effect || entity.attributes.effect == 'effect_stop' ? 'var(--primary-text-color)' : 'var(--accent-color)'}
+              color: ${!entity.attributes.effect || entity.attributes.effect == 'effect_stop' ? 'var(--primary-text-color)' : 'var(--state-icon-active-color)'}
             }
             .cbc-select {
               width: 100%;
@@ -48,7 +48,7 @@ effect_selector:
               text-transform: capitalize;
             }
             .cbc-option .selected {
-              color: var(--accent-color);
+              color: var(--state-icon-active-color);
             }
           </style>
           <div class="cbc-es-cont">

@@ -4,7 +4,6 @@
 ###################[ title_info ]#######################################################>
 title_info:
   template:
-    - cbcjs
     - info_mini
     - transparent
   variables:
@@ -12,8 +11,9 @@ title_info:
   styles:
     icon:
       - opacity: "[[[ return variables._item.opacity ?? '0.2' ]]]"
-      - color: "[[[ return variables._item.color ?? 'var(--accent-color)' ]]]"
+      - color: "[[[ return variables._item.color ?? 'var(--state-icon-active-color)' ]]]"
 
+###################[ title ]#######################################################>
 title:
   icon: 'mdi:'
   template:
@@ -24,13 +24,14 @@ title:
   variables:
     mirror: false
     color: var(--cbc-title-color, var(--primary-background-color))
-    background_color: var(--cbc-title-background-color, var(--accent-color))
-    text_color: var(--cbc-title-text-color, var(--cbc-title-color, '#ffffff'))
-    icon_size: 155% # v.03 Added ability to set icon_size
+    background_color: var(--cbc-title-background-color, var(--primary-color))
+    text_color: var(--cbc-title-text-color, var(--primary-text-color))
+    icon_size: 155% # v.0.3 Added ability to set icon_size
     uppercase: true # v0.3 Added ability to control uppercase
     show_tab: false
     offset: 0
-    opacity: var(--cbc-title-opacity, 0.4) # v0.3 Changed to background color opactiy not whole card ###>
+    opacity: var(--cbc-title-opacity, 1)
+    background_opacity: var(--cbc-title-background-opacity, 0.4)
     info: []
   custom_fields:
     i1:
@@ -39,7 +40,7 @@ title:
         type: custom:button-card
         template: title_info
         entity: "[[[ return variables.info[0]?.entity ]]]"
-        variables: 
+        variables:
           _item: "[[[ return variables.info[0] ?? '' ]]]"
           layout: "[[[ return variables.info[0]?.layout ?? 'stack' ]]]"
     i2:
@@ -48,7 +49,7 @@ title:
         type: custom:button-card
         template: title_info
         entity: "[[[ return variables.info[1]?.entity ]]]"
-        variables: 
+        variables:
           _item: "[[[ return variables.info[1] ?? '' ]]]"
           layout: "[[[ return variables.info[1]?.layout ?? 'stack' ]]]"
     i3:
@@ -57,7 +58,7 @@ title:
         type: custom:button-card
         template: title_info
         entity: "[[[ return variables.info[2]?.entity ]]]"
-        variables: 
+        variables:
           _item: "[[[ return variables.info[2] ?? '' ]]]"
           layout: "[[[ return variables.info[2]?.layout ?? 'stack' ]]]"
   styles:
@@ -100,7 +101,7 @@ title:
       - text-align: "[[[ return variables.mirror ? 'right' : 'left' ]]]"
       - padding: 0
     name:
-      - opactiy: 1
+      - opacity: "[[[ return variables.opacity ]]]"
       - justify-self: "[[[ return variables.mirror ? 'end' : 'start' ]]]"
       - text-transform: "[[[ return variables.uppercase ? 'uppercase' : 'none' ]]]"
       - margin-left: 10px
@@ -111,7 +112,7 @@ title:
       - overflow: visible
       - color: "[[[ return variables.text_color ]]]"
     icon:
-      - opacity: 1
+      - opacity: "[[[ return variables.opacity ]]]"
       - position: absolute
       - color: "[[[ return variables.color ]]]"
       - justify-self: "[[[ return variables.mirror ? 'start' : 'end' ]]]"
@@ -129,4 +130,3 @@ title:
         - display: "[[[ return variables.info.length == 3 && variables.info[2]?.entity ? 'block' : 'none' ]]]"
 
 #########################################################################/
-  
