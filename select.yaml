@@ -24,6 +24,21 @@ select:
     color:
     state: []
   icon: "[[[ return variables.__getState('icon', entity.attributes.icon ?? '') ]]]"
+  extra_styles: |
+    #drop {
+      --ha-card-background: transparent;
+      --card-background-color: transparent;
+      --ha-card-box-shadow: none;
+      --ha-card-border-width: 0;
+      --ha-card-border-color: transparent;
+      --mdc-select-fill-color: transparent;
+      --mdc-theme-surface: transparent;
+    }
+    #drop > * {
+      background: none;
+      box-shadow: none;
+      border: none;
+    }
   styles:
     grid:
       - grid-template-areas: "i drop"
@@ -53,27 +68,7 @@ select:
           - entity: "[[[ return entity?.entity_id ]]]"
             secondary_info: "[[[ return variables.secondary_info ]]]"
             icon: 'mdi:'
-            card_mod:
-              style: |
-                :host {
-                  background: none;
-                  box-shadow: none;
-                  border: none;
-                }
-                :host .mdc-select .mdc-select__anchor {
-                  background: none;
-                }
         show_header_toggle: false
         show_icon: false
-        card_mod:
-          style: |
-            ha-card {
-              background: none;
-              box-shadow: none;
-              border: none;
-            }
-            :host .mdc-select .mdc-select__anchor {
-              background: none;
-            }
 
 ###

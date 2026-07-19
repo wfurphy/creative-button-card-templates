@@ -151,34 +151,33 @@ light_motion:
                     }
                   </style>`
             ]]]
-        card_mod:
-          style: |
-            ha-card:hover::after {
-              display: block;
-              position:absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              background: rgba(255,255,255,0.03);
-              content: '';
-              z-index: 1;
-            }
-            ha-card:hover #img-cell::after {
-              display: block;
-              position: absolute;
-              content: var(--cbc-hover-content);
-              top: 0;
-              left: 0;
-              width: 60%;
-              height: 60%;
-              margin: auto;
-              font-weight: bold;
-              z-index: 3;
-              text-align: center;
-              justify-self: center;
-              align-self: center;
-            }
+        extra_styles: |
+          ha-card:hover::after {
+            display: block;
+            position:absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.03);
+            content: '';
+            z-index: 1;
+          }
+          ha-card:hover #img-cell::after {
+            display: block;
+            position: absolute;
+            content: var(--cbc-hover-content);
+            top: 0;
+            left: 0;
+            width: 60%;
+            height: 60%;
+            margin: auto;
+            font-weight: bold;
+            z-index: 3;
+            text-align: center;
+            justify-self: center;
+            align-self: center;
+          }
     timer:
       force_recreate: true
       card:
