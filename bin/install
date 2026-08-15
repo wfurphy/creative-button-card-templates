@@ -35,6 +35,7 @@ CBC_INIT=$(cat <<'EOF'
 ####| Will Furphy | https://github.com/wfurphy/creative-button-card-templates
 button_card_templates: !include_dir_merge_named creative-button-card-templates/
 #################################################################################/
+
 EOF
 )
 
