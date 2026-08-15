@@ -5,9 +5,29 @@ set -e
 readonly CBC_REPOSITORY_URL="${CBC_REPOSITORY_URL:-https://github.com/wfurphy/creative-button-card-templates.git}"
 readonly CBC_INSTALL_DIRECTORY="creative-button-card-templates"
 
-if ! command -v git >/dev/null 2>&1; then
-  echo "::CBC::❌::> This install script requires git. Please install git and try again."
+# Print an informational message with a success icon or supplied contextual icon.
+info() {
+  printf '::CBC::%s::> %s\n' "${2:-✅}" "$1"
+}
+
+# Print a warning message.
+warn() {
+  printf '::CBC::⚠️::> %s\n' "$1"
+}
+
+# Print an error message.
+error() {
+  printf '::CBC::❌::> %s\n' "$1"
+}
+
+# Print an error message and terminate the installer.
+error_exit() {
+  error "$1"
   exit 1
+}
+
+if ! command -v git >/dev/null 2>&1; then
+  error_exit "This install script requires git. Please install git and try again."
 fi
 
 CBC_INIT=$(cat <<'EOF'
@@ -165,18 +185,18 @@ merge_cbc_settings() {
 
   if [[ "$awk_status" -eq 3 ]]; then
     rm -f "$merged_file"
-    echo "::CBC::✅::> Your cbc_settings.yaml already includes all settings from the repository."
+    info "Your cbc_settings.yaml already includes all settings from the repository."
     return
   fi
 
   if [[ "$awk_status" -ne 0 ]]; then
     rm -f "$merged_file"
-    echo "::CBC::❌::> Failed to compare cbc_settings.yaml with the repository sample."
+    error "Failed to compare cbc_settings.yaml with the repository sample."
     return 1
   fi
 
   mv "$merged_file" "$settings_file"
-  echo "::CBC::✅::> New repository settings were added to cbc_settings.yaml. Your existing settings were preserved."
+  info "New repository settings were added to cbc_settings.yaml. Your existing settings were preserved."
 }
 
 # Return success when the dashboard already includes the CBC template directory.
@@ -195,37 +215,34 @@ configure_dashboard() {
   local temporary_file="${dashboard_file}.new"
 
   if has_cbc_include "$dashboard_file"; then
-    echo "::CBC::✅::> Creative Button-Card Templates is already configured in your ui-lovelace.yaml file. No changes were made."
+    info "Creative Button-Card Templates is already configured in your ui-lovelace.yaml file. No changes were made."
     return
   fi
 
   if has_button_card_templates "$dashboard_file"; then
-    echo "::CBC::⚠️::> button_card_templates already exists in ui-lovelace.yaml but does not include Creative Button-Card Templates. No changes were made to avoid creating a duplicate YAML key."
+    warn "button_card_templates already exists in ui-lovelace.yaml but does not include Creative Button-Card Templates. No changes were made to avoid creating a duplicate YAML key."
     return
   fi
 
-  echo "::CBC::📝::> Adding Creative Button-Card Templates to your ui-lovelace.yaml file..."
+  info "Adding Creative Button-Card Templates to your ui-lovelace.yaml file..." "📝"
   if ! {
     printf '%s\n\n' "$CBC_INIT"
     cat "$dashboard_file"
   } > "$temporary_file"; then
     rm -f "$temporary_file"
-    echo "::CBC::❌::> Failed to prepare the updated ui-lovelace.yaml file."
-    exit 1
+    error_exit "Failed to prepare the updated ui-lovelace.yaml file."
   fi
 
   if ! mv "$temporary_file" "$dashboard_file"; then
-    echo "::CBC::❌::> Failed to update ui-lovelace.yaml."
-    exit 1
+    error_exit "Failed to update ui-lovelace.yaml."
   fi
 }
 
-echo "::CBC::💻::> Installing Creative Button-Card Templates..."
+info "Installing Creative Button-Card Templates..." "💻"
 echo ""
 git clone "$CBC_REPOSITORY_URL" || {
   echo ""
-  echo "::CBC::❌::> Failed to clone repository. Please check your internet connection and try again."
-  exit 1
+  error_exit "Failed to clone repository. Please check your internet connection and try again."
 }
 cd "$CBC_INSTALL_DIRECTORY"
 
@@ -233,21 +250,21 @@ if [[ -f "custom/cbc_settings.yaml" ]]; then
   merge_cbc_settings "custom/cbc_settings.sample" "custom/cbc_settings.yaml"
 else
   cp -f custom/cbc_settings.sample custom/cbc_settings.yaml
-  echo "::CBC::✅::> A new cbc_settings.yaml file has been created from the sample. Please review and adjust settings as needed."
+  info "A new cbc_settings.yaml file has been created from the sample. Please review and adjust settings as needed."
 fi
 echo ""
-echo "::CBC::✅::> Creative Button-Card Templates installed."
+info "Creative Button-Card Templates installed."
 echo ""
 
 if [[ -f ../ui-lovelace.yaml ]]; then
   configure_dashboard ../ui-lovelace.yaml
 else
   echo ""
-  echo "::CBC::⚠️::> WARNING: ui-lovelace.yaml not found."
+  warn "WARNING: ui-lovelace.yaml not found."
 fi
 
 echo "::> To use CBCT in your other dashboards just add the following to the top of any"
 echo "::> YAML file(s) where dashboard properties (eg. title, views) are defined:"
 printf '\n%s\n\n' "$CBC_INIT"
-echo "::CBC::✅::> Installation complete! Please edit custom/cbc_settings.yaml to configure."
+info "Installation complete! Please edit custom/cbc_settings.yaml to configure."
 echo ""

@@ -3,6 +3,10 @@
 # Provide a deterministic local implementation of the git clone used by installer tests.
 set -euo pipefail
 
+if [[ "${CBC_TEST_GIT_FAILURE:-0}" -eq 1 ]]; then
+  exit 1
+fi
+
 if [[ "$1" != "clone" || "$2" != "test://creative-button-card-templates" ]]; then
   echo "Unexpected git arguments: $*" >&2
   exit 1

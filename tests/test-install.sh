@@ -44,7 +44,7 @@ EOF
 cp "$already_configured/ui-lovelace.yaml" "$already_configured/expected.yaml"
 run_installer "$already_configured" > "$already_configured/output.log"
 assert_files_equal "$already_configured/expected.yaml" "$already_configured/ui-lovelace.yaml"
-grep -q 'already configured.*No changes were made' "$already_configured/output.log"
+grep -q '^::CBC::✅::> Creative Button-Card Templates is already configured.*No changes were made' "$already_configured/output.log"
 
 existing_templates="$temporary_root/existing-templates"
 mkdir -p "$existing_templates"
@@ -57,7 +57,7 @@ EOF
 cp "$existing_templates/ui-lovelace.yaml" "$existing_templates/expected.yaml"
 run_installer "$existing_templates" > "$existing_templates/output.log"
 assert_files_equal "$existing_templates/expected.yaml" "$existing_templates/ui-lovelace.yaml"
-grep -q 'does not include Creative Button-Card Templates.*No changes were made' "$existing_templates/output.log"
+grep -q '^::CBC::⚠️::> button_card_templates.*does not include Creative Button-Card Templates.*No changes were made' "$existing_templates/output.log"
 
 new_configuration="$temporary_root/new-configuration"
 mkdir -p "$new_configuration"
@@ -65,6 +65,8 @@ printf 'views: []\n' > "$new_configuration/ui-lovelace.yaml"
 run_installer "$new_configuration" > "$new_configuration/output.log"
 test "$(grep -c '^button_card_templates:' "$new_configuration/ui-lovelace.yaml")" -eq 1
 grep -q '^views: \[\]$' "$new_configuration/ui-lovelace.yaml"
+grep -q '^::CBC::💻::> Installing Creative Button-Card Templates' "$new_configuration/output.log"
+grep -q '^::CBC::📝::> Adding Creative Button-Card Templates' "$new_configuration/output.log"
 
 merged_settings="$temporary_root/merged-settings"
 mkdir -p "$merged_settings"
@@ -117,5 +119,13 @@ assert_files_equal \
   "$repository_root/custom/cbc_settings.sample" \
   "$current_settings/creative-button-card-templates/custom/cbc_settings.yaml"
 grep -q 'already includes all settings from the repository' "$current_settings/output.log"
+
+clone_failure="$temporary_root/clone-failure"
+mkdir -p "$clone_failure"
+if CBC_TEST_GIT_FAILURE=1 run_installer "$clone_failure" > "$clone_failure/output.log"; then
+  echo 'Installer unexpectedly succeeded after a clone failure.' >&2
+  exit 1
+fi
+grep -q '^::CBC::❌::> Failed to clone repository' "$clone_failure/output.log"
 
 echo 'Installer tests passed.'
