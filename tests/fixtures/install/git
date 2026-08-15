@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Provide a deterministic local implementation of the git clone used by installer tests.
+set -euo pipefail
+
+if [[ "$1" != "clone" || "$2" != "test://creative-button-card-templates" ]]; then
+  echo "Unexpected git arguments: $*" >&2
+  exit 1
+fi
+
+mkdir -p creative-button-card-templates/custom
+cp "$CBC_TEST_REPOSITORY/custom/cbc_settings.sample" creative-button-card-templates/custom/cbc_settings.sample
+
+if [[ -n "${CBC_TEST_SETTINGS:-}" ]]; then
+  cp "$CBC_TEST_SETTINGS" creative-button-card-templates/custom/cbc_settings.yaml
+fi

@@ -2,6 +2,9 @@
 
 set -e
 
+readonly CBC_REPOSITORY_URL="${CBC_REPOSITORY_URL:-https://github.com/wfurphy/creative-button-card-templates.git}"
+readonly CBC_INSTALL_DIRECTORY="creative-button-card-templates"
+
 if ! command -v git >/dev/null 2>&1; then
   echo "::CBC::❌::> This install script requires git. Please install git and try again."
   exit 1
@@ -12,22 +15,222 @@ CBC_INIT=$(cat <<'EOF'
 ####| Will Furphy | https://github.com/wfurphy/creative-button-card-templates
 button_card_templates: !include_dir_merge_named creative-button-card-templates/
 #################################################################################/
-
 EOF
 )
 
+# Merge settings added to the repository sample without changing existing user values.
+merge_cbc_settings() {
+  local sample_file="$1"
+  local settings_file="$2"
+  local awk_status
+  local merged_file
+
+  merged_file=$(mktemp "${settings_file}.tmp.XXXXXX")
+  cp -p "$settings_file" "$merged_file"
+
+  if awk '
+    function indentation(line, spaces) {
+      match(line, /^[ ]*/)
+      spaces = substr(line, RSTART, RLENGTH)
+      return length(spaces)
+    }
+
+    function mapping_key(line, content, separator) {
+      content = line
+      sub(/^[ ]*/, "", content)
+      if (content !~ /^[_[:alnum:]-]+[ ]*:/) {
+        return ""
+      }
+
+      separator = index(content, ":")
+      content = substr(content, 1, separator - 1)
+      sub(/[ ]*$/, "", content)
+      return content
+    }
+
+    function close_sample_stack(indent) {
+      while (sample_depth > 0 && sample_stack_indent[sample_depth] >= indent) {
+        sample_depth--
+      }
+    }
+
+    function close_user_stack(indent) {
+      while (user_depth > 0 && user_stack_indent[user_depth] >= indent) {
+        add_missing_children(user_stack_path[user_depth], user_stack_indent[user_depth])
+        user_depth--
+      }
+    }
+
+    function add_missing_children(parent_path, parent_indent, path_index, child_path, offset, line_index) {
+      for (path_index = 1; path_index <= sample_path_count; path_index++) {
+        child_path = sample_path_order[path_index]
+        if (sample_parent[child_path] != parent_path || user_path_exists[child_path]) {
+          continue
+        }
+
+        offset = parent_path == "" ? 0 : parent_indent - sample_indent[parent_path]
+        for (line_index = sample_start[child_path]; line_index <= sample_line_count; line_index++) {
+          if (line_index > sample_start[child_path] && sample_is_key[line_index] && sample_line_indent[line_index] <= sample_indent[child_path]) {
+            break
+          }
+
+          if (offset > 0 && sample_lines[line_index] != "") {
+            printf "%*s%s\n", offset, "", sample_lines[line_index]
+          } else {
+            print sample_lines[line_index]
+          }
+        }
+      }
+    }
+
+    NR == FNR {
+      sample_line_count++
+      sample_lines[sample_line_count] = $0
+      key = mapping_key($0)
+      if (key == "") {
+        next
+      }
+
+      indent = indentation($0)
+      close_sample_stack(indent)
+      parent_path = sample_depth == 0 ? "" : sample_stack_path[sample_depth]
+      path = parent_path == "" ? key : parent_path SUBSEP key
+      sample_path_count++
+      sample_path_order[sample_path_count] = path
+      sample_parent[path] = parent_path
+      sample_indent[path] = indent
+      sample_start[path] = sample_line_count
+      sample_is_key[sample_line_count] = 1
+      sample_line_indent[sample_line_count] = indent
+      sample_depth++
+      sample_stack_path[sample_depth] = path
+      sample_stack_indent[sample_depth] = indent
+      next
+    }
+
+    {
+      user_line_count++
+      user_lines[user_line_count] = $0
+      key = mapping_key($0)
+      if (key == "") {
+        next
+      }
+
+      indent = indentation($0)
+      while (scan_depth > 0 && scan_stack_indent[scan_depth] >= indent) {
+        scan_depth--
+      }
+      parent_path = scan_depth == 0 ? "" : scan_stack_path[scan_depth]
+      path = parent_path == "" ? key : parent_path SUBSEP key
+      user_path_exists[path] = 1
+      scan_depth++
+      scan_stack_path[scan_depth] = path
+      scan_stack_indent[scan_depth] = indent
+    }
+
+    END {
+      missing_settings = 0
+      for (path_index = 1; path_index <= sample_path_count; path_index++) {
+        if (!user_path_exists[sample_path_order[path_index]]) {
+          missing_settings = 1
+          break
+        }
+      }
+      if (!missing_settings) {
+        exit 3
+      }
+
+      for (line_number = 1; line_number <= user_line_count; line_number++) {
+        key = mapping_key(user_lines[line_number])
+        if (key != "") {
+          indent = indentation(user_lines[line_number])
+          close_user_stack(indent)
+          parent_path = user_depth == 0 ? "" : user_stack_path[user_depth]
+          path = parent_path == "" ? key : parent_path SUBSEP key
+          user_depth++
+          user_stack_path[user_depth] = path
+          user_stack_indent[user_depth] = indent
+        }
+        print user_lines[line_number]
+      }
+
+      close_user_stack(-1)
+      add_missing_children("", -1)
+    }
+  ' "$sample_file" "$settings_file" > "$merged_file"; then
+    awk_status=0
+  else
+    awk_status=$?
+  fi
+
+  if [[ "$awk_status" -eq 3 ]]; then
+    rm -f "$merged_file"
+    echo "::CBC::✅::> Your cbc_settings.yaml already includes all settings from the repository."
+    return
+  fi
+
+  if [[ "$awk_status" -ne 0 ]]; then
+    rm -f "$merged_file"
+    echo "::CBC::❌::> Failed to compare cbc_settings.yaml with the repository sample."
+    return 1
+  fi
+
+  mv "$merged_file" "$settings_file"
+  echo "::CBC::✅::> New repository settings were added to cbc_settings.yaml. Your existing settings were preserved."
+}
+
+# Return success when the dashboard already includes the CBC template directory.
+has_cbc_include() {
+  grep -Eq "^[[:space:]]*button_card_templates:[[:space:]]*!include_dir_merge_named[[:space:]]+['\"]?(\\./)?${CBC_INSTALL_DIRECTORY}/?['\"]?([[:space:]]+#.*)?[[:space:]]*$" "$1"
+}
+
+# Return success when the dashboard defines any active button_card_templates key.
+has_button_card_templates() {
+  grep -Eq '^[[:space:]]*button_card_templates[[:space:]]*:' "$1"
+}
+
+# Add the CBC include only when the dashboard has no button_card_templates configuration.
+configure_dashboard() {
+  local dashboard_file="$1"
+  local temporary_file="${dashboard_file}.new"
+
+  if has_cbc_include "$dashboard_file"; then
+    echo "::CBC::✅::> Creative Button-Card Templates is already configured in your ui-lovelace.yaml file. No changes were made."
+    return
+  fi
+
+  if has_button_card_templates "$dashboard_file"; then
+    echo "::CBC::⚠️::> button_card_templates already exists in ui-lovelace.yaml but does not include Creative Button-Card Templates. No changes were made to avoid creating a duplicate YAML key."
+    return
+  fi
+
+  echo "::CBC::📝::> Adding Creative Button-Card Templates to your ui-lovelace.yaml file..."
+  if ! {
+    printf '%s\n\n' "$CBC_INIT"
+    cat "$dashboard_file"
+  } > "$temporary_file"; then
+    rm -f "$temporary_file"
+    echo "::CBC::❌::> Failed to prepare the updated ui-lovelace.yaml file."
+    exit 1
+  fi
+
+  if ! mv "$temporary_file" "$dashboard_file"; then
+    echo "::CBC::❌::> Failed to update ui-lovelace.yaml."
+    exit 1
+  fi
+}
+
 echo "::CBC::💻::> Installing Creative Button-Card Templates..."
 echo ""
-git clone https://github.com/wfurphy/creative-button-card-templates.git || {
+git clone "$CBC_REPOSITORY_URL" || {
   echo ""
   echo "::CBC::❌::> Failed to clone repository. Please check your internet connection and try again."
   exit 1
 }
-cd creative-button-card-templates
-
+cd "$CBC_INSTALL_DIRECTORY"
 
 if [[ -f "custom/cbc_settings.yaml" ]]; then
-  echo "::CBC::⚠️::> Your existing cbc_settings.yaml file has been preserved. Please review it against the sample and make any necessary adjustments to new settings added in the update."
+  merge_cbc_settings "custom/cbc_settings.sample" "custom/cbc_settings.yaml"
 else
   cp -f custom/cbc_settings.sample custom/cbc_settings.yaml
   echo "::CBC::✅::> A new cbc_settings.yaml file has been created from the sample. Please review and adjust settings as needed."
@@ -37,14 +240,7 @@ echo "::CBC::✅::> Creative Button-Card Templates installed."
 echo ""
 
 if [[ -f ../ui-lovelace.yaml ]]; then
-  echo "::CBC::📝::> Adding Creative Button-Card Templates to your ui-lovelace.yaml file..."
-  {
-    echo -e "$CBC_INIT\n"
-    cat ../ui-lovelace.yaml
-  } > ../ui-lovelace.yaml.new && mv ../ui-lovelace.yaml.new ../ui-lovelace.yaml || {
-    echo ""
-    echo "::CBC::❌::> Failed to update ui-lovelace.yaml."
-  }
+  configure_dashboard ../ui-lovelace.yaml
 else
   echo ""
   echo "::CBC::⚠️::> WARNING: ui-lovelace.yaml not found."
@@ -52,6 +248,6 @@ fi
 
 echo "::> To use CBCT in your other dashboards just add the following to the top of any"
 echo "::> YAML file(s) where dashboard properties (eg. title, views) are defined:"
-echo -e "\n$CBC_INIT\n"
+printf '\n%s\n\n' "$CBC_INIT"
 echo "::CBC::✅::> Installation complete! Please edit custom/cbc_settings.yaml to configure."
 echo ""
