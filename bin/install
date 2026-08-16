@@ -5,19 +5,27 @@ set -e
 readonly CBC_REPOSITORY_URL="${CBC_REPOSITORY_URL:-https://github.com/wfurphy/creative-button-card-templates.git}"
 readonly CBC_INSTALL_DIRECTORY="creative-button-card-templates"
 
+# Set terminal colors
+tput sgr0; # reset colors
+c_b=$(tput bold);
+c_=$(tput sgr0); # reset
+c_r=$(tput setaf 124); # red
+c_v=$(tput setaf 37); # cyan
+c_y=$(tput setaf 136); # yellow
+
 # Print an informational message with a success icon or supplied contextual icon.
 info() {
-  printf '::CBC::%s::> %s\n' "${2:-✅}" "$1"
+  echo -e "${c_v}${c_b}${2:-ℹ️}|::CBC::>${c_}${c_v} ${1}${c_}\n"
 }
 
 # Print a warning message.
 warn() {
-  printf '::CBC::⚠️::> %s\n' "$1"
+  echo -e "${c_y}${c_b}${2:-⚠️}|::CBC::> ${1}${c_}\n"
 }
 
 # Print an error message.
 error() {
-  printf '::CBC::❌::> %s\n' "$1"
+  echo -e "${c_r}${c_b}${2:-❌}|::CBC::> ${1}${c_}\n"
 }
 
 # Print an error message and terminate the installer.
@@ -239,11 +247,11 @@ configure_dashboard() {
   fi
 }
 
-info "Installing Creative Button-Card Templates..." "💻"
+info "Installing Creative Button-Card Templates..."
 echo ""
 git clone "$CBC_REPOSITORY_URL" || {
   echo ""
-  error_exit "Failed to clone repository. Please check your internet connection and try again."
+  error_exit "Failed to clone repository."
 }
 cd "$CBC_INSTALL_DIRECTORY"
 
@@ -254,7 +262,7 @@ else
   info "A new cbc_settings.yaml file has been created from the sample. Please review and adjust settings as needed."
 fi
 echo ""
-info "Creative Button-Card Templates installed."
+info "Creative Button-Card Templates installed." "✅"
 echo ""
 
 if [[ -f ../ui-lovelace.yaml ]]; then
@@ -264,8 +272,8 @@ else
   warn "WARNING: ui-lovelace.yaml not found."
 fi
 
-echo "::> To use CBCT in your other dashboards just add the following to the top of any"
-echo "::> YAML file(s) where dashboard properties (eg. title, views) are defined:"
+info "To use CBCT in your other dashboards just add the following to the top of any
+          YAML file(s) where dashboard properties (eg. title, views) are defined:"
 printf '\n%s\n\n' "$CBC_INIT"
-info "Installation complete! Please edit custom/cbc_settings.yaml to configure."
+info "Installation complete! Please edit custom/cbc_settings.yaml to configure." "✅"
 echo ""
